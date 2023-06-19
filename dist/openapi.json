@@ -1,0 +1,502 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Ease my event",
+    "description": "Event app APIs",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {
+      "Retailer": {
+        "type": "object",
+        "required": [
+          "name",
+          "contactNo",
+          "contactName",
+          "creditsBought",
+          "shops"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the retailer"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the retailer"
+          },
+          "contactNo": {
+            "type": "number",
+            "description": "Contact number of the retailer"
+          },
+          "contactName": {
+            "type": "string",
+            "description": "Name of the contact person"
+          },
+          "creditsBought": {
+            "type": "number",
+            "description": "The credits bought by the retailer"
+          },
+          "creditsUsed": {
+            "type": "number",
+            "description": "The credits sold/used by the retailer (this will be automatically calculated by the backend, the default value is 0)"
+          },
+          "shops": {
+            "type": "array",
+            "description": "The IDs of all the shops of the retailer",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/retailer/register": {
+      "post": {
+        "summary": "Register a retailer to our platform",
+        "tags": [
+          "Retailer"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "contactNo",
+                  "contactName",
+                  "shops"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the retailer"
+                  },
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the retailer"
+                  },
+                  "contactName": {
+                    "type": "string",
+                    "description": "Name of the contact person"
+                  },
+                  "shops": {
+                    "type": "array",
+                    "description": "Details of all the shops of the retailer",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "address",
+                        "name",
+                        "contactNo",
+                        "companyId"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the shop"
+                        },
+                        "contactNo": {
+                          "type": "number",
+                          "description": "Contact number of the shop"
+                        },
+                        "companyId": {
+                          "type": "string",
+                          "description": "ID of the retailer who owns the shop"
+                        },
+                        "address": {
+                          "type": "object",
+                          "required": [
+                            "state",
+                            "city",
+                            "zip",
+                            "fullAddress"
+                          ],
+                          "properties": {
+                            "state": {
+                              "type": "string",
+                              "description": "State in which the shop is located"
+                            },
+                            "city": {
+                              "type": "string",
+                              "description": "City in which the shop is located"
+                            },
+                            "zip": {
+                              "type": "string",
+                              "description": "Pin code of the area in which the shop is located"
+                            },
+                            "fullAddress": {
+                              "type": "string",
+                              "description": "Full address of the shop with the area name and exact address"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "msg": "Retailer registered successfully"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Retailer already exists"
+          }
+        }
+      }
+    },
+    "/user/verifyOTP": {
+      "post": {
+        "summary": "Verify the OTP sent by the user",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "contactNo",
+                  "otp"
+                ],
+                "properties": {
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the user (should be an exact 10-digit number)"
+                  },
+                  "otp": {
+                    "type": "number",
+                    "description": "OTP sent by the user (should be an exact 4-digit number)"
+                  }
+                }
+              },
+              "example": {
+                "contactNo": 8888888888,
+                "otp": 2345
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "msg": "OTP matched"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "OTP does not match"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "409": {
+            "description": "User is already verified"
+          }
+        }
+      }
+    },
+    "/user/verification/{contactNumber}": {
+      "get": {
+        "summary": "Get the verification status of the user",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contactNumber",
+            "schema": {
+              "type": "number"
+            },
+            "required": true,
+            "description": "Contact number of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Type of the user (bride or groom)"
+                    },
+                    "verified": {
+                      "type": "boolean",
+                      "description": "Verification status of the user"
+                    },
+                    "contactNo": {
+                      "type": "number",
+                      "description": "Contact number of the user"
+                    }
+                  }
+                },
+                "example": {
+                  "type": "groom",
+                  "verified": false,
+                  "contactNo": 9999999999
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Contact number was not provided"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/createPassword": {
+      "post": {
+        "summary": "Set the user's password",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "contactNo",
+                  "password"
+                ],
+                "properties": {
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "New password that the user wants to set"
+                  }
+                }
+              },
+              "example": {
+                "contactNo": 9999999999,
+                "password": "Abced@330"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "msg": "Password created successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "409": {
+            "description": "User is already verified"
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login using contact number and password",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "contactNo",
+                  "password"
+                ],
+                "properties": {
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Password of the user's account"
+                  }
+                }
+              },
+              "example": {
+                "contactNo": 9999999999,
+                "password": "Abced@330"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success message and JWT token will be returned"
+          },
+          "401": {
+            "description": "User is not verified or password does not match"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/event/create": {
+      "post": {
+        "summary": "Create an event",
+        "tags": [
+          "Event"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "bride",
+                  "groom",
+                  "shopId"
+                ],
+                "properties": {
+                  "bride": {
+                    "type": "object",
+                    "description": "Details of the bride",
+                    "required": [
+                      "name",
+                      "contactNo"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the bride"
+                      },
+                      "contactNo": {
+                        "type": "number",
+                        "description": "Contact number of the bride"
+                      }
+                    }
+                  },
+                  "groom": {
+                    "type": "object",
+                    "description": "Details of the groom",
+                    "required": [
+                      "name",
+                      "contactNo"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the groom"
+                      },
+                      "contactNo": {
+                        "type": "number",
+                        "description": "Contact number of the groom"
+                      }
+                    }
+                  },
+                  "shopId": {
+                    "type": "string",
+                    "description": "ID of the shop from which the bride and groom were registered"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "msg": "Event created successfully"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Cannot create event, retailer has used all the credits"
+          },
+          "404": {
+            "description": "Shop not found or retailer relating to this shop was not found"
+          },
+          "409": {
+            "description": "User with this number already exists"
+          }
+        }
+      }
+    }
+  }
+}
