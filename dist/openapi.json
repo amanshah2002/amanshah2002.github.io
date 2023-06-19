@@ -49,6 +49,175 @@
             }
           }
         }
+      },
+      "Event": {
+        "type": "object",
+        "required": [
+          "organizers",
+          "shop"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the Event"
+          },
+          "organizers": {
+            "type": "string",
+            "description": "ID of the registered event organizers"
+          },
+          "shop": {
+            "type": "string",
+            "description": "ID of the shop form where organizers were registered"
+          }
+        }
+      },
+      "Organizers": {
+        "type": "object",
+        "required": [
+          "organizers"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the Event"
+          },
+          "organizers": {
+            "type": "object",
+            "description": "The details of the organizers of event",
+            "required": [
+              "groom",
+              "bride"
+            ],
+            "properties": {
+              "groom": {
+                "type": "object",
+                "description": "The details of the groom",
+                "required": [
+                  "name",
+                  "contactNo"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the groom"
+                  },
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the groom"
+                  },
+                  "verified": {
+                    "type": "boolean",
+                    "description": "If the groom has verified his account or not"
+                  },
+                  "otp": {
+                    "type": "number",
+                    "description": "OTP sent to the groom's number (will be deleted after groom creates a password)"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Password for the groom's account (will be set after groom has verified his otp)"
+                  }
+                }
+              },
+              "bride": {
+                "type": "object",
+                "description": "The details of the bride",
+                "required": [
+                  "name",
+                  "contactNo"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the bride"
+                  },
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the bride"
+                  },
+                  "verified": {
+                    "type": "boolean",
+                    "description": "If the bride has verified her account or not"
+                  },
+                  "otp": {
+                    "type": "number",
+                    "description": "OTP sent to the bride's number (will be deleted after bride creates a password)"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Password for the  bride's account (will be set after bride has verified her otp)"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Shop": {
+        "type": "object",
+        "required": [
+          "address",
+          "contactNo",
+          "name",
+          "creditsUsed",
+          "retailerId",
+          "users"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the Event"
+          },
+          "address": {
+            "type": "object",
+            "description": "The address of the shop",
+            "required": [
+              "state",
+              "city",
+              "zip",
+              "fullAddress"
+            ],
+            "properties": {
+              "state": {
+                "type": "string",
+                "description": "State where the shop is located"
+              },
+              "city": {
+                "type": "string",
+                "description": "City where the shop is located"
+              },
+              "zip": {
+                "type": "number",
+                "description": "Pin code of the area where shop is located"
+              },
+              "fullAddress": {
+                "type": "string",
+                "description": "Full address of the shop"
+              }
+            }
+          },
+          "contactNo": {
+            "type": "number",
+            "description": "Contact number of the shop"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the shop"
+          },
+          "creditsUsed": {
+            "type": "number",
+            "description": "Credits used/sold by the shops"
+          },
+          "retailerId": {
+            "type": "string",
+            "description": "ID of the retailer who owns the shop"
+          },
+          "users": {
+            "type": "array",
+            "description": "Array containing IDs of the organizers who register to our platform through that shop",
+            "items": {}
+          }
+        }
       }
     }
   },
