@@ -54,7 +54,8 @@
         "type": "object",
         "required": [
           "organizers",
-          "shop"
+          "shop",
+          "name"
         ],
         "properties": {
           "_id": {
@@ -68,85 +69,73 @@
           "shop": {
             "type": "string",
             "description": "ID of the shop form where organizers were registered"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the event"
           }
         }
       },
       "Organizers": {
+        "type": "array",
+        "description": "Stores an array containing ids of organizers of the event",
+        "items": {
+          "type": "string"
+        }
+      },
+      "Users": {
         "type": "object",
         "required": [
-          "organizers"
+          "name",
+          "contactNo",
+          "events"
         ],
         "properties": {
           "_id": {
             "type": "string",
-            "description": "Auto-generated ID of the Event"
+            "description": "Auto-generated ID of the user"
           },
-          "organizers": {
-            "type": "object",
-            "description": "The details of the organizers of event",
-            "required": [
-              "groom",
-              "bride"
-            ],
-            "properties": {
-              "groom": {
-                "type": "object",
-                "description": "The details of the groom",
-                "required": [
-                  "name",
-                  "contactNo"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Name of the groom"
-                  },
-                  "contactNo": {
-                    "type": "number",
-                    "description": "Contact number of the groom"
-                  },
-                  "verified": {
-                    "type": "boolean",
-                    "description": "If the groom has verified his account or not"
-                  },
-                  "otp": {
-                    "type": "number",
-                    "description": "OTP sent to the groom's number (will be deleted after groom creates a password)"
-                  },
-                  "password": {
-                    "type": "string",
-                    "description": "Password for the groom's account (will be set after groom has verified his otp)"
-                  }
-                }
-              },
-              "bride": {
-                "type": "object",
-                "description": "The details of the bride",
-                "required": [
-                  "name",
-                  "contactNo"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Name of the bride"
-                  },
-                  "contactNo": {
-                    "type": "number",
-                    "description": "Contact number of the bride"
-                  },
-                  "verified": {
-                    "type": "boolean",
-                    "description": "If the bride has verified her account or not"
-                  },
-                  "otp": {
-                    "type": "number",
-                    "description": "OTP sent to the bride's number (will be deleted after bride creates a password)"
-                  },
-                  "password": {
-                    "type": "string",
-                    "description": "Password for the  bride's account (will be set after bride has verified her otp)"
-                  }
+          "name": {
+            "type": "string",
+            "description": "Name of the user"
+          },
+          "contactNo": {
+            "type": "number",
+            "description": "Contact number of the user"
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "If the user has verified his/her account"
+          },
+          "otp": {
+            "type": "number",
+            "description": "OTP sent to the user's number (will be deleted after user creates a password)"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password for the user's account (will be set after user has verified his otp)"
+          },
+          "occasionRole": {
+            "type": "string",
+            "description": "Special of the user relating to the occasion (eg: Bride/Groom)"
+          },
+          "events": {
+            "type": "array",
+            "description": "The list of all the events the user is related to",
+            "items": {
+              "type": "object",
+              "required": [
+                "event",
+                "role"
+              ],
+              "properties": {
+                "event": {
+                  "type": "string",
+                  "description": "The IDs of the events the user is related to"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "The role of the user in the event (Super Admin/Admin/Guest)"
                 }
               }
             }
@@ -458,6 +447,84 @@
         }
       }
     },
+    "/user/create": {
+      "post": {
+        "summary": "Create a user",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "description": "The id of the event where the action is taking place",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "contactNo",
+                  "role"
+                ],
+                "properties": {
+                  "name": {
+                    "description": "Name of the user"
+                  },
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the user"
+                  },
+                  "role": {
+                    "type": "string",
+                    "description": "Role of the user in the current event"
+                  }
+                }
+              },
+              "example": {
+                "name": "Test",
+                "contactNo": 9999999999,
+                "role": "Admin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "msg": "Admin/Guest created successfullly"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
     "/user/createPassword": {
       "post": {
         "summary": "Set the user's password",
@@ -585,53 +652,41 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "bride",
-                  "groom",
-                  "shopId"
-                ],
                 "properties": {
-                  "bride": {
-                    "type": "object",
-                    "description": "Details of the bride",
-                    "required": [
-                      "name",
-                      "contactNo"
-                    ],
-                    "properties": {
-                      "name": {
-                        "type": "string",
-                        "description": "Name of the bride"
+                  "organizers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "contactNo": {
+                          "type": "integer"
+                        },
+                        "occasionRole": {
+                          "type": "string"
+                        }
                       },
-                      "contactNo": {
-                        "type": "number",
-                        "description": "Contact number of the bride"
-                      }
-                    }
-                  },
-                  "groom": {
-                    "type": "object",
-                    "description": "Details of the groom",
-                    "required": [
-                      "name",
-                      "contactNo"
-                    ],
-                    "properties": {
-                      "name": {
-                        "type": "string",
-                        "description": "Name of the groom"
-                      },
-                      "contactNo": {
-                        "type": "number",
-                        "description": "Contact number of the groom"
-                      }
+                      "required": [
+                        "name",
+                        "contactNo",
+                        "occasionRole"
+                      ]
                     }
                   },
                   "shopId": {
-                    "type": "string",
-                    "description": "ID of the shop from which the bride and groom were registered"
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "organizers",
+                  "shopId",
+                  "name"
+                ]
               }
             }
           }
