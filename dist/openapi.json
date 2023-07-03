@@ -721,6 +721,37 @@
           }
         }
       }
+    },
+    "/contacts/getParsedContacts": {
+      "post": {
+        "summary": "Get contacts parsed a json objects",
+        "tags": [
+          "Contacts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contacts": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Parsed file will be returned as object"
+          },
+          "404": {
+            "description": "Contacts field not provided"
+          }
+        }
+      }
     }
   }
 }
