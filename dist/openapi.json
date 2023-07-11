@@ -142,7 +142,7 @@
           }
         }
       },
-      "Shop": {
+      "Shops": {
         "type": "object",
         "required": [
           "address",
@@ -205,6 +205,85 @@
             "type": "array",
             "description": "Array containing IDs of the organizers who register to our platform through that shop",
             "items": {}
+          }
+        }
+      },
+      "Tasks": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "category": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "address": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "Low",
+              "Medium",
+              "High"
+            ]
+          },
+          "namePOC": {
+            "type": "string"
+          },
+          "contactPOC": {
+            "type": "number"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Categories": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "event": {
+            "type": "object"
           }
         }
       }
@@ -752,6 +831,1092 @@
           }
         }
       }
-    }
+    },
+    "/task/create": {
+      "post": {
+        "summary": "Create a task",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "description": "The id of the event to which the task is related to",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "category",
+                  "assignee",
+                  "name",
+                  "description",
+                  "startDate",
+                  "dueDate",
+                  "address",
+                  "priority",
+                  "namePOC",
+                  "contactPOC"
+                ],
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "description": "Id of the selected category of task"
+                  },
+                  "assignee": {
+                    "type": "string",
+                    "description": "Id of the user who created the task"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the task"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "description/content of the task"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Start date of the task"
+                  },
+                  "dueDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Due date of the task"
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "Address of the place where the task needs to be performed"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "description": "The priority of the task",
+                    "enum": [
+                      "Low",
+                      "Lowest",
+                      "High",
+                      "Highest"
+                    ]
+                  },
+                  "namePOC": {
+                    "type": "string",
+                    "description": "The name of the point of contact",
+                  },
+                  "contactPOC": {
+                    "type": "number",
+                    "description": "The contact number of the point of contact",
+                  },
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task edited successfully"
+          },
+          "404": {
+            "description": "[Event not provided, Task not found, Category not found, Assignee not found ]"
+          },
+          "400": {
+            "description": "[Task id required, Event id required]"
+          }
+        }
+      }
+    },
+    "/task/edit/{taskId}": {
+      "put": {
+        "summary": "Edit a task",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "taskId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the task that is to be edited"
+          },
+          {
+            "in": "query",
+            "name": "eventId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the event to which the task belongs to"
+          }
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "category",
+                  "assignee",
+                  "name",
+                  "description",
+                  "startDate",
+                  "dueDate",
+                  "address",
+                  "priority",
+                  "namePOC",
+                  "contactPOC"
+                ],
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "description": "Id of the selected category of task"
+                  },
+                  "assignee": {
+                    "type": "string",
+                    "description": "Id of the user who created the task"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the task"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "description/content of the task"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Start date of the task"
+                  },
+                  "dueDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Due date of the task"
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "Address of the place where the task needs to be performed"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "description": "The priority of the task",
+                    "enum": [
+                      "Low",
+                      "Lowest",
+                      "High",
+                      "Highest"
+                    ]
+                  },
+                  "namePOC": {
+                    "type": "string",
+                    "description": "The name of the point of contact",
+                  },
+                  "contactPOC": {
+                    "type": "number",
+                    "description": "The contact number of the point of contact",
+                  },
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task edited successfully"
+          },
+          "404": {
+            "description": "[Event not provided, Task not found, Category not found, Assignee not found ]"
+          },
+          "400": {
+            "description": "[Task id required, Event id required]"
+          }
+        }
+      }
+    },
+    "/task/getAllTasks": {
+      "get": {
+        "summary": "Get all tasks in an event",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "eventId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the event from which list of tasks is needed"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "category": {
+                      "type": "object",
+                      "properties": {
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "event": {
+                          "type": "object",
+                          "properties": {
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "roles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "_id": {
+                              "type": "string"
+                            },
+                            "organizers": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "shop": {
+                              "type": "string"
+                            },
+                            "__v": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "event": {
+                      "type": "object",
+                      "properties": {
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "roles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "_id": {
+                          "type": "string"
+                        },
+                        "organizers": {
+                          "type": "object",
+                          "properties": {
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "_id": {
+                              "type": "string"
+                            },
+                            "organizers": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "__v": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "shop": {
+                          "type": "object",
+                          "properties": {
+                            "_id": {
+                              "type": "string"
+                            },
+                            "address": {
+                              "type": "object",
+                              "properties": {
+                                "state": {
+                                  "type": "string"
+                                },
+                                "city": {
+                                  "type": "string"
+                                },
+                                "zip": {
+                                  "type": "integer"
+                                },
+                                "fullAddress": {
+                                  "type": "string"
+                                },
+                                "_id": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "contactNo": {
+                              "type": "integer"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "creditsUsed": {
+                              "type": "integer"
+                            },
+                            "users": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "retailerId": {
+                              "type": "string"
+                            },
+                            "__v": {
+                              "type": "integer"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        },
+                        "__v": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "assignee": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "contactNo": {
+                          "type": "integer"
+                        },
+                        "verified": {
+                          "type": "boolean"
+                        },
+                        "occasionRole": {
+                          "type": "string"
+                        },
+                        "events": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "event": {
+                                "type": "string"
+                              },
+                              "role": {
+                                "type": "string"
+                              },
+                              "_id": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "__v": {
+                          "type": "integer"
+                        },
+                        "password": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "startDate": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "dueDate": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "address": {
+                      "type": "string"
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "Low",
+                        "Lowest",
+                        "High",
+                        "Highest"
+                      ]
+                    },
+                    "namePOC": {
+                      "type": "string"
+                    },
+                    "contactPOC": {
+                      "type": "integer"
+                    },
+                    "comments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "author": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "task": {
+                            "type": "string"
+                          },
+                          "replies": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string"
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "author": {
+                                  "type": "string"
+                                },
+                                "description": {
+                                  "type": "string"
+                                },
+                                "replies": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "_id": {
+                                        "type": "string"
+                                      },
+                                      "createdAt": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                      },
+                                      "author": {
+                                        "type": "string"
+                                      },
+                                      "description": {
+                                        "type": "string"
+                                      },
+                                      "replies": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "_id": {
+                                              "type": "string"
+                                            },
+                                            "createdAt": {
+                                              "type": "string",
+                                              "format": "date-time"
+                                            },
+                                            "author": {
+                                              "type": "string"
+                                            },
+                                            "description": {
+                                              "type": "string"
+                                            },
+                                            "replies": {
+                                              "type": "array",
+                                              "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "_id": {
+                                                    "type": "string"
+                                                  },
+                                                  "createdAt": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                  },
+                                                  "author": {
+                                                    "type": "string"
+                                                  },
+                                                  "description": {
+                                                    "type": "string"
+                                                  },
+                                                  "replies": {
+                                                    "type": "array",
+                                                    "items": {
+                                                      "type": "object",
+                                                      "properties": {
+                                                        "_id": {
+                                                          "type": "string"
+                                                        },
+                                                        "createdAt": {
+                                                          "type": "string",
+                                                          "format": "date-time"
+                                                        },
+                                                        "author": {
+                                                          "type": "string"
+                                                        },
+                                                        "description": {
+                                                          "type": "string"
+                                                        },
+                                                        "replies": {
+                                                          "type": "array",
+                                                          "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                              "_id": {
+                                                                "type": "string"
+                                                              },
+                                                              "createdAt": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                              },
+                                                              "author": {
+                                                                "type": "string"
+                                                              },
+                                                              "description": {
+                                                                "type": "string"
+                                                              },
+                                                              "replies": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                  "type": "object",
+                                                                  "properties": {
+                                                                    "_id": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "createdAt": {
+                                                                      "type": "string",
+                                                                      "format": "date-time"
+                                                                    },
+                                                                    "author": {
+                                                                      "type": "string"
+                                                                    },
+                                                                    "description": {
+                                                                      "type": "string"
+                                                                    }
+                                                                  }
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "taggedUsers": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "contactNo": {
+                                  "type": "integer"
+                                },
+                                "verified": {
+                                  "type": "boolean"
+                                },
+                                "occasionRole": {
+                                  "type": "string"
+                                },
+                                "events": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "event": {
+                                        "type": "string"
+                                      },
+                                      "role": {
+                                        "type": "string"
+                                      },
+                                      "_id": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                },
+                                "__v": {
+                                  "type": "integer"
+                                },
+                                "password": {
+                                  "type": "string"
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              }
+                            }
+                          },
+                          "__v": {
+                            "type": "integer"
+                          },
+                          "edited": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    },
+                    "__v": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Event id not provided"
+          }
+        }
+      }
+    },
+    "/task/delete/{taskId}": {
+      "delete": {
+        "summary": "Delete a task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of the task to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Task successfully deleted"
+          },
+          "404": {
+            "description": "Task not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/category/create": {
+      "post": {
+        "summary": "Create a category",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "description": "The id of the event to which the category is related to (Add category only for a specific event)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Categories"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the category",
+                  },
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category created successfully"
+          },
+          "404": {
+            "description": "Event not found"
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/category/getAllCategories": {
+      "get": {
+        "summary": "Get all categories",
+        "tags": [
+          "Categories"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "eventId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the event from which list of categories is needed"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "__v": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Event id not provided"
+          }
+        }
+      }
+    },
+    "/comment/create": {
+      "post": {
+        "summary": "Create a comment",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "query",
+            "description": "The id of the task to which the comment is related to",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Comments"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "author",
+                  "description",
+                ],
+                "properties": {
+                  "author": {
+                    "type": "string",
+                    "description": "The id of the user who created the comment"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "The description/content of the comment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment created successfully"
+          },
+          "404": {
+            "description": "[User not found, Task not found, Comment not found, Assignee not found ]"
+          },
+          "400": {
+            "description": "Task id required"
+          }
+        }
+      }
+    },
+    "/comment/edit/{commentId}": {
+      "put": {
+        "summary": "Edit a comment",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "The id of the comment to be edited",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Comments"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "author",
+                  "description",
+                ],
+                "properties": {
+                  "author": {
+                    "type": "string",
+                    "description": "The id of the user who created the comment"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "The description/content of the comment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment updated successfully"
+          },
+          "404": {
+            "description": "Comment not found, Assignee not found"
+          },
+          "401": {
+            "description": "Only author can edit this comment"
+          }
+        }
+      }
+    },
+    "/comment/delete/{commentId}": {
+      "delete": {
+        "summary": "Delete a task",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "ID of the comment to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+        ],
+        "tags": [
+          "Comments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment successfully deleted"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/getAllUsers": {
+      "get": {
+        "summary": "Get all categories",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "eventId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the event from which list of categories is needed"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "contactNo": {
+                        "type": "number"
+                      },
+                      "verified": {
+                        "type": "boolean"
+                      },
+                      "occasionRole": {
+                        "type": "string"
+                      },
+                      "events": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "event": {
+                              "type": "object",
+                              "properties": {
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                },
+                                "roles": {
+                                  "type": "array",
+                                  "items": {}
+                                },
+                                "_id": {
+                                  "type": "string"
+                                },
+                                "organizers": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "shop": {
+                                  "type": "string"
+                                },
+                                "__v": {
+                                  "type": "number"
+                                }
+                              }
+                            },
+                            "role": {
+                              "type": "string"
+                            },
+                            "_id": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "__v": {
+                        "type": "number"
+                      },
+                      "password": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Event id not provided"
+          }
+        }
+      }
+    },
   }
 }
