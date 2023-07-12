@@ -1709,6 +1709,15 @@
                   "description": {
                     "type": "string",
                     "description": "The description/content of the comment"
+                  },
+                  "parentId": {
+                    "type": "string",
+                    "description": "The id of the parent comment. (Only if the comment is a reply)"
+                  },
+                  "image": {
+                    "type": "array",
+                    "items": {},
+                    "description": "the base64 string of images attached in the comment"
                   }
                 }
               }
