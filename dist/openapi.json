@@ -55,7 +55,9 @@
         "required": [
           "organizers",
           "shop",
-          "name"
+          "name",
+          "code",
+          "type"
         ],
         "properties": {
           "_id": {
@@ -71,6 +73,15 @@
             "description": "ID of the shop form where organizers were registered"
           },
           "name": {
+            "type": "string",
+            "description": "Name of the event"
+          },
+          "code": {
+            "type": "string",
+            "description": "Code of the qr code"
+          },
+          
+          "type": {
             "type": "string",
             "description": "Name of the event"
           }
@@ -227,6 +238,9 @@
           "assignee": {
             "type": "string"
           },
+          "author": {
+            "type": "string"
+          },
           "name": {
             "type": "string"
           },
@@ -286,7 +300,48 @@
             "type": "object"
           }
         }
-      }
+      },
+      "EventCodes": {
+        "type": "object",
+        "required": [
+          "code",
+          "used",
+          "price",
+          "eventId",
+          "createdAt"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the code"
+          },
+          "code": {
+            "type": "string",
+            "description": "The 6 character long alpha numeric code"
+          },
+          "price": {
+            "type": "number",
+            "description": "The price at which the code was purchased"
+          },
+          "retailerId": {
+            "type": "string",
+            "description": "Id of the retailer who purchased the codes"
+          },
+          "eventId": {
+            "type": "number",
+            "description": "The credits bought by the retailer"
+          },
+          "used": {
+            "type": "boolean",
+            "description": "Whether the code was used in an event or not"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "description": "Date and time when the record was created in utc.",
+          }
+        }
+      },
     }
   },
   "paths": {
@@ -738,13 +793,16 @@
                       "type": "object",
                       "properties": {
                         "name": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Name of the organizer"
                         },
                         "contactNo": {
-                          "type": "integer"
+                          "type": "integer",
+                          "description": "Contact number of the organizer"
                         },
                         "occasionRole": {
-                          "type": "string"
+                          "type": "string",
+                          "description": "Special role of the user with respect to the occasion"
                         }
                       },
                       "required": [
@@ -755,16 +813,23 @@
                     }
                   },
                   "shopId": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Id of the shop through which event was created"
                   },
                   "name": {
-                    "type": "string"
-                  }
+                    "type": "string",
+                    "description": "Name of the event"
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "Id of the code used for registering"
+                  },
                 },
                 "required": [
                   "organizers",
                   "shopId",
-                  "name"
+                  "name",
+                  "code",
                 ]
               }
             }
@@ -858,6 +923,7 @@
                 "required": [
                   "category",
                   "assignee",
+                  "author",
                   "name",
                   "description",
                   "startDate",
@@ -873,6 +939,10 @@
                     "description": "Id of the selected category of task"
                   },
                   "assignee": {
+                    "type": "string",
+                    "description": "Id of the user to whom the task is assigned"
+                  },
+                  "author": {
                     "type": "string",
                     "description": "Id of the user who created the task"
                   },
@@ -955,6 +1025,15 @@
             },
             "required": true,
             "description": "Id of the event to which the task belongs to"
+          },
+          {
+            "in": "query",
+            "name": "authorId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the user who wants to edit the task"
           }
         ],
         "tags": [
@@ -1554,6 +1633,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            },
+          },
+          {
+            "name": "authorId",
+            "in": "query",
+            "description": "ID of the user who wants to delete the task",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           },
         ],
@@ -1923,6 +2011,63 @@
           },
           "400": {
             "description": "Event id not provided"
+          }
+        }
+      }
+    },
+       "/code/create": {
+      "post": {
+        "summary": "Generated unique codes for event registration",
+        "parameters": [
+          {
+            "name": "retailerId",
+            "in": "query",
+            "description": "The id retailer who purchased the codes",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Code"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "creditsBought",
+                  "price",
+                ],
+                "properties": {
+                  "creditsBought": {
+                    "type": "number",
+                    "description": "Number of codes the retailer wants to purchase"
+                  },
+                  "price": {
+                    "type": "number",
+                    "description": "The price at which each code was purchased"
+                  },
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Code generated successfully"
+          },
+          "404": {
+            "description": "Retailer not found, Task not found"
+          },
+          "400": {
+            "description": "Retailer id required"
+          },
+          "422": {
+            "description": "Validation error"
           }
         }
       }
