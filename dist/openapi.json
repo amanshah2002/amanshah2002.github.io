@@ -80,7 +80,6 @@
             "type": "string",
             "description": "Code of the qr code"
           },
-          
           "type": {
             "type": "string",
             "description": "Name of the event"
@@ -342,7 +341,139 @@
           }
         }
       },
-    }
+      "checklist": {
+        "type": "object",
+        "required": [
+          "name",
+          "status",
+          "task",
+          "createdAt"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the code"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the checklist"
+          },
+          "status": {
+            "type": "boolean",
+            "description": "Status of the checklist (true/false)"
+          },
+          "task": {
+            "type": "string",
+            "description": "Id of the task to which the checklist is related to"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "description": "Date and time when the record was created in utc.",
+          }
+        }
+      },
+      "InvitationTemplate": {
+        "type": "object",
+        "required": [
+          "path",
+          "createdAt"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the code"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path of the image containing the template."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "description": "Date and time when the record was created in utc.",
+          }
+        }
+      },
+      "Function": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "description": "the date and time when the record was created"
+          },
+          "name": {
+            "type": "string",
+            "description": "date"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of the function"
+          },
+          "venue": {
+            "type": "string",
+            "description": "Venue of the function"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date",
+            "description": "End time of the function"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date",
+            "description": "Start time of the function"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the function"
+          },
+          "eventId": {
+            "type": "string",
+            "description": "Id of the event the function is related to of the function"
+          },
+          "iconId": {
+            "type": "string",
+            "description": "Id of the icon which is to be used in the function"
+          },
+          "guestList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of guest user ids who are invited in the function"
+          }
+        }
+      },
+      "Icon": {
+        "type": "object",
+        "required": [
+          "path",
+          "name"
+        ],
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time and date at which the record was created"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the icon",
+          },
+          "path": {
+            "type": "string",
+            "format": "binary",
+            "description": "File containing the icon",
+          },
+        }
+      }
+    },
   },
   "paths": {
     "/retailer/register": {
@@ -581,84 +712,6 @@
         }
       }
     },
-    "/user/create": {
-      "post": {
-        "summary": "Create a user",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "query",
-            "description": "The id of the event where the action is taking place",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "tags": [
-          "User"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "contactNo",
-                  "role"
-                ],
-                "properties": {
-                  "name": {
-                    "description": "Name of the user"
-                  },
-                  "contactNo": {
-                    "type": "number",
-                    "description": "Contact number of the user"
-                  },
-                  "role": {
-                    "type": "string",
-                    "description": "Role of the user in the current event"
-                  }
-                }
-              },
-              "example": {
-                "name": "Test",
-                "contactNo": 9999999999,
-                "role": "Admin"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success message",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "msg": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "msg": "Admin/Guest created successfullly"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found"
-          },
-          "422": {
-            "description": "Validation error"
-          }
-        }
-      }
-    },
     "/user/createPassword": {
       "post": {
         "summary": "Set the user's password",
@@ -792,9 +845,13 @@
                     "items": {
                       "type": "object",
                       "properties": {
-                        "name": {
+                        "firstName": {
                           "type": "string",
-                          "description": "Name of the organizer"
+                          "description": "First name of the organizer"
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "description": "Last name of the organizer"
                         },
                         "contactNo": {
                           "type": "integer",
@@ -806,7 +863,8 @@
                         }
                       },
                       "required": [
-                        "name",
+                        "firstName",
+                        "lastName",
                         "contactNo",
                         "occasionRole"
                       ]
@@ -822,7 +880,7 @@
                   },
                   "code": {
                     "type": "string",
-                    "description": "Id of the code used for registering"
+                    "description": "Code used for registering"
                   },
                 },
                 "required": [
@@ -2015,7 +2073,7 @@
         }
       }
     },
-       "/code/create": {
+    "/code/create": {
       "post": {
         "summary": "Generated unique codes for event registration",
         "parameters": [
@@ -2072,5 +2130,805 @@
         }
       }
     },
+    "/checklist/edit/{checklistId}": {
+      "put": {
+        "summary": "Edit a checklist",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "checklistId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the checklist that is to be edited"
+          },
+          {
+            "in": "query",
+            "name": "authorId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the author of the task"
+          },
+        ],
+        "tags": [
+          "Checklist"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "status"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the checklist"
+                  },
+                  "status": {
+                    "type": "boolean",
+                    "description": "Status of the checklist (true/false)"
+                  },
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checklist edited successfully"
+          },
+          "404": {
+            "description": "[Author not found, Checklist not found]"
+          },
+          "400": {
+            "description": "[Checklist id required, Author id required]"
+          },
+          "401": {
+            "description": "Only author of this task can edit the checklist"
+          }
+        }
+      }
+    },
+    "/auth/resendOTP": {
+      "post": {
+        "summary": "Resend otp on the user's number",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "contactNo"
+                ],
+                "properties": {
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the user."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Otp sent"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "409": {
+            "description": "User already verified"
+          },
+        }
+      }
+    },
+    "/function/create": {
+      "post": {
+        "summary": "Create a function",
+        "tags": [
+          "Function"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "iconId": {
+                      "type": "string"
+                    },
+                    "eventId": {
+                      "type": "string"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "date": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "venue": {
+                      "type": "string"
+                    },
+                    "startTime": {
+                      "type": "string"
+                    },
+                    "endTime": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "example": [
+                {
+                  "name": "Haldi",
+                  "iconId": "64c7bb85fb7a6973b490790a",
+                  "eventId": "64d09f0395c974611afd9266",
+                  "userId": "64cb73d348b75fc7f7c3eead",
+                  "description": "haldi description",
+                  "date": "2023-07-05T12:34:56Z",
+                  "venue": "test venue",
+                  "startTime": "10am",
+                  "endTime": "11am",
+                  "city": "Ahmedabad"
+                }
+              ]
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "422": {
+            "description": "Validation Error"
+          },
+          "409": {
+            "description": "Function already exists (duplicate name)"
+          },
+          "404": {
+            "description": "[Icon not found, Event not found, User not found]"
+          },
+          "400": {
+            "description": "Event id required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/function/{functionId}": {
+      "put": {
+        "summary": "edit a function",
+        "tags": [
+          "Function"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "functionId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the function that is to be edited"
+          },
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "iconId": {
+                    "type": "string"
+                  },
+                  "eventId": {
+                    "type": "string"
+                  },
+                  "userId": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "venue": {
+                    "type": "string"
+                  },
+                  "startTime": {
+                    "type": "string"
+                  },
+                  "endTime": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Haldi",
+                "iconId": "64c7bb85fb7a6973b490790a",
+                "eventId": "64d09f0395c974611afd9266",
+                "userId": "64cb73d348b75fc7f7c3eead",
+                "description": "haldi description",
+                "date": "2023-07-05T12:34:56Z",
+                "venue": "test venue",
+                "startTime": "10am",
+                "endTime": "11am",
+                "city": "Ahmedabad"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "422": {
+            "description": "Validation Error"
+          },
+          "409": {
+            "description": "Function already exists (duplicate name)"
+          },
+          "404": {
+            "description": "[Icon not found, Event not found, User not found]"
+          },
+          "400": {
+            "description": "Event id required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/function/getNames": {
+      "get": {
+        "summary": "Get name of all the functions in an event",
+        "tags": [
+          "Function"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "eventId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the event from which function names are to be retrieved"
+          },
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response"
+          }
+        }
+      }
+    },
+    "/function/getAll": {
+      "get": {
+        "summary": "Get all the functions in an event",
+        "tags": [
+          "Function"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "eventId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the event from which functions are to be retrieved"
+          },
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response"
+          }
+        }
+      }
+    },
+    "/function/get/{functionId}": {
+      "get": {
+        "summary": "Get function by id",
+        "tags": [
+          "Function"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "functionId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the function which is to be retrieved"
+          },
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response"
+          },
+        }
+      }
+    },
+    "/function/delete/{functionId}": {
+      "delete": {
+        "summary": "Delete a function",
+        "tags": [
+          "Function"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "functionId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the function that is to be deleted"
+          },
+          {
+            "in": "query",
+            "name": "eventId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the event to which the function belongs to"
+          },
+          {
+            "in": "query",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the user who has executed the request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response"
+          }
+        }
+      }
+    },
+    "/function/delete/{functionId}/guest": {
+      "delete": {
+        "summary": "Remove a guest from the function",
+        "tags": [
+          "Function"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "functionId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the function "
+          },
+          {
+            "in": "query",
+            "name": "guestId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the guest which is to be removed from the function"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response"
+          }
+        }
+      }
+    },
+    "/icon/upload": {
+      "post": {
+        "summary": "Upload an icon",
+        "tags": [
+          "Icon"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "icon": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "the file containing an icon"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the icon"
+                  }
+                }
+              },
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response"
+          },
+          "400": {
+            "description": "[Icon required, template type should be png or svg]"
+          },
+          "422": {
+            "description": "Validation"
+          }
+        }
+      }
+    },
+    "/icon/getAll": {
+      "get": {
+        "summary": "Get all the icons",
+        "tags": [
+          "Icon"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response"
+          }
+        }
+      }
+    },
+    "/icon/delete/{iconId}": {
+      "delete": {
+        "summary": "Delete an icon",
+        "tags": [
+          "Icon"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "iconId",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The id of the icon which is to be deleted",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response"
+          }
+        }
+      }
+    },
+    "/user/addGuest": {
+      "post": {
+        "summary": "Add a guest user",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "description": "First name of the guest user"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "description": "Last name of the guest user"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Gender of the guest user (male/female)"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Tags related to the guest"
+                  },
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the user"
+                  },
+                  "meals": {
+                    "type": "string",
+                    "description": "Meal preference of the user"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "description": "Id of the event in which the guest user is added"
+                  },
+                  "functionIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Ids of the functions the guest user is invited to"
+                  },
+                  "friendsAndFamily": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "firstName": {
+                          "type": "string",
+                          "description": "First name of the guest user"
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "description": "Last name of the guest user"
+                        },
+                        "gender": {
+                          "type": "string",
+                          "description": "Gender of the guest user (male/female)"
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Tags related to the guest"
+                        },
+                        "contactNo": {
+                          "type": "number",
+                          "description": "Contact number of the user"
+                        },
+                        "meals": {
+                          "type": "string",
+                          "description": "Meal preference of the user"
+                        },
+                        "functionIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Ids of the functions the guest user is invited to"
+                        }
+                      },
+                      "description": "Friends and family of the guest user"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "firstName": "John",
+                "lastName": "Doe",
+                "gender": "male",
+                "eventId": "event123",
+                "tags": [
+                  "VIP",
+                  "SpecialGuest"
+                ],
+                "contactNo": 1234567890,
+                "meals": "Vegetarian",
+                "functionIds": [
+                  "function123",
+                  "function456"
+                ],
+                "friendsAndFamily": [
+                  {
+                    "firstName": "Jane",
+                    "lastName": "Doe",
+                    "gender": "female",
+                    "tags": [
+                      "Family"
+                    ],
+                    "contactNo": 9876543210,
+                    "meals": "Non-Vegetarian",
+                    "functionIds": [
+                      "function123"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response"
+          }
+        }
+      }
+    },
+    "/user/addAdmin": {
+      "post": {
+        "summary": "Add an admin user",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "description": "First name of the admin"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "description": "Last name of the admin"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Gender of the admin male/female"
+                  },
+                  "contactNo": {
+                    "type": "number",
+                    "description": "Contact number of the admin"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "description": "Id of the event in which the admin user is to be added"
+                  }
+                }
+              },
+              "example": {
+                "firstName": "John",
+                "lastName": "Doe",
+                "gender": "male",
+                "contactNo": 1234567890,
+                "eventId": "event123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response"
+          }
+        }
+      }
+    },
+    "/template/upload": {
+      "post": {
+        "summary": "Upload an invitation template",
+        "tags": [
+          "Invitation template"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "invitationTemplate": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File containing the template (png/svg)"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "The id of the user executing the request"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Tags related to the template"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sucess response"
+          },
+          "400": {
+            "description": "[Template required, Template type should be png/svg"
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/template/getAll": {
+      "get": {
+        "summary": "Get all templates",
+        "tags": [
+          "Invitation template"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response"
+          }
+        }
+      }
+    },
+    "/template/delete/{templateId}": {
+      "delete": {
+        "summary": "Delete a template",
+        "tags": [
+          "Invitation template"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "templateId",
+            "schema": {
+              "type": "string",
+            },
+            "required": true,
+            "description": "The id of the template that is to be deleted"
+          },
+          {
+            "in": "query",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the user trying to execute the request"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucess response"
+          },
+          "400": {
+            "description": "Template not found"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        }
+      }
+    }
   }
 }
