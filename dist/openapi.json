@@ -859,7 +859,11 @@
                         },
                         "occasionRole": {
                           "type": "string",
-                          "description": "Special role of the user with respect to the occasion"
+                          "description": "Special role of the user with respect to the occasion",
+                          "enum": [
+                            "bride",
+                            "groom",
+                          ]
                         }
                       },
                       "required": [
@@ -958,17 +962,6 @@
     "/task/create": {
       "post": {
         "summary": "Create a task",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "query",
-            "description": "The id of the event to which the task is related to",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "tags": [
           "Tasks"
         ],
@@ -999,6 +992,10 @@
                   "assignee": {
                     "type": "string",
                     "description": "Id of the user to whom the task is assigned"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "description": "The id of the event to which the task is related"
                   },
                   "author": {
                     "type": "string",
@@ -1031,9 +1028,8 @@
                     "description": "The priority of the task",
                     "enum": [
                       "Low",
-                      "Lowest",
-                      "High",
-                      "Highest"
+                      "Medium",
+                      "High"
                     ]
                   },
                   "namePOC": {
@@ -1075,24 +1071,6 @@
             "required": true,
             "description": "Id of the task that is to be edited"
           },
-          {
-            "in": "query",
-            "name": "eventId",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "Id of the event to which the task belongs to"
-          },
-          {
-            "in": "query",
-            "name": "authorId",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "Id of the user who wants to edit the task"
-          }
         ],
         "tags": [
           "Tasks"
@@ -1120,9 +1098,17 @@
                     "type": "string",
                     "description": "Id of the selected category of task"
                   },
-                  "assignee": {
+                  "eventId": {
                     "type": "string",
-                    "description": "Id of the user who created the task"
+                    "description": "The id of the event to which the task is related to"
+                  },
+                   "authorId": {
+                    "type": "string",
+                    "description": "The id of the user who has created the task"
+                  },
+                  "assignedTo": {
+                    "type": "string",
+                    "description": "Id of the user to whom the task is assigned to"
                   },
                   "name": {
                     "type": "string",
@@ -1151,9 +1137,8 @@
                     "description": "The priority of the task",
                     "enum": [
                       "Low",
-                      "Lowest",
-                      "High",
-                      "Highest"
+                      "Medium",
+                      "High"
                     ]
                   },
                   "namePOC": {
@@ -1428,9 +1413,8 @@
                       "type": "string",
                       "enum": [
                         "Low",
-                        "Lowest",
-                        "High",
-                        "Highest"
+                        "Medium",
+                        "High"
                       ]
                     },
                     "namePOC": {
@@ -1722,17 +1706,6 @@
     "/category/create": {
       "post": {
         "summary": "Create a category",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "query",
-            "description": "The id of the event to which the category is related to (Add category only for a specific event)",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "tags": [
           "Categories"
         ],
@@ -1750,6 +1723,10 @@
                     "type": "string",
                     "description": "The name of the category",
                   },
+                  "eventId": {
+                    "type": "string",
+                    "description": "The id of the event for which the category it to be created"
+                  }
                 }
               }
             }
@@ -1823,17 +1800,6 @@
     "/comment/create": {
       "post": {
         "summary": "Create a comment",
-        "parameters": [
-          {
-            "name": "taskId",
-            "in": "query",
-            "description": "The id of the task to which the comment is related to",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "tags": [
           "Comments"
         ],
@@ -1846,6 +1812,7 @@
                 "required": [
                   "author",
                   "description",
+                  "taskId"
                 ],
                 "properties": {
                   "author": {
@@ -1859,6 +1826,10 @@
                   "parentId": {
                     "type": "string",
                     "description": "The id of the parent comment. (Only if the comment is a reply)"
+                  },
+                  "taskId": {
+                    "type": "string",
+                    "description": "The id of task to which the comment is related to"
                   },
                   "image": {
                     "type": "array",
@@ -2076,17 +2047,6 @@
     "/code/create": {
       "post": {
         "summary": "Generated unique codes for event registration",
-        "parameters": [
-          {
-            "name": "retailerId",
-            "in": "query",
-            "description": "The id retailer who purchased the codes",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "tags": [
           "Code"
         ],
@@ -2109,6 +2069,10 @@
                     "type": "number",
                     "description": "The price at which each code was purchased"
                   },
+                  "retailerId": {
+                    "type": "string",
+                    "description": "The id of the retailer who has bought the codes"
+                  }
                 }
               }
             }
@@ -2143,15 +2107,6 @@
             "required": true,
             "description": "Id of the checklist that is to be edited"
           },
-          {
-            "in": "query",
-            "name": "authorId",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "Id of the author of the task"
-          },
         ],
         "tags": [
           "Checklist"
@@ -2164,7 +2119,8 @@
                 "type": "object",
                 "required": [
                   "name",
-                  "status"
+                  "status",
+                  "authorId"
                 ],
                 "properties": {
                   "name": {
@@ -2175,6 +2131,10 @@
                     "type": "boolean",
                     "description": "Status of the checklist (true/false)"
                   },
+                  "authorId": {
+                    "type": "string",
+                    "description": "The id of the user who has executed the request"
+                  }
                 }
               }
             }
@@ -2246,39 +2206,52 @@
             "application/json": {
               "schema": {
                 "type": "array",
+                "required":[
+                  "name"
+                ],
                 "items": {
                   "type": "object",
                   "properties": {
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Name of the function"
                     },
                     "iconId": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The id of the icon to used"
                     },
                     "eventId": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The id of the event to which the the function is related to"
                     },
                     "userId": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The id of the user who has executed the request"
                     },
                     "description": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The description of the function"
                     },
                     "date": {
                       "type": "string",
-                      "format": "date-time"
+                      "format": "date-time",
+                      "description": "The date of the function"
                     },
                     "venue": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The venue of the function"
                     },
                     "startTime": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The starting time of the function"
                     },
                     "endTime": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The ending time of the function"
                     },
                     "city": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The city in which the function is organized"
                     }
                   }
                 }
@@ -2345,6 +2318,18 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required":[
+                  "name",
+                  "iconId",
+                  "date",
+                  "venue",
+                  "city",
+                  "startTime",
+                  "endTime",
+                  "description",
+                  "userId",
+                  "eventId"
+                ],
                 "properties": {
                   "name": {
                     "type": "string"
@@ -2575,6 +2560,11 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "icon",
+                  "name",
+                  "userId"
+                ],
                 "properties": {
                   "icon": {
                     "type": "string",
@@ -2584,6 +2574,10 @@
                   "name": {
                     "type": "string",
                     "description": "Name of the icon"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "The id of the user who has executed the request"
                   }
                 }
               },
@@ -2631,6 +2625,15 @@
             },
             "description": "The id of the icon which is to be deleted",
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The id of the user who has executed the request",
+            "required": true
           }
         ],
         "responses": {
@@ -2652,6 +2655,14 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "gender",
+                  "contactNo",
+                  "eventId",
+                  "functionIds"
+                ],
                 "properties": {
                   "firstName": {
                     "type": "string",
@@ -2663,7 +2674,11 @@
                   },
                   "gender": {
                     "type": "string",
-                    "description": "Gender of the guest user (male/female)"
+                    "description": "Gender of the guest user (male/female)",
+                    "enum": [
+                      "male",
+                      "female"
+                    ]
                   },
                   "tags": {
                     "type": "array",
@@ -2788,6 +2803,14 @@
           "content": {
             "application/json": {
               "schema": {
+                "type": "object",
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "gender",
+                  "contactNo",
+                  "eventId"
+                ],
                 "properties": {
                   "firstName": {
                     "type": "string",
@@ -2840,6 +2863,10 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "required":[
+                  "invitationTemplate",
+                  "userId",
+                ],
                 "properties": {
                   "invitationTemplate": {
                     "type": "string",
@@ -2916,7 +2943,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Sucess response"
+            "description": "Success response"
           },
           "400": {
             "description": "Template not found"
