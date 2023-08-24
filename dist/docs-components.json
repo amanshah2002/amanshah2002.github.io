@@ -1,0 +1,470 @@
+  "components": {
+    "schemas": {
+      "Retailer": {
+        "type": "object",
+        "required": [
+          "name",
+          "contactNo",
+          "contactName",
+          "creditsBought",
+          "shops"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the retailer"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the retailer"
+          },
+          "contactNo": {
+            "type": "number",
+            "description": "Contact number of the retailer"
+          },
+          "contactName": {
+            "type": "string",
+            "description": "Name of the contact person"
+          },
+          "creditsBought": {
+            "type": "number",
+            "description": "The credits bought by the retailer"
+          },
+          "creditsUsed": {
+            "type": "number",
+            "description": "The credits sold/used by the retailer (this will be automatically calculated by the backend, the default value is 0)"
+          },
+          "shops": {
+            "type": "array",
+            "description": "The IDs of all the shops of the retailer",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "required": [
+          "organizers",
+          "shop",
+          "name",
+          "code",
+          "type"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the Event"
+          },
+          "organizers": {
+            "type": "string",
+            "description": "ID of the registered event organizers"
+          },
+          "shop": {
+            "type": "string",
+            "description": "ID of the shop form where organizers were registered"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the event"
+          },
+          "code": {
+            "type": "string",
+            "description": "Code of the qr code"
+          },
+          "type": {
+            "type": "string",
+            "description": "Name of the event"
+          }
+        }
+      },
+      "Organizers": {
+        "type": "array",
+        "description": "Stores an array containing ids of organizers of the event",
+        "items": {
+          "type": "string"
+        }
+      },
+      "Users": {
+        "type": "object",
+        "required": [
+          "name",
+          "contactNo",
+          "events"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the user"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the user"
+          },
+          "contactNo": {
+            "type": "number",
+            "description": "Contact number of the user"
+          },
+          "verified": {
+            "type": "boolean",
+            "description": "If the user has verified his/her account"
+          },
+          "otp": {
+            "type": "number",
+            "description": "OTP sent to the user's number (will be deleted after user creates a password)"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password for the user's account (will be set after user has verified his otp)"
+          },
+          "occasionRole": {
+            "type": "string",
+            "description": "Special of the user relating to the occasion (eg: Bride/Groom)"
+          },
+          "events": {
+            "type": "array",
+            "description": "The list of all the events the user is related to",
+            "items": {
+              "type": "object",
+              "required": [
+                "event",
+                "role"
+              ],
+              "properties": {
+                "event": {
+                  "type": "string",
+                  "description": "The IDs of the events the user is related to"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "The role of the user in the event (Super Admin/Admin/Guest)"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Shops": {
+        "type": "object",
+        "required": [
+          "address",
+          "contactNo",
+          "name",
+          "creditsUsed",
+          "retailerId",
+          "users"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the Event"
+          },
+          "address": {
+            "type": "object",
+            "description": "The address of the shop",
+            "required": [
+              "state",
+              "city",
+              "zip",
+              "fullAddress"
+            ],
+            "properties": {
+              "state": {
+                "type": "string",
+                "description": "State where the shop is located"
+              },
+              "city": {
+                "type": "string",
+                "description": "City where the shop is located"
+              },
+              "zip": {
+                "type": "number",
+                "description": "Pin code of the area where shop is located"
+              },
+              "fullAddress": {
+                "type": "string",
+                "description": "Full address of the shop"
+              }
+            }
+          },
+          "contactNo": {
+            "type": "number",
+            "description": "Contact number of the shop"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the shop"
+          },
+          "creditsUsed": {
+            "type": "number",
+            "description": "Credits used/sold by the shops"
+          },
+          "retailerId": {
+            "type": "string",
+            "description": "ID of the retailer who owns the shop"
+          },
+          "users": {
+            "type": "array",
+            "description": "Array containing IDs of the organizers who register to our platform through that shop",
+            "items": {}
+          }
+        }
+      },
+      "Tasks": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "category": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "address": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "Low",
+              "Medium",
+              "High"
+            ]
+          },
+          "namePOC": {
+            "type": "string"
+          },
+          "contactPOC": {
+            "type": "number"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Categories": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "event": {
+            "type": "object"
+          }
+        }
+      },
+      "EventCodes": {
+        "type": "object",
+        "required": [
+          "code",
+          "used",
+          "price",
+          "eventId",
+          "createdAt"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the code"
+          },
+          "code": {
+            "type": "string",
+            "description": "The 6 character long alpha numeric code"
+          },
+          "price": {
+            "type": "number",
+            "description": "The price at which the code was purchased"
+          },
+          "retailerId": {
+            "type": "string",
+            "description": "Id of the retailer who purchased the codes"
+          },
+          "eventId": {
+            "type": "number",
+            "description": "The credits bought by the retailer"
+          },
+          "used": {
+            "type": "boolean",
+            "description": "Whether the code was used in an event or not"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "description": "Date and time when the record was created in utc.",
+          }
+        }
+      },
+      "checklist": {
+        "type": "object",
+        "required": [
+          "name",
+          "status",
+          "task",
+          "createdAt"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the code"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the checklist"
+          },
+          "status": {
+            "type": "boolean",
+            "description": "Status of the checklist (true/false)"
+          },
+          "task": {
+            "type": "string",
+            "description": "Id of the task to which the checklist is related to"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "description": "Date and time when the record was created in utc.",
+          }
+        }
+      },
+      "InvitationTemplate": {
+        "type": "object",
+        "required": [
+          "path",
+          "createdAt"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Auto-generated ID of the code"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path of the image containing the template."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "description": "Date and time when the record was created in utc.",
+          }
+        }
+      },
+      "Function": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "description": "the date and time when the record was created"
+          },
+          "name": {
+            "type": "string",
+            "description": "date"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of the function"
+          },
+          "venue": {
+            "type": "string",
+            "description": "Venue of the function"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date",
+            "description": "End time of the function"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date",
+            "description": "Start time of the function"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the function"
+          },
+          "eventId": {
+            "type": "string",
+            "description": "Id of the event the function is related to of the function"
+          },
+          "iconId": {
+            "type": "string",
+            "description": "Id of the icon which is to be used in the function"
+          },
+          "guestList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of guest user ids who are invited in the function"
+          }
+        }
+      },
+      "Icon": {
+        "type": "object",
+        "required": [
+          "path",
+          "name"
+        ],
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time and date at which the record was created"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the icon",
+          },
+          "path": {
+            "type": "string",
+            "format": "binary",
+            "description": "File containing the icon",
+          },
+        }
+      }
+    },
+  },

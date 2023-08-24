@@ -5,476 +5,6 @@
     "description": "Event app APIs",
     "version": "1.0.0"
   },
-  "components": {
-    "schemas": {
-      "Retailer": {
-        "type": "object",
-        "required": [
-          "name",
-          "contactNo",
-          "contactName",
-          "creditsBought",
-          "shops"
-        ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Auto-generated ID of the retailer"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the retailer"
-          },
-          "contactNo": {
-            "type": "number",
-            "description": "Contact number of the retailer"
-          },
-          "contactName": {
-            "type": "string",
-            "description": "Name of the contact person"
-          },
-          "creditsBought": {
-            "type": "number",
-            "description": "The credits bought by the retailer"
-          },
-          "creditsUsed": {
-            "type": "number",
-            "description": "The credits sold/used by the retailer (this will be automatically calculated by the backend, the default value is 0)"
-          },
-          "shops": {
-            "type": "array",
-            "description": "The IDs of all the shops of the retailer",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "Event": {
-        "type": "object",
-        "required": [
-          "organizers",
-          "shop",
-          "name",
-          "code",
-          "type"
-        ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Auto-generated ID of the Event"
-          },
-          "organizers": {
-            "type": "string",
-            "description": "ID of the registered event organizers"
-          },
-          "shop": {
-            "type": "string",
-            "description": "ID of the shop form where organizers were registered"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the event"
-          },
-          "code": {
-            "type": "string",
-            "description": "Code of the qr code"
-          },
-          "type": {
-            "type": "string",
-            "description": "Name of the event"
-          }
-        }
-      },
-      "Organizers": {
-        "type": "array",
-        "description": "Stores an array containing ids of organizers of the event",
-        "items": {
-          "type": "string"
-        }
-      },
-      "Users": {
-        "type": "object",
-        "required": [
-          "name",
-          "contactNo",
-          "events"
-        ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Auto-generated ID of the user"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the user"
-          },
-          "contactNo": {
-            "type": "number",
-            "description": "Contact number of the user"
-          },
-          "verified": {
-            "type": "boolean",
-            "description": "If the user has verified his/her account"
-          },
-          "otp": {
-            "type": "number",
-            "description": "OTP sent to the user's number (will be deleted after user creates a password)"
-          },
-          "password": {
-            "type": "string",
-            "description": "Password for the user's account (will be set after user has verified his otp)"
-          },
-          "occasionRole": {
-            "type": "string",
-            "description": "Special of the user relating to the occasion (eg: Bride/Groom)"
-          },
-          "events": {
-            "type": "array",
-            "description": "The list of all the events the user is related to",
-            "items": {
-              "type": "object",
-              "required": [
-                "event",
-                "role"
-              ],
-              "properties": {
-                "event": {
-                  "type": "string",
-                  "description": "The IDs of the events the user is related to"
-                },
-                "role": {
-                  "type": "string",
-                  "description": "The role of the user in the event (Super Admin/Admin/Guest)"
-                }
-              }
-            }
-          }
-        }
-      },
-      "Shops": {
-        "type": "object",
-        "required": [
-          "address",
-          "contactNo",
-          "name",
-          "creditsUsed",
-          "retailerId",
-          "users"
-        ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Auto-generated ID of the Event"
-          },
-          "address": {
-            "type": "object",
-            "description": "The address of the shop",
-            "required": [
-              "state",
-              "city",
-              "zip",
-              "fullAddress"
-            ],
-            "properties": {
-              "state": {
-                "type": "string",
-                "description": "State where the shop is located"
-              },
-              "city": {
-                "type": "string",
-                "description": "City where the shop is located"
-              },
-              "zip": {
-                "type": "number",
-                "description": "Pin code of the area where shop is located"
-              },
-              "fullAddress": {
-                "type": "string",
-                "description": "Full address of the shop"
-              }
-            }
-          },
-          "contactNo": {
-            "type": "number",
-            "description": "Contact number of the shop"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the shop"
-          },
-          "creditsUsed": {
-            "type": "number",
-            "description": "Credits used/sold by the shops"
-          },
-          "retailerId": {
-            "type": "string",
-            "description": "ID of the retailer who owns the shop"
-          },
-          "users": {
-            "type": "array",
-            "description": "Array containing IDs of the organizers who register to our platform through that shop",
-            "items": {}
-          }
-        }
-      },
-      "Tasks": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "category": {
-            "type": "string"
-          },
-          "event": {
-            "type": "string"
-          },
-          "assignee": {
-            "type": "string"
-          },
-          "author": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "startDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "dueDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "address": {
-            "type": "string"
-          },
-          "image": {
-            "type": "string"
-          },
-          "priority": {
-            "type": "string",
-            "enum": [
-              "Low",
-              "Medium",
-              "High"
-            ]
-          },
-          "namePOC": {
-            "type": "string"
-          },
-          "contactPOC": {
-            "type": "number"
-          },
-          "comments": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "Categories": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "name": {
-            "type": "string"
-          },
-          "event": {
-            "type": "object"
-          }
-        }
-      },
-      "EventCodes": {
-        "type": "object",
-        "required": [
-          "code",
-          "used",
-          "price",
-          "eventId",
-          "createdAt"
-        ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Auto-generated ID of the code"
-          },
-          "code": {
-            "type": "string",
-            "description": "The 6 character long alpha numeric code"
-          },
-          "price": {
-            "type": "number",
-            "description": "The price at which the code was purchased"
-          },
-          "retailerId": {
-            "type": "string",
-            "description": "Id of the retailer who purchased the codes"
-          },
-          "eventId": {
-            "type": "number",
-            "description": "The credits bought by the retailer"
-          },
-          "used": {
-            "type": "boolean",
-            "description": "Whether the code was used in an event or not"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date",
-            "description": "Date and time when the record was created in utc.",
-          }
-        }
-      },
-      "checklist": {
-        "type": "object",
-        "required": [
-          "name",
-          "status",
-          "task",
-          "createdAt"
-        ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Auto-generated ID of the code"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the checklist"
-          },
-          "status": {
-            "type": "boolean",
-            "description": "Status of the checklist (true/false)"
-          },
-          "task": {
-            "type": "string",
-            "description": "Id of the task to which the checklist is related to"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date",
-            "description": "Date and time when the record was created in utc.",
-          }
-        }
-      },
-      "InvitationTemplate": {
-        "type": "object",
-        "required": [
-          "path",
-          "createdAt"
-        ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Auto-generated ID of the code"
-          },
-          "path": {
-            "type": "string",
-            "description": "Path of the image containing the template."
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date",
-            "description": "Date and time when the record was created in utc.",
-          }
-        }
-      },
-      "Function": {
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "properties": {
-          "createdAt": {
-            "type": "string",
-            "format": "date",
-            "description": "the date and time when the record was created"
-          },
-          "name": {
-            "type": "string",
-            "description": "date"
-          },
-          "date": {
-            "type": "string",
-            "format": "date",
-            "description": "Date of the function"
-          },
-          "venue": {
-            "type": "string",
-            "description": "Venue of the function"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "date",
-            "description": "End time of the function"
-          },
-          "startTime": {
-            "type": "string",
-            "format": "date",
-            "description": "Start time of the function"
-          },
-          "description": {
-            "type": "string",
-            "description": "Description of the function"
-          },
-          "eventId": {
-            "type": "string",
-            "description": "Id of the event the function is related to of the function"
-          },
-          "iconId": {
-            "type": "string",
-            "description": "Id of the icon which is to be used in the function"
-          },
-          "guestList": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Array of guest user ids who are invited in the function"
-          }
-        }
-      },
-      "Icon": {
-        "type": "object",
-        "required": [
-          "path",
-          "name"
-        ],
-        "properties": {
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "The time and date at which the record was created"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the icon",
-          },
-          "path": {
-            "type": "string",
-            "format": "binary",
-            "description": "File containing the icon",
-          },
-        }
-      }
-    },
-  },
   "paths": {
     "/retailer/register": {
       "post": {
@@ -887,6 +417,24 @@
                     "description": "Code used for registering"
                   },
                 },
+                "example": { 
+                  "organizers": [
+                      {
+                      "firstName": "john",
+                      "lastName": "doe",
+                      "contactNo": 1111111111,
+                      "occasionRole": "groom"
+                      },
+                       {
+                      "firstName": "test",
+                      "lastName": "bride",
+                      "contactNo": 7777777777,
+                      "occasionRole": "bride"
+                      }
+                  ],
+                  "name": "johns marraige",
+                  "code": "INY39Q"
+                },
                 "required": [
                   "organizers",
                   "shopId",
@@ -911,8 +459,20 @@
                   }
                 },
                 "example": {
-                  "msg": "Event created successfully"
-                }
+                  "msg": "Event created successfully.",
+                  "event": {
+                      "organizers": "64e730eb4f203b6f6b0dcc15",
+                      "name": "johns marraige",
+                      "shop": null,
+                      "code": "64e5bbef80a21cf7e4a7ec1e",
+                      "type": "Wedding",
+                      "functions": [],
+                      "_id": "64e730eb4f203b6f6b0dcc16",
+                      "createdAt": "2023-08-24T10:28:59.307Z",
+                      "updatedAt": "2023-08-24T10:28:59.307Z",
+                      "__v": 0
+                  }
+                }             
               }
             }
           },
@@ -942,7 +502,9 @@
                 "type": "object",
                 "properties": {
                   "contacts": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Vcf file containing contacts"
                   }
                 }
               }
@@ -951,7 +513,48 @@
         },
         "responses": {
           "200": {
-            "description": "Parsed file will be returned as object"
+            "description": "Parsed file will be returned as object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "VCARD": {
+                        "VERSION": "3.0",
+                        "N": "Doe;John;;Mr.",
+                        "FN": "John Doe",
+                        "ORG": "ABC Corporation",
+                        "TITLE": "Software Engineer",
+                        "EMAIL": {
+                            "value": "john.doe@example.com",
+                            "params": [
+                                {
+                                    "TYPE": "work"
+                                }
+                            ]
+                        },
+                        "TEL": {
+                            "value": "1234567890",
+                            "params": [
+                                {
+                                    "TYPE": "work,voice"
+                                }
+                            ]
+                        },
+                        "ADR": {
+                            "value": ";;123 Main St;City;State;12345;Country",
+                            "params": [
+                                {
+                                    "TYPE": "work"
+                                }
+                            ]
+                        },
+                        "URL": "http://www.example.com"
+                    },
+                    "": ""
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Contacts field not provided"
@@ -1040,6 +643,21 @@
                     "type": "number",
                     "description": "The contact number of the point of contact",
                   },
+                },
+                "example": {
+                  "category": "64e5c2262ff75be2d9e837d9",
+                  "assignedTo": "64e5bc1c80a21cf7e4a7ec3e",
+                  "eventId": "64e5bc1c80a21cf7e4a7ec42",
+                  "author": "64e5bc1b80a21cf7e4a7ec3a",
+                  "name": "test task",
+                  "description": "test task description",
+                  "startDate": "2023-07-05T12:34:56Z",
+                  "dueDate": "2023-07-05T12:34:56Z",
+                  "address": "test address",
+                  "priority": "low",
+                  "namePOC": "test name",
+                  "contactPOC": 3333333333,
+                  "checkList": [{"name": "test checklist"}, {"name": "test checklist2"}]
                 }
               }
             }
@@ -1132,6 +750,15 @@
                     "type": "string",
                     "description": "Address of the place where the task needs to be performed"
                   },
+                  "status": {
+                    "type": "string",
+                    "description": "Status of the task",
+                    "enum": [
+                      "in_progress",
+                      "completed",
+                      "Todo"
+                    ]
+                  },
                   "priority": {
                     "type": "string",
                     "description": "The priority of the task",
@@ -1149,7 +776,23 @@
                     "type": "number",
                     "description": "The contact number of the point of contact",
                   },
+                },
+                "example": {
+                  "category": "64e5c2262ff75be2d9e837d9",
+                  "assignedTo": "64e5bc1c80a21cf7e4a7ec3e",
+                  "eventId": "64e5bc1c80a21cf7e4a7ec42",
+                  "author": "64e5bc1b80a21cf7e4a7ec3a",
+                  "name": "test updated task",
+                  "description": "test task description",
+                  "startDate": "2023-07-05T12:34:56Z",
+                  "dueDate": "2023-07-05T12:34:56Z",
+                  "address": "test address",
+                  "status": "in_progress",
+                  "priority": "Low",
+                  "namePOC": "test name",
+                  "contactPOC": 3333333333
                 }
+    
               }
             }
           }
@@ -1182,7 +825,89 @@
             },
             "required": true,
             "description": "Id of the event from which list of tasks is needed"
-          }
+          },
+          {
+            "in": "query",
+            "name": "currentPage",
+            "schema": {
+              "type": "number"
+            },
+            "required": false,
+            "description": "The current page the user is on (meant for pagination)"
+          },
+          {
+            "in": "query",
+            "name": "perPage",
+            "schema": {
+              "type": "number"
+            },
+            "required": false,
+            "description": "Records that the user will see per page (meant for pagination)"
+          },
+          {
+            "in": "query",
+            "name": "priority",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Low",
+                "High",
+                "Highest",
+                "Lowest"
+              ]
+            },
+            "required": false,
+            "description": "Filter based on priority of the task",
+          },
+          
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "in_progress",
+                "completed",
+                "todo"
+              ]
+            },
+            "required": false,
+            "description": "Filter based on status of the task",
+          },
+          {
+            "in": "query",
+            "name": "commentSort",
+            "schema": {
+              "type": "string",
+              "enum": [
+               "-createdAt",
+               "createdAt",
+               "-liked",
+               "liked"
+              ]
+            },
+            "required": false,
+            "description": "Sort task comments. [1: -createdAt: Sort comments based on when they were created in descending order, 2: createdAt: Sort comments based on when they were created in ascending order, 3: -liked: Sort comments based the likedBy property in descending order, 4: liked: Sort comments based the likedBy property in ascending order ]",
+          },
+           {
+            "in": "query",
+            "name": "assignedTo",
+            "schema": {
+              "type": "string",
+            },
+            "required": false,
+            "description": "Filter based on the person who the task was assigned to (should be the id of the assignee)",
+          },
+          
+           {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+            },
+            "required": false,
+            "description": "Check if the name or description of the task includes the provided search text",
+          },
         ],
         "responses": {
           "200": {
@@ -1836,6 +1561,12 @@
                     "items": {},
                     "description": "the base64 string of images attached in the comment"
                   }
+                },
+                "example": {
+                  "author": "64e5bc1b80a21cf7e4a7ec3a",
+                  "taskId": "64e5dc1c08f58f448baf9ec1",
+                  "description": "hi <@ 64e5bc1c80a21cf7e4a7ec3e @>, this is a parent comment",
+                  "images": ["base64string"]
                 }
               }
             }
@@ -1890,6 +1621,10 @@
                     "type": "string",
                     "description": "The description/content of the comment"
                   }
+                },
+                "example":{
+                  "description": "hi test",
+                  "author": "64e5bc1b80a21cf7e4a7ec3a"
                 }
               }
             }
@@ -2073,6 +1808,11 @@
                     "type": "string",
                     "description": "The id of the retailer who has bought the codes"
                   }
+                },
+                "example": {
+                  "creditsBought": 10,
+                  "price": 100,
+                  "type": "wedding"
                 }
               }
             }
@@ -2135,6 +1875,11 @@
                     "type": "string",
                     "description": "The id of the user who has executed the request"
                   }
+                },
+                "example": {
+                  "name": "hello",
+                  "status": true,
+                  "authorId": "64be71f3f3ad57bfb296bf62?authorId=64afb57eee055edc3086cc45"
                 }
               }
             }
@@ -2176,7 +1921,10 @@
                     "type": "number",
                     "description": "Contact number of the user."
                   }
-                }
+                },
+                "example": {
+                  "contactNo": 6666666667
+                }             
               }
             }
           }
@@ -2420,7 +2168,18 @@
         ],
         "responses": {
           "200": {
-            "description": "Success response"
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "name": "Haldi",
+                    "_id": "6abcdef6tr"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2953,6 +2712,251 @@
           },
           "404": {
             "description": "Template not found"
+          }
+        }
+      }
+    },
+    
+    "/comment/{commentId}/like": {
+      "put": {
+        "summary": "Like a comment",
+        "tags": ["Comments"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "commentId",
+            "schema": {
+              "type": "string",
+            },
+            "required": true,
+            "description": "Id of the comment which is to be liked"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "userId"
+              ],
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "The id of the user who liked the comment"
+                }
+              },
+              "example": {
+                "userId": "64e5bc1b80a21cf7e4a7ec3a"
+              }
+            }
+          }
+        }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "msg": "Comment liked!",
+                    "comment": {
+                        "_id": "64e6fc2c2924ce4085474bf1",
+                        "author": "64e5bc1b80a21cf7e4a7ec3a",
+                        "description": "hi test",
+                        "image": [],
+                        "task": "64e5dc1c08f58f448baf9ec1",
+                        "replies": [],
+                        "taggedUsers": [],
+                        "likedBy": [
+                            "64e5bc1b80a21cf7e4a7ec3a"
+                        ],
+                        "createdAt": "2023-08-24T06:43:57.083Z",
+                        "updatedAt": "2023-08-24T06:50:13.028Z",
+                        "__v": 2,
+                        "edited": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/{taskId}": {
+      "get": {
+        "summary": "Get task by id",
+        "tags": ["Tasks"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "taskId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the task that is to be fetched"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "_id": "64e5dc1c08f58f448baf9ec1",
+                    "category": {
+                        "_id": "64e5c2262ff75be2d9e837d9",
+                        "name": "test",
+                        "createdAt": "2023-08-23T08:24:06.061Z",
+                        "updatedAt": "2023-08-23T08:24:06.061Z",
+                        "__v": 0
+                    },
+                    "event": "64e5bc1c80a21cf7e4a7ec42",
+                    "assignedTo": {
+                        "_id": "64e5bc1c80a21cf7e4a7ec3e",
+                        "contactNo": 7777777777,
+                        "verified": true,
+                        "events": [
+                            {
+                                "event": "64e5bc1c80a21cf7e4a7ec42",
+                                "role": "SUPER ADMIN",
+                                "occasionRole": "bride",
+                                "firstName": "test",
+                                "lastName": "bride",
+                                "gender": "female",
+                                "tags": null,
+                                "friendsAndFamily": [],
+                                "meals": null,
+                                "_id": "64e5bc1c80a21cf7e4a7ec3f"
+                            }
+                        ],
+                        "createdAt": "2023-08-23T07:58:20.413Z",
+                        "updatedAt": "2023-08-23T08:06:07.261Z",
+                        "__v": 0,
+                        "password": "$2b$12$OUN3Hchfhkzbj5fQ/5ktvOvu6Eyz3lA97G0mjA5Qy3oIe0MyT/Aaq"
+                    },
+                    "author": {
+                        "_id": "64e5bc1b80a21cf7e4a7ec3a",
+                        "contactNo": 1111111111,
+                        "verified": false,
+                        "otp": 60952,
+                        "events": [
+                            {
+                                "event": "64e5bc1c80a21cf7e4a7ec42",
+                                "role": "SUPER ADMIN",
+                                "occasionRole": "groom",
+                                "firstName": "john",
+                                "lastName": "doe",
+                                "gender": "male",
+                                "tags": null,
+                                "friendsAndFamily": [],
+                                "meals": null,
+                                "_id": "64e5bc1b80a21cf7e4a7ec3b"
+                            }
+                        ],
+                        "createdAt": "2023-08-23T07:58:19.892Z",
+                        "updatedAt": "2023-08-23T07:58:22.204Z",
+                        "__v": 0
+                    },
+                    "name": "test task",
+                    "description": "test task description",
+                    "startDate": "2023-07-05T12:34:56.000Z",
+                    "dueDate": "2023-07-05T12:34:56.000Z",
+                    "address": "test address",
+                    "priority": "HIGH",
+                    "namePOC": "test name",
+                    "contactPOC": 3333333333,
+                    "isComparable": false,
+                    "comments": [
+                        {
+                            "_id": "64e60295495347477475bf4f",
+                            "author": "64e5bc1b80a21cf7e4a7ec3a",
+                            "description": "hi <@ 64e5bc1c80a21cf7e4a7ec3e @>, this is a parent comment",
+                            "image": [],
+                            "task": "64e5dc1c08f58f448baf9ec1",
+                            "replies": [],
+                            "taggedUsers": [
+                                {
+                                    "_id": "64e5bc1c80a21cf7e4a7ec3e",
+                                    "contactNo": 7777777777,
+                                    "verified": true,
+                                    "events": [
+                                        {
+                                            "event": "64e5bc1c80a21cf7e4a7ec42",
+                                            "role": "SUPER ADMIN",
+                                            "occasionRole": "bride",
+                                            "firstName": "test",
+                                            "lastName": "bride",
+                                            "gender": "female",
+                                            "tags": null,
+                                            "friendsAndFamily": [],
+                                            "meals": null,
+                                            "_id": "64e5bc1c80a21cf7e4a7ec3f"
+                                        }
+                                    ],
+                                    "createdAt": "2023-08-23T07:58:20.413Z",
+                                    "updatedAt": "2023-08-23T08:06:07.261Z",
+                                    "__v": 0,
+                                    "password": "$2b$12$OUN3Hchfhkzbj5fQ/5ktvOvu6Eyz3lA97G0mjA5Qy3oIe0MyT/Aaq"
+                                }
+                            ],
+                            "likedBy": [],
+                            "createdAt": "2023-08-23T12:59:02.085Z",
+                            "updatedAt": "2023-08-23T13:00:54.587Z",
+                            "__v": 1
+                        },
+                        {
+                            "_id": "64e6fc2c2924ce4085474bf1",
+                            "author": "64e5bc1b80a21cf7e4a7ec3a",
+                            "description": "hi test",
+                            "image": [],
+                            "task": "64e5dc1c08f58f448baf9ec1",
+                            "replies": [],
+                            "taggedUsers": [],
+                            "likedBy": [
+                                "64e5bc1b80a21cf7e4a7ec3a"
+                            ],
+                            "createdAt": "2023-08-24T06:43:57.083Z",
+                            "updatedAt": "2023-08-24T06:50:13.028Z",
+                            "__v": 2,
+                            "edited": true
+                        }
+                    ],
+                    "checkList": [
+                        {
+                            "_id": "64e5dc1c08f58f448baf9ec3",
+                            "name": "test checklist",
+                            "status": false,
+                            "task": "64e5dc1c08f58f448baf9ec1",
+                            "createdAt": "2023-08-23T10:14:52.425Z",
+                            "updatedAt": "2023-08-23T10:14:52.425Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "64e5dc1c08f58f448baf9ec5",
+                            "name": "test checklist2",
+                            "status": false,
+                            "task": "64e5dc1c08f58f448baf9ec1",
+                            "createdAt": "2023-08-23T10:14:52.650Z",
+                            "updatedAt": "2023-08-23T10:14:52.650Z",
+                            "__v": 0
+                        }
+                    ],
+                    "status": "TODO",
+                    "createdAt": "2023-08-23T10:14:52.172Z",
+                    "updatedAt": "2023-08-24T06:43:56.654Z",
+                    "__v": 3
+                  }               
+                }
+              }
+            }
           }
         }
       }
