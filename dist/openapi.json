@@ -3088,6 +3088,466 @@
           }
         }
       }
+    },
+    "/invitation/create": {
+      "post": {
+        "summary": "Create an invitation for a function",
+        "tags": ["Invitation"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json":{
+              "schema": {
+                "type": "object",
+                "required": [
+                  "template",
+                  "function",
+                  "sectionConfig"
+                ],
+                "properties": {
+                  "template": {
+                    "type": "string",
+                    "description": "The id of the template used for creating the invitation"
+                  },
+                  "function": {
+                    "type": "string",
+                    "description": "The id of the function to which the invitation is related to"
+                  },
+                  "sectionConfig": {
+                    "type": "object",
+                    "description": "The object containing different sections and their configurations",
+                    "required": [
+                      "title"
+                    ],
+                    "properties": {
+                      "title": {
+                        "type": "object",
+                        "description": "The object having the name of the section which contains the position and text",
+                        "required": [
+                          "position",
+                          "text"
+                        ],
+                        "properties": {
+                          "position": {
+                            "type": "object",
+                            "description": "Object containing the x and y coordinates of the section",
+                            "required": [
+                              "x",
+                              "y"
+                            ],
+                            "properties": {
+                              "x": {
+                                "type": "number",
+                                "description": "The x coordinate of the section (in pixels)"
+                              },
+                              "y": {
+                                "type": "number",
+                                "description": "The y coordinate of the section (in pixels)"
+                              }
+                            }
+                          },
+                          "text": {
+                            "type": "string",
+                            "description": "The text content of the section"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "template": "64e8341823f1c67607fbccb0",
+                  "function": "64ec7d88917266cca9e3bf1f",
+                  "sectionConfig": {
+                      "title": {
+                          "position": {"x": 0, "y": -55},
+                          "text": "test 2"
+                      }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Invitation created successfully",
+                    "invitation": {
+                        "sectionConfig": {
+                            "title": {
+                                "position": {
+                                    "x": 0,
+                                    "y": -55,
+                                    "_id": "64ec9837fa428f7568d184ba"
+                                },
+                                "text": "test 2",
+                                "_id": "64ec9837fa428f7568d184b9"
+                            },
+                            "_id": "64ec9837fa428f7568d184b8"
+                        },
+                        "template": "64e8341823f1c67607fbccb0",
+                        "function": "64ec7d88917266cca9e3bf1f",
+                        "_id": "64ec9837fa428f7568d184b7",
+                        "createdAt": "2023-08-28T12:51:03.358Z",
+                        "updatedAt": "2023-08-28T12:51:03.358Z",
+                        "__v": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invitation/getInvitation/{invitationId}": {
+      "get": {
+        "summary": "Get invitation by id",
+        "tags": ["Invitation"],
+        "parameters": [
+          {
+            "name": "invitationId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the template to be retrieved"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                      "_id": "64ec6ebcd676d3f18364293e",
+                      "sectionConfig": {
+                          "title": {
+                              "position": {
+                                  "x": 0,
+                                  "y": 0,
+                                  "_id": "64ec6ebcd676d3f183642941"
+                              },
+                              "text": "test",
+                              "_id": "64ec6ebcd676d3f183642940"
+                          },
+                          "_id": "64ec6ebcd676d3f18364293f"
+                      },
+                      "template": {
+                          "_id": "64e8341823f1c67607fbccb0",
+                          "path": "http://localhost:3000/uploads/invitationTemplates/uploads/invitationTemplates/2023-08                -25T04:54:48.132Z - butterfly.png",
+                          "tags": [],
+                          "createdAt": "2023-08-25T04:54:48.145Z",
+                          "updatedAt": "2023-08-28T09:58:17.705Z",
+                          "__v": 3,
+                          "invitations": [
+                              "64ec674fee8a9f1553ce2db4",
+                              "64ec6ebcd676d3f18364293e",
+                              "64ec6fb91a2ee6c8e603343c"
+                          ]
+                      },
+                      "function": {
+                          "_id": "64ec623cf7479c679620f758",
+                          "name": "mehendi",
+                          "eventId": "64e5bc1c80a21cf7e4a7ec42",
+                          "guestList": [],
+                          "__v": 0,
+                          "createdAt": "2023-08-28T09:00:44.183Z",
+                          "updatedAt": "2023-08-28T09:58:18.009Z",
+                          "invite": "64ec6fb91a2ee6c8e603343c"
+                      },
+                      "__v": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "invitation/getAllInvitations": {
+      "get": {
+        "summary": "Get all invitations related to a function",
+        "tags": ["Invitation"],
+        "parameters": [
+          {
+            "name": "functionId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the function for which invitations are to be retrieved"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                        "_id": "64ec7dc5004db57ba2ff2702",
+                        "sectionConfig": {
+                            "title": {
+                                "position": {
+                                    "x": 0,
+                                    "y": 0,
+                                    "_id": "64ec7dc5004db57ba2ff2705"
+                                },
+                                "text": "test",
+                                "_id": "64ec7dc5004db57ba2ff2704"
+                            },
+                            "_id": "64ec7dc5004db57ba2ff2703"
+                        },
+                        "template": {
+                            "_id": "64e8341823f1c67607fbccb0",
+                            "path": "http://localhost:3000/http://localhost:3000/uploads/invitationTemplates/2023-08              -25T04:54:48.132Z - butterfly.png",
+                            "tags": [],
+                            "createdAt": "2023-08-25T04:54:48.145Z",
+                            "updatedAt": "2023-08-28T10:59:53.303Z",
+                            "__v": 6,
+                            "invitations": [
+                                "64ec674fee8a9f1553ce2db4",
+                                "64ec6ebcd676d3f18364293e",
+                                "64ec6fb91a2ee6c8e603343c",
+                                "64ec77064638b219c2a8c3fa",
+                                "64ec7dc5004db57ba2ff2702",
+                                "64ec7e2951e9567d808d9c3a"
+                            ]
+                        },
+                        "function": {
+                            "_id": "64ec7d88917266cca9e3bf1f",
+                            "name": "mehendi",
+                            "eventId": "64e5bc1c80a21cf7e4a7ec42",
+                            "invite": [
+                                "64ec7dc5004db57ba2ff2702",
+                                "64ec7e2951e9567d808d9c3a"
+                            ],
+                            "guestList": [],
+                            "__v": 2,
+                            "createdAt": "2023-08-28T10:57:12.322Z",
+                            "updatedAt": "2023-08-28T10:59:53.524Z"
+                        },
+                        "createdAt": "2023-08-28T10:58:13.100Z",
+                        "updatedAt": "2023-08-28T10:58:13.100Z",
+                        "__v": 0
+                    },
+                    {
+                        "_id": "64ec7e2951e9567d808d9c3a",
+                        "sectionConfig": {
+                            "title": {
+                                "position": {
+                                    "x": 0,
+                                    "y": -55,
+                                    "_id": "64ec7e2951e9567d808d9c3d"
+                                },
+                                "text": "test 2",
+                                "_id": "64ec7e2951e9567d808d9c3c"
+                            },
+                            "_id": "64ec7e2951e9567d808d9c3b"
+                        },
+                        "template": {
+                            "_id": "64e8341823f1c67607fbccb0",
+                            "path": "http://localhost:3000/http://localhost:3000/uploads/invitationTemplates/2023-08              -25T04:54:48.132Z - butterfly.png",
+                            "tags": [],
+                            "createdAt": "2023-08-25T04:54:48.145Z",
+                            "updatedAt": "2023-08-28T10:59:53.303Z",
+                            "__v": 6,
+                            "invitations": [
+                                "64ec674fee8a9f1553ce2db4",
+                                "64ec6ebcd676d3f18364293e",
+                                "64ec6fb91a2ee6c8e603343c",
+                                "64ec77064638b219c2a8c3fa",
+                                "64ec7dc5004db57ba2ff2702",
+                                "64ec7e2951e9567d808d9c3a"
+                            ]
+                        },
+                        "function": {
+                            "_id": "64ec7d88917266cca9e3bf1f",
+                            "name": "mehendi",
+                            "eventId": "64e5bc1c80a21cf7e4a7ec42",
+                            "invite": [
+                                "64ec7dc5004db57ba2ff2702",
+                                "64ec7e2951e9567d808d9c3a"
+                            ],
+                            "guestList": [],
+                            "__v": 2,
+                            "createdAt": "2023-08-28T10:57:12.322Z",
+                            "updatedAt": "2023-08-28T10:59:53.524Z"
+                        },
+                        "createdAt": "2023-08-28T10:59:53.081Z",
+                        "updatedAt": "2023-08-28T10:59:53.081Z",
+                        "__v": 0
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+     "/invitation/edit/{invitationId}": {
+      "put": {
+        "summary": "Edit an invitation",
+        "tags": ["Invitation"],
+            "parameters": [
+          {
+            "name": "invitationId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the template to be edited"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json":{
+              "schema": {
+                "type": "object",
+                "required": [
+                  "template",
+                  "sectionConfig"
+                ],
+                "properties": {
+                  "template": {
+                    "type": "string",
+                    "description": "The id of the template used for creating the invitation"
+                  },
+                  "sectionConfig": {
+                    "type": "object",
+                    "description": "The object containing different sections and their configurations",
+                    "required": [
+                      "title"
+                    ],
+                    "properties": {
+                      "title": {
+                        "type": "object",
+                        "description": "The object having the name of the section which contains the position and text",
+                        "required": [
+                          "position",
+                          "text"
+                        ],
+                        "properties": {
+                          "position": {
+                            "type": "object",
+                            "description": "Object containing the x and y coordinates of the section",
+                            "required": [
+                              "x",
+                              "y"
+                            ],
+                            "properties": {
+                              "x": {
+                                "type": "number",
+                                "description": "The x coordinate of the section (in pixels)"
+                              },
+                              "y": {
+                                "type": "number",
+                                "description": "The y coordinate of the section (in pixels)"
+                              }
+                            }
+                          },
+                          "text": {
+                            "type": "string",
+                            "description": "The text content of the section"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "template": "64e8341823f1c67607fbccb0",
+                  "sectionConfig": {
+                      "title": {
+                          "position": {"x": 0, "y": -55},
+                          "text": "test 2"
+                      }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Invitation updated successfully",
+                    "updatedInvitation": {
+                        "_id": "64ec7dc5004db57ba2ff2702",
+                        "sectionConfig": {
+                            "title": {
+                                "position": {
+                                    "x": 0,
+                                    "y": -55,
+                                    "_id": "64ec8e0e45e5e6d62f72e024"
+                                },
+                                "text": "test 2",
+                                "_id": "64ec8e0e45e5e6d62f72e023"
+                            },
+                            "_id": "64ec8e0e45e5e6d62f72e022"
+                        },
+                        "template": "64e8341823f1c67607fbccb0",
+                        "function": "64ec7d88917266cca9e3bf1f",
+                        "createdAt": "2023-08-28T10:58:13.100Z",
+                        "updatedAt": "2023-08-28T12:07:42.545Z",
+                        "__v": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invitation/delete/{invitationId}": {
+      "delete": {
+        "summary": "Delete an invitation",
+        "tags": ["Invitation"],
+        "parameters": [
+          {
+            "name": "invitationId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Id of the template to be deleted"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Invitation deleted successfully"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
+    
   }
 }
