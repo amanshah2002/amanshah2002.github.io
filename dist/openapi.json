@@ -417,20 +417,20 @@
                     "description": "Code used for registering"
                   },
                 },
-                "example": { 
+                "example": {
                   "organizers": [
-                      {
+                    {
                       "firstName": "john",
                       "lastName": "doe",
                       "contactNo": 1111111111,
                       "occasionRole": "groom"
-                      },
-                       {
+                    },
+                    {
                       "firstName": "test",
                       "lastName": "bride",
                       "contactNo": 7777777777,
                       "occasionRole": "bride"
-                      }
+                    }
                   ],
                   "name": "johns marraige",
                   "code": "INY39Q"
@@ -461,18 +461,18 @@
                 "example": {
                   "msg": "Event created successfully.",
                   "event": {
-                      "organizers": "64e730eb4f203b6f6b0dcc15",
-                      "name": "johns marraige",
-                      "shop": null,
-                      "code": "64e5bbef80a21cf7e4a7ec1e",
-                      "type": "Wedding",
-                      "functions": [],
-                      "_id": "64e730eb4f203b6f6b0dcc16",
-                      "createdAt": "2023-08-24T10:28:59.307Z",
-                      "updatedAt": "2023-08-24T10:28:59.307Z",
-                      "__v": 0
+                    "organizers": "64e730eb4f203b6f6b0dcc15",
+                    "name": "johns marraige",
+                    "shop": null,
+                    "code": "64e5bbef80a21cf7e4a7ec1e",
+                    "type": "Wedding",
+                    "functions": [],
+                    "_id": "64e730eb4f203b6f6b0dcc16",
+                    "createdAt": "2023-08-24T10:28:59.307Z",
+                    "updatedAt": "2023-08-24T10:28:59.307Z",
+                    "__v": 0
                   }
-                }             
+                }
               }
             }
           },
@@ -519,36 +519,36 @@
                 "schema": {
                   "example": {
                     "VCARD": {
-                        "VERSION": "3.0",
-                        "N": "Doe;John;;Mr.",
-                        "FN": "John Doe",
-                        "ORG": "ABC Corporation",
-                        "TITLE": "Software Engineer",
-                        "EMAIL": {
-                            "value": "john.doe@example.com",
-                            "params": [
-                                {
-                                    "TYPE": "work"
-                                }
-                            ]
-                        },
-                        "TEL": {
-                            "value": "1234567890",
-                            "params": [
-                                {
-                                    "TYPE": "work,voice"
-                                }
-                            ]
-                        },
-                        "ADR": {
-                            "value": ";;123 Main St;City;State;12345;Country",
-                            "params": [
-                                {
-                                    "TYPE": "work"
-                                }
-                            ]
-                        },
-                        "URL": "http://www.example.com"
+                      "VERSION": "3.0",
+                      "N": "Doe;John;;Mr.",
+                      "FN": "John Doe",
+                      "ORG": "ABC Corporation",
+                      "TITLE": "Software Engineer",
+                      "EMAIL": {
+                        "value": "john.doe@example.com",
+                        "params": [
+                          {
+                            "TYPE": "work"
+                          }
+                        ]
+                      },
+                      "TEL": {
+                        "value": "1234567890",
+                        "params": [
+                          {
+                            "TYPE": "work,voice"
+                          }
+                        ]
+                      },
+                      "ADR": {
+                        "value": ";;123 Main St;City;State;12345;Country",
+                        "params": [
+                          {
+                            "TYPE": "work"
+                          }
+                        ]
+                      },
+                      "URL": "http://www.example.com"
                     },
                     "": ""
                   }
@@ -657,7 +657,14 @@
                   "priority": "low",
                   "namePOC": "test name",
                   "contactPOC": 3333333333,
-                  "checkList": [{"name": "test checklist"}, {"name": "test checklist2"}]
+                  "checkList": [
+                    {
+                      "name": "test checklist"
+                    },
+                    {
+                      "name": "test checklist2"
+                    }
+                  ]
                 }
               }
             }
@@ -720,7 +727,7 @@
                     "type": "string",
                     "description": "The id of the event to which the task is related to"
                   },
-                   "authorId": {
+                  "authorId": {
                     "type": "string",
                     "description": "The id of the user who has created the task"
                   },
@@ -792,7 +799,6 @@
                   "namePOC": "test name",
                   "contactPOC": 3333333333
                 }
-    
               }
             }
           }
@@ -859,7 +865,6 @@
             "required": false,
             "description": "Filter based on priority of the task",
           },
-          
           {
             "in": "query",
             "name": "status",
@@ -880,16 +885,16 @@
             "schema": {
               "type": "string",
               "enum": [
-               "-createdAt",
-               "createdAt",
-               "-liked",
-               "liked"
+                "-createdAt",
+                "createdAt",
+                "-liked",
+                "liked"
               ]
             },
             "required": false,
             "description": "Sort task comments. [1: -createdAt: Sort comments based on when they were created in descending order, 2: createdAt: Sort comments based on when they were created in ascending order, 3: -liked: Sort comments based the likedBy property in descending order, 4: liked: Sort comments based the likedBy property in ascending order ]",
           },
-           {
+          {
             "in": "query",
             "name": "assignedTo",
             "schema": {
@@ -898,8 +903,7 @@
             "required": false,
             "description": "Filter based on the person who the task was assigned to (should be the id of the assignee)",
           },
-          
-           {
+          {
             "in": "query",
             "name": "search",
             "schema": {
@@ -1566,7 +1570,9 @@
                   "author": "64e5bc1b80a21cf7e4a7ec3a",
                   "taskId": "64e5dc1c08f58f448baf9ec1",
                   "description": "hi <@ 64e5bc1c80a21cf7e4a7ec3e @>, this is a parent comment",
-                  "images": ["base64string"]
+                  "images": [
+                    "base64string"
+                  ]
                 }
               }
             }
@@ -1622,7 +1628,7 @@
                     "description": "The description/content of the comment"
                   }
                 },
-                "example":{
+                "example": {
                   "description": "hi test",
                   "author": "64e5bc1b80a21cf7e4a7ec3a"
                 }
@@ -1924,7 +1930,7 @@
                 },
                 "example": {
                   "contactNo": 6666666667
-                }             
+                }
               }
             }
           }
@@ -1954,7 +1960,7 @@
             "application/json": {
               "schema": {
                 "type": "array",
-                "required":[
+                "required": [
                   "name"
                 ],
                 "items": {
@@ -2066,7 +2072,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required":[
+                "required": [
                   "name",
                   "iconId",
                   "date",
@@ -2622,7 +2628,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required":[
+                "required": [
                   "invitationTemplate",
                   "userId",
                 ],
@@ -2716,11 +2722,12 @@
         }
       }
     },
-    
     "/comment/{commentId}/like": {
       "put": {
         "summary": "Like a comment",
-        "tags": ["Comments"],
+        "tags": [
+          "Comments"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2734,25 +2741,25 @@
         ],
         "requestBody": {
           "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": [
-                "userId"
-              ],
-              "properties": {
-                "userId": {
-                  "type": "string",
-                  "description": "The id of the user who liked the comment"
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userId"
+                ],
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "The id of the user who liked the comment"
+                  }
+                },
+                "example": {
+                  "userId": "64e5bc1b80a21cf7e4a7ec3a"
                 }
-              },
-              "example": {
-                "userId": "64e5bc1b80a21cf7e4a7ec3a"
               }
             }
           }
-        }
         },
         "responses": {
           "200": {
@@ -2764,20 +2771,20 @@
                   "example": {
                     "msg": "Comment liked!",
                     "comment": {
-                        "_id": "64e6fc2c2924ce4085474bf1",
-                        "author": "64e5bc1b80a21cf7e4a7ec3a",
-                        "description": "hi test",
-                        "image": [],
-                        "task": "64e5dc1c08f58f448baf9ec1",
-                        "replies": [],
-                        "taggedUsers": [],
-                        "likedBy": [
-                            "64e5bc1b80a21cf7e4a7ec3a"
-                        ],
-                        "createdAt": "2023-08-24T06:43:57.083Z",
-                        "updatedAt": "2023-08-24T06:50:13.028Z",
-                        "__v": 2,
-                        "edited": true
+                      "_id": "64e6fc2c2924ce4085474bf1",
+                      "author": "64e5bc1b80a21cf7e4a7ec3a",
+                      "description": "hi test",
+                      "image": [],
+                      "task": "64e5dc1c08f58f448baf9ec1",
+                      "replies": [],
+                      "taggedUsers": [],
+                      "likedBy": [
+                        "64e5bc1b80a21cf7e4a7ec3a"
+                      ],
+                      "createdAt": "2023-08-24T06:43:57.083Z",
+                      "updatedAt": "2023-08-24T06:50:13.028Z",
+                      "__v": 2,
+                      "edited": true
                     }
                   }
                 }
@@ -2790,7 +2797,9 @@
     "/task/{taskId}": {
       "get": {
         "summary": "Get task by id",
-        "tags": ["Tasks"],
+        "tags": [
+          "Tasks"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2812,58 +2821,58 @@
                   "example": {
                     "_id": "64e5dc1c08f58f448baf9ec1",
                     "category": {
-                        "_id": "64e5c2262ff75be2d9e837d9",
-                        "name": "test",
-                        "createdAt": "2023-08-23T08:24:06.061Z",
-                        "updatedAt": "2023-08-23T08:24:06.061Z",
-                        "__v": 0
+                      "_id": "64e5c2262ff75be2d9e837d9",
+                      "name": "test",
+                      "createdAt": "2023-08-23T08:24:06.061Z",
+                      "updatedAt": "2023-08-23T08:24:06.061Z",
+                      "__v": 0
                     },
                     "event": "64e5bc1c80a21cf7e4a7ec42",
                     "assignedTo": {
-                        "_id": "64e5bc1c80a21cf7e4a7ec3e",
-                        "contactNo": 7777777777,
-                        "verified": true,
-                        "events": [
-                            {
-                                "event": "64e5bc1c80a21cf7e4a7ec42",
-                                "role": "SUPER ADMIN",
-                                "occasionRole": "bride",
-                                "firstName": "test",
-                                "lastName": "bride",
-                                "gender": "female",
-                                "tags": null,
-                                "friendsAndFamily": [],
-                                "meals": null,
-                                "_id": "64e5bc1c80a21cf7e4a7ec3f"
-                            }
-                        ],
-                        "createdAt": "2023-08-23T07:58:20.413Z",
-                        "updatedAt": "2023-08-23T08:06:07.261Z",
-                        "__v": 0,
-                        "password": "$2b$12$OUN3Hchfhkzbj5fQ/5ktvOvu6Eyz3lA97G0mjA5Qy3oIe0MyT/Aaq"
+                      "_id": "64e5bc1c80a21cf7e4a7ec3e",
+                      "contactNo": 7777777777,
+                      "verified": true,
+                      "events": [
+                        {
+                          "event": "64e5bc1c80a21cf7e4a7ec42",
+                          "role": "SUPER ADMIN",
+                          "occasionRole": "bride",
+                          "firstName": "test",
+                          "lastName": "bride",
+                          "gender": "female",
+                          "tags": null,
+                          "friendsAndFamily": [],
+                          "meals": null,
+                          "_id": "64e5bc1c80a21cf7e4a7ec3f"
+                        }
+                      ],
+                      "createdAt": "2023-08-23T07:58:20.413Z",
+                      "updatedAt": "2023-08-23T08:06:07.261Z",
+                      "__v": 0,
+                      "password": "$2b$12$OUN3Hchfhkzbj5fQ/5ktvOvu6Eyz3lA97G0mjA5Qy3oIe0MyT/Aaq"
                     },
                     "author": {
-                        "_id": "64e5bc1b80a21cf7e4a7ec3a",
-                        "contactNo": 1111111111,
-                        "verified": false,
-                        "otp": 60952,
-                        "events": [
-                            {
-                                "event": "64e5bc1c80a21cf7e4a7ec42",
-                                "role": "SUPER ADMIN",
-                                "occasionRole": "groom",
-                                "firstName": "john",
-                                "lastName": "doe",
-                                "gender": "male",
-                                "tags": null,
-                                "friendsAndFamily": [],
-                                "meals": null,
-                                "_id": "64e5bc1b80a21cf7e4a7ec3b"
-                            }
-                        ],
-                        "createdAt": "2023-08-23T07:58:19.892Z",
-                        "updatedAt": "2023-08-23T07:58:22.204Z",
-                        "__v": 0
+                      "_id": "64e5bc1b80a21cf7e4a7ec3a",
+                      "contactNo": 1111111111,
+                      "verified": false,
+                      "otp": 60952,
+                      "events": [
+                        {
+                          "event": "64e5bc1c80a21cf7e4a7ec42",
+                          "role": "SUPER ADMIN",
+                          "occasionRole": "groom",
+                          "firstName": "john",
+                          "lastName": "doe",
+                          "gender": "male",
+                          "tags": null,
+                          "friendsAndFamily": [],
+                          "meals": null,
+                          "_id": "64e5bc1b80a21cf7e4a7ec3b"
+                        }
+                      ],
+                      "createdAt": "2023-08-23T07:58:19.892Z",
+                      "updatedAt": "2023-08-23T07:58:22.204Z",
+                      "__v": 0
                     },
                     "name": "test task",
                     "description": "test task description",
@@ -2875,85 +2884,85 @@
                     "contactPOC": 3333333333,
                     "isComparable": false,
                     "comments": [
-                        {
-                            "_id": "64e60295495347477475bf4f",
-                            "author": "64e5bc1b80a21cf7e4a7ec3a",
-                            "description": "hi <@ 64e5bc1c80a21cf7e4a7ec3e @>, this is a parent comment",
-                            "image": [],
-                            "task": "64e5dc1c08f58f448baf9ec1",
-                            "replies": [],
-                            "taggedUsers": [
-                                {
-                                    "_id": "64e5bc1c80a21cf7e4a7ec3e",
-                                    "contactNo": 7777777777,
-                                    "verified": true,
-                                    "events": [
-                                        {
-                                            "event": "64e5bc1c80a21cf7e4a7ec42",
-                                            "role": "SUPER ADMIN",
-                                            "occasionRole": "bride",
-                                            "firstName": "test",
-                                            "lastName": "bride",
-                                            "gender": "female",
-                                            "tags": null,
-                                            "friendsAndFamily": [],
-                                            "meals": null,
-                                            "_id": "64e5bc1c80a21cf7e4a7ec3f"
-                                        }
-                                    ],
-                                    "createdAt": "2023-08-23T07:58:20.413Z",
-                                    "updatedAt": "2023-08-23T08:06:07.261Z",
-                                    "__v": 0,
-                                    "password": "$2b$12$OUN3Hchfhkzbj5fQ/5ktvOvu6Eyz3lA97G0mjA5Qy3oIe0MyT/Aaq"
-                                }
+                      {
+                        "_id": "64e60295495347477475bf4f",
+                        "author": "64e5bc1b80a21cf7e4a7ec3a",
+                        "description": "hi <@ 64e5bc1c80a21cf7e4a7ec3e @>, this is a parent comment",
+                        "image": [],
+                        "task": "64e5dc1c08f58f448baf9ec1",
+                        "replies": [],
+                        "taggedUsers": [
+                          {
+                            "_id": "64e5bc1c80a21cf7e4a7ec3e",
+                            "contactNo": 7777777777,
+                            "verified": true,
+                            "events": [
+                              {
+                                "event": "64e5bc1c80a21cf7e4a7ec42",
+                                "role": "SUPER ADMIN",
+                                "occasionRole": "bride",
+                                "firstName": "test",
+                                "lastName": "bride",
+                                "gender": "female",
+                                "tags": null,
+                                "friendsAndFamily": [],
+                                "meals": null,
+                                "_id": "64e5bc1c80a21cf7e4a7ec3f"
+                              }
                             ],
-                            "likedBy": [],
-                            "createdAt": "2023-08-23T12:59:02.085Z",
-                            "updatedAt": "2023-08-23T13:00:54.587Z",
-                            "__v": 1
-                        },
-                        {
-                            "_id": "64e6fc2c2924ce4085474bf1",
-                            "author": "64e5bc1b80a21cf7e4a7ec3a",
-                            "description": "hi test",
-                            "image": [],
-                            "task": "64e5dc1c08f58f448baf9ec1",
-                            "replies": [],
-                            "taggedUsers": [],
-                            "likedBy": [
-                                "64e5bc1b80a21cf7e4a7ec3a"
-                            ],
-                            "createdAt": "2023-08-24T06:43:57.083Z",
-                            "updatedAt": "2023-08-24T06:50:13.028Z",
-                            "__v": 2,
-                            "edited": true
-                        }
+                            "createdAt": "2023-08-23T07:58:20.413Z",
+                            "updatedAt": "2023-08-23T08:06:07.261Z",
+                            "__v": 0,
+                            "password": "$2b$12$OUN3Hchfhkzbj5fQ/5ktvOvu6Eyz3lA97G0mjA5Qy3oIe0MyT/Aaq"
+                          }
+                        ],
+                        "likedBy": [],
+                        "createdAt": "2023-08-23T12:59:02.085Z",
+                        "updatedAt": "2023-08-23T13:00:54.587Z",
+                        "__v": 1
+                      },
+                      {
+                        "_id": "64e6fc2c2924ce4085474bf1",
+                        "author": "64e5bc1b80a21cf7e4a7ec3a",
+                        "description": "hi test",
+                        "image": [],
+                        "task": "64e5dc1c08f58f448baf9ec1",
+                        "replies": [],
+                        "taggedUsers": [],
+                        "likedBy": [
+                          "64e5bc1b80a21cf7e4a7ec3a"
+                        ],
+                        "createdAt": "2023-08-24T06:43:57.083Z",
+                        "updatedAt": "2023-08-24T06:50:13.028Z",
+                        "__v": 2,
+                        "edited": true
+                      }
                     ],
                     "checkList": [
-                        {
-                            "_id": "64e5dc1c08f58f448baf9ec3",
-                            "name": "test checklist",
-                            "status": false,
-                            "task": "64e5dc1c08f58f448baf9ec1",
-                            "createdAt": "2023-08-23T10:14:52.425Z",
-                            "updatedAt": "2023-08-23T10:14:52.425Z",
-                            "__v": 0
-                        },
-                        {
-                            "_id": "64e5dc1c08f58f448baf9ec5",
-                            "name": "test checklist2",
-                            "status": false,
-                            "task": "64e5dc1c08f58f448baf9ec1",
-                            "createdAt": "2023-08-23T10:14:52.650Z",
-                            "updatedAt": "2023-08-23T10:14:52.650Z",
-                            "__v": 0
-                        }
+                      {
+                        "_id": "64e5dc1c08f58f448baf9ec3",
+                        "name": "test checklist",
+                        "status": false,
+                        "task": "64e5dc1c08f58f448baf9ec1",
+                        "createdAt": "2023-08-23T10:14:52.425Z",
+                        "updatedAt": "2023-08-23T10:14:52.425Z",
+                        "__v": 0
+                      },
+                      {
+                        "_id": "64e5dc1c08f58f448baf9ec5",
+                        "name": "test checklist2",
+                        "status": false,
+                        "task": "64e5dc1c08f58f448baf9ec1",
+                        "createdAt": "2023-08-23T10:14:52.650Z",
+                        "updatedAt": "2023-08-23T10:14:52.650Z",
+                        "__v": 0
+                      }
                     ],
                     "status": "TODO",
                     "createdAt": "2023-08-23T10:14:52.172Z",
                     "updatedAt": "2023-08-24T06:43:56.654Z",
                     "__v": 3
-                  }               
+                  }
                 }
               }
             }
@@ -2964,7 +2973,9 @@
     "/event/{eventId}": {
       "get": {
         "summary": "Get event by id",
-        "tags": ["Event"],
+        "tags": [
+          "Event"
+        ],
         "parameters": [
           {
             "name": "eventId",
@@ -2983,104 +2994,104 @@
               "application/json": {
                 "schema": {
                   "example": {
-                     "_id": "64e5bc1c80a21cf7e4a7ec42",
-                     "organizers": {
-                         "_id": "64e5bc1c80a21cf7e4a7ec41",
-                         "organizers": [
-                             {
-                                 "_id": "64e5bc1b80a21cf7e4a7ec3a",
-                                 "contactNo": 1111111111,
-                                 "verified": false,
-                                 "otp": 60952,
-                                 "events": [
-                                     {
-                                         "event": "64e5bc1c80a21cf7e4a7ec42",
-                                         "role": "SUPER ADMIN",
-                                         "occasionRole": "groom",
-                                         "firstName": "john",
-                                         "lastName": "doe",
-                                         "gender": "male",
-                                         "tags": null,
-                                         "friendsAndFamily": [],
-                                         "meals": null,
-                                         "_id": "64e5bc1b80a21cf7e4a7ec3b"
-                                     },
-                                     {
-                                         "event": "64e730eb4f203b6f6b0dcc16",
-                                         "role": "SUPER ADMIN",
-                                         "occasionRole": "groom",
-                                         "firstName": "john",
-                                         "lastName": "doe",
-                                         "gender": "male",
-                                         "tags": null,
-                                         "friendsAndFamily": [],
-                                         "meals": null,
-                                         "_id": "64e730ea4f203b6f6b0dcc0f"
-                                     }
-                                 ],
-                                 "createdAt": "2023-08-23T07:58:19.892Z",
-                                 "updatedAt": "2023-08-24T10:29:00.232Z",
-                                 "__v": 1
-                             },
-                             {
-                                 "_id": "64e5bc1c80a21cf7e4a7ec3e",
-                                 "contactNo": 7777777777,
-                                 "verified": true,
-                                 "events": [
-                                     {
-                                         "event": "64e5bc1c80a21cf7e4a7ec42",
-                                         "role": "SUPER ADMIN",
-                                         "occasionRole": "bride",
-                                         "firstName": "test",
-                                         "lastName": "bride",
-                                         "gender": "female",
-                                         "tags": null,
-                                         "friendsAndFamily": [],
-                                         "meals": null,
-                                         "_id": "64e5bc1c80a21cf7e4a7ec3f"
-                                     },
-                                     {
-                                         "event": "64e730eb4f203b6f6b0dcc16",
-                                         "role": "SUPER ADMIN",
-                                         "occasionRole": "bride",
-                                         "firstName": "test",
-                                         "lastName": "bride",
-                                         "gender": "female",
-                                         "tags": null,
-                                         "friendsAndFamily": [],
-                                         "meals": null,
-                                         "_id": "64e730ea4f203b6f6b0dcc13"
-                                     }
-                                 ],
-                                 "createdAt": "2023-08-23T07:58:20.413Z",
-                                 "updatedAt": "2023-08-24T10:29:00.665Z",
-                                 "__v": 1,
-                                 "password": "$2b$12$OUN3Hchfhkzbj5fQ/5ktvOvu6Eyz3lA97G0mjA5Qy3oIe0MyT/Aaq"
-                             }
-                         ],
-                         "createdAt": "2023-08-23T07:58:20.772Z",
-                         "updatedAt": "2023-08-23T07:58:20.772Z",
-                         "__v": 0
-                     },
-                     "name": "johns marraige",
-                     "shop": null,
-                     "code": {
-                         "_id": "64e5bbee80a21cf7e4a7ec1b",
-                         "code": "INY39Q",
-                         "used": true,
-                         "price": 100,
-                         "retailerId": null,
-                         "type": "wedding",
-                         "createdAt": "2023-08-23T07:57:34.909Z",
-                         "updatedAt": "2023-08-23T07:58:23.124Z",
-                         "__v": 0,
-                         "eventId": "64e5bc1c80a21cf7e4a7ec42"
-                     },
-                     "type": "Wedding",
-                     "functions": [],
-                     "createdAt": "2023-08-23T07:58:21.075Z",
-                     "updatedAt": "2023-08-23T07:58:21.075Z",
-                     "__v": 0
+                    "_id": "64e5bc1c80a21cf7e4a7ec42",
+                    "organizers": {
+                      "_id": "64e5bc1c80a21cf7e4a7ec41",
+                      "organizers": [
+                        {
+                          "_id": "64e5bc1b80a21cf7e4a7ec3a",
+                          "contactNo": 1111111111,
+                          "verified": false,
+                          "otp": 60952,
+                          "events": [
+                            {
+                              "event": "64e5bc1c80a21cf7e4a7ec42",
+                              "role": "SUPER ADMIN",
+                              "occasionRole": "groom",
+                              "firstName": "john",
+                              "lastName": "doe",
+                              "gender": "male",
+                              "tags": null,
+                              "friendsAndFamily": [],
+                              "meals": null,
+                              "_id": "64e5bc1b80a21cf7e4a7ec3b"
+                            },
+                            {
+                              "event": "64e730eb4f203b6f6b0dcc16",
+                              "role": "SUPER ADMIN",
+                              "occasionRole": "groom",
+                              "firstName": "john",
+                              "lastName": "doe",
+                              "gender": "male",
+                              "tags": null,
+                              "friendsAndFamily": [],
+                              "meals": null,
+                              "_id": "64e730ea4f203b6f6b0dcc0f"
+                            }
+                          ],
+                          "createdAt": "2023-08-23T07:58:19.892Z",
+                          "updatedAt": "2023-08-24T10:29:00.232Z",
+                          "__v": 1
+                        },
+                        {
+                          "_id": "64e5bc1c80a21cf7e4a7ec3e",
+                          "contactNo": 7777777777,
+                          "verified": true,
+                          "events": [
+                            {
+                              "event": "64e5bc1c80a21cf7e4a7ec42",
+                              "role": "SUPER ADMIN",
+                              "occasionRole": "bride",
+                              "firstName": "test",
+                              "lastName": "bride",
+                              "gender": "female",
+                              "tags": null,
+                              "friendsAndFamily": [],
+                              "meals": null,
+                              "_id": "64e5bc1c80a21cf7e4a7ec3f"
+                            },
+                            {
+                              "event": "64e730eb4f203b6f6b0dcc16",
+                              "role": "SUPER ADMIN",
+                              "occasionRole": "bride",
+                              "firstName": "test",
+                              "lastName": "bride",
+                              "gender": "female",
+                              "tags": null,
+                              "friendsAndFamily": [],
+                              "meals": null,
+                              "_id": "64e730ea4f203b6f6b0dcc13"
+                            }
+                          ],
+                          "createdAt": "2023-08-23T07:58:20.413Z",
+                          "updatedAt": "2023-08-24T10:29:00.665Z",
+                          "__v": 1,
+                          "password": "$2b$12$OUN3Hchfhkzbj5fQ/5ktvOvu6Eyz3lA97G0mjA5Qy3oIe0MyT/Aaq"
+                        }
+                      ],
+                      "createdAt": "2023-08-23T07:58:20.772Z",
+                      "updatedAt": "2023-08-23T07:58:20.772Z",
+                      "__v": 0
+                    },
+                    "name": "johns marraige",
+                    "shop": null,
+                    "code": {
+                      "_id": "64e5bbee80a21cf7e4a7ec1b",
+                      "code": "INY39Q",
+                      "used": true,
+                      "price": 100,
+                      "retailerId": null,
+                      "type": "wedding",
+                      "createdAt": "2023-08-23T07:57:34.909Z",
+                      "updatedAt": "2023-08-23T07:58:23.124Z",
+                      "__v": 0,
+                      "eventId": "64e5bc1c80a21cf7e4a7ec42"
+                    },
+                    "type": "Wedding",
+                    "functions": [],
+                    "createdAt": "2023-08-23T07:58:21.075Z",
+                    "updatedAt": "2023-08-23T07:58:21.075Z",
+                    "__v": 0
                   }
                 }
               }
@@ -3092,11 +3103,13 @@
     "/invitation/create": {
       "post": {
         "summary": "Create an invitation for a function",
-        "tags": ["Invitation"],
+        "tags": [
+          "Invitation"
+        ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json":{
+            "application/json": {
               "schema": {
                 "type": "object",
                 "required": [
@@ -3159,10 +3172,13 @@
                   "template": "64e8341823f1c67607fbccb0",
                   "function": "64ec7d88917266cca9e3bf1f",
                   "sectionConfig": {
-                      "title": {
-                          "position": {"x": 0, "y": -55},
-                          "text": "test 2"
-                      }
+                    "title": {
+                      "position": {
+                        "x": 0,
+                        "y": -55
+                      },
+                      "text": "test 2"
+                    }
                   }
                 }
               }
@@ -3178,24 +3194,24 @@
                   "example": {
                     "msg": "Invitation created successfully",
                     "invitation": {
-                        "sectionConfig": {
-                            "title": {
-                                "position": {
-                                    "x": 0,
-                                    "y": -55,
-                                    "_id": "64ec9837fa428f7568d184ba"
-                                },
-                                "text": "test 2",
-                                "_id": "64ec9837fa428f7568d184b9"
-                            },
-                            "_id": "64ec9837fa428f7568d184b8"
+                      "sectionConfig": {
+                        "title": {
+                          "position": {
+                            "x": 0,
+                            "y": -55,
+                            "_id": "64ec9837fa428f7568d184ba"
+                          },
+                          "text": "test 2",
+                          "_id": "64ec9837fa428f7568d184b9"
                         },
-                        "template": "64e8341823f1c67607fbccb0",
-                        "function": "64ec7d88917266cca9e3bf1f",
-                        "_id": "64ec9837fa428f7568d184b7",
-                        "createdAt": "2023-08-28T12:51:03.358Z",
-                        "updatedAt": "2023-08-28T12:51:03.358Z",
-                        "__v": 0
+                        "_id": "64ec9837fa428f7568d184b8"
+                      },
+                      "template": "64e8341823f1c67607fbccb0",
+                      "function": "64ec7d88917266cca9e3bf1f",
+                      "_id": "64ec9837fa428f7568d184b7",
+                      "createdAt": "2023-08-28T12:51:03.358Z",
+                      "updatedAt": "2023-08-28T12:51:03.358Z",
+                      "__v": 0
                     }
                   }
                 }
@@ -3208,7 +3224,9 @@
     "/invitation/getInvitation/{invitationId}": {
       "get": {
         "summary": "Get invitation by id",
-        "tags": ["Invitation"],
+        "tags": [
+          "Invitation"
+        ],
         "parameters": [
           {
             "name": "invitationId",
@@ -3227,43 +3245,43 @@
               "application/json": {
                 "schema": {
                   "example": {
-                      "_id": "64ec6ebcd676d3f18364293e",
-                      "sectionConfig": {
-                          "title": {
-                              "position": {
-                                  "x": 0,
-                                  "y": 0,
-                                  "_id": "64ec6ebcd676d3f183642941"
-                              },
-                              "text": "test",
-                              "_id": "64ec6ebcd676d3f183642940"
-                          },
-                          "_id": "64ec6ebcd676d3f18364293f"
+                    "_id": "64ec6ebcd676d3f18364293e",
+                    "sectionConfig": {
+                      "title": {
+                        "position": {
+                          "x": 0,
+                          "y": 0,
+                          "_id": "64ec6ebcd676d3f183642941"
+                        },
+                        "text": "test",
+                        "_id": "64ec6ebcd676d3f183642940"
                       },
-                      "template": {
-                          "_id": "64e8341823f1c67607fbccb0",
-                          "path": "http://localhost:3000/uploads/invitationTemplates/uploads/invitationTemplates/2023-08                -25T04:54:48.132Z - butterfly.png",
-                          "tags": [],
-                          "createdAt": "2023-08-25T04:54:48.145Z",
-                          "updatedAt": "2023-08-28T09:58:17.705Z",
-                          "__v": 3,
-                          "invitations": [
-                              "64ec674fee8a9f1553ce2db4",
-                              "64ec6ebcd676d3f18364293e",
-                              "64ec6fb91a2ee6c8e603343c"
-                          ]
-                      },
-                      "function": {
-                          "_id": "64ec623cf7479c679620f758",
-                          "name": "mehendi",
-                          "eventId": "64e5bc1c80a21cf7e4a7ec42",
-                          "guestList": [],
-                          "__v": 0,
-                          "createdAt": "2023-08-28T09:00:44.183Z",
-                          "updatedAt": "2023-08-28T09:58:18.009Z",
-                          "invite": "64ec6fb91a2ee6c8e603343c"
-                      },
-                      "__v": 0
+                      "_id": "64ec6ebcd676d3f18364293f"
+                    },
+                    "template": {
+                      "_id": "64e8341823f1c67607fbccb0",
+                      "path": "http://localhost:3000/uploads/invitationTemplates/uploads/invitationTemplates/2023-08                -25T04:54:48.132Z - butterfly.png",
+                      "tags": [],
+                      "createdAt": "2023-08-25T04:54:48.145Z",
+                      "updatedAt": "2023-08-28T09:58:17.705Z",
+                      "__v": 3,
+                      "invitations": [
+                        "64ec674fee8a9f1553ce2db4",
+                        "64ec6ebcd676d3f18364293e",
+                        "64ec6fb91a2ee6c8e603343c"
+                      ]
+                    },
+                    "function": {
+                      "_id": "64ec623cf7479c679620f758",
+                      "name": "mehendi",
+                      "eventId": "64e5bc1c80a21cf7e4a7ec42",
+                      "guestList": [],
+                      "__v": 0,
+                      "createdAt": "2023-08-28T09:00:44.183Z",
+                      "updatedAt": "2023-08-28T09:58:18.009Z",
+                      "invite": "64ec6fb91a2ee6c8e603343c"
+                    },
+                    "__v": 0
                   }
                 }
               }
@@ -3272,10 +3290,12 @@
         }
       }
     },
-    "invitation/getAllInvitations": {
+    "/invitation/getAllInvitations": {
       "get": {
         "summary": "Get all invitations related to a function",
-        "tags": ["Invitation"],
+        "tags": [
+          "Invitation"
+        ],
         "parameters": [
           {
             "name": "functionId",
@@ -3295,98 +3315,98 @@
                 "schema": {
                   "example": [
                     {
-                        "_id": "64ec7dc5004db57ba2ff2702",
-                        "sectionConfig": {
-                            "title": {
-                                "position": {
-                                    "x": 0,
-                                    "y": 0,
-                                    "_id": "64ec7dc5004db57ba2ff2705"
-                                },
-                                "text": "test",
-                                "_id": "64ec7dc5004db57ba2ff2704"
-                            },
-                            "_id": "64ec7dc5004db57ba2ff2703"
+                      "_id": "64ec7dc5004db57ba2ff2702",
+                      "sectionConfig": {
+                        "title": {
+                          "position": {
+                            "x": 0,
+                            "y": 0,
+                            "_id": "64ec7dc5004db57ba2ff2705"
+                          },
+                          "text": "test",
+                          "_id": "64ec7dc5004db57ba2ff2704"
                         },
-                        "template": {
-                            "_id": "64e8341823f1c67607fbccb0",
-                            "path": "http://localhost:3000/http://localhost:3000/uploads/invitationTemplates/2023-08              -25T04:54:48.132Z - butterfly.png",
-                            "tags": [],
-                            "createdAt": "2023-08-25T04:54:48.145Z",
-                            "updatedAt": "2023-08-28T10:59:53.303Z",
-                            "__v": 6,
-                            "invitations": [
-                                "64ec674fee8a9f1553ce2db4",
-                                "64ec6ebcd676d3f18364293e",
-                                "64ec6fb91a2ee6c8e603343c",
-                                "64ec77064638b219c2a8c3fa",
-                                "64ec7dc5004db57ba2ff2702",
-                                "64ec7e2951e9567d808d9c3a"
-                            ]
-                        },
-                        "function": {
-                            "_id": "64ec7d88917266cca9e3bf1f",
-                            "name": "mehendi",
-                            "eventId": "64e5bc1c80a21cf7e4a7ec42",
-                            "invite": [
-                                "64ec7dc5004db57ba2ff2702",
-                                "64ec7e2951e9567d808d9c3a"
-                            ],
-                            "guestList": [],
-                            "__v": 2,
-                            "createdAt": "2023-08-28T10:57:12.322Z",
-                            "updatedAt": "2023-08-28T10:59:53.524Z"
-                        },
-                        "createdAt": "2023-08-28T10:58:13.100Z",
-                        "updatedAt": "2023-08-28T10:58:13.100Z",
-                        "__v": 0
+                        "_id": "64ec7dc5004db57ba2ff2703"
+                      },
+                      "template": {
+                        "_id": "64e8341823f1c67607fbccb0",
+                        "path": "http://localhost:3000/http://localhost:3000/uploads/invitationTemplates/2023-08              -25T04:54:48.132Z - butterfly.png",
+                        "tags": [],
+                        "createdAt": "2023-08-25T04:54:48.145Z",
+                        "updatedAt": "2023-08-28T10:59:53.303Z",
+                        "__v": 6,
+                        "invitations": [
+                          "64ec674fee8a9f1553ce2db4",
+                          "64ec6ebcd676d3f18364293e",
+                          "64ec6fb91a2ee6c8e603343c",
+                          "64ec77064638b219c2a8c3fa",
+                          "64ec7dc5004db57ba2ff2702",
+                          "64ec7e2951e9567d808d9c3a"
+                        ]
+                      },
+                      "function": {
+                        "_id": "64ec7d88917266cca9e3bf1f",
+                        "name": "mehendi",
+                        "eventId": "64e5bc1c80a21cf7e4a7ec42",
+                        "invite": [
+                          "64ec7dc5004db57ba2ff2702",
+                          "64ec7e2951e9567d808d9c3a"
+                        ],
+                        "guestList": [],
+                        "__v": 2,
+                        "createdAt": "2023-08-28T10:57:12.322Z",
+                        "updatedAt": "2023-08-28T10:59:53.524Z"
+                      },
+                      "createdAt": "2023-08-28T10:58:13.100Z",
+                      "updatedAt": "2023-08-28T10:58:13.100Z",
+                      "__v": 0
                     },
                     {
-                        "_id": "64ec7e2951e9567d808d9c3a",
-                        "sectionConfig": {
-                            "title": {
-                                "position": {
-                                    "x": 0,
-                                    "y": -55,
-                                    "_id": "64ec7e2951e9567d808d9c3d"
-                                },
-                                "text": "test 2",
-                                "_id": "64ec7e2951e9567d808d9c3c"
-                            },
-                            "_id": "64ec7e2951e9567d808d9c3b"
+                      "_id": "64ec7e2951e9567d808d9c3a",
+                      "sectionConfig": {
+                        "title": {
+                          "position": {
+                            "x": 0,
+                            "y": -55,
+                            "_id": "64ec7e2951e9567d808d9c3d"
+                          },
+                          "text": "test 2",
+                          "_id": "64ec7e2951e9567d808d9c3c"
                         },
-                        "template": {
-                            "_id": "64e8341823f1c67607fbccb0",
-                            "path": "http://localhost:3000/http://localhost:3000/uploads/invitationTemplates/2023-08              -25T04:54:48.132Z - butterfly.png",
-                            "tags": [],
-                            "createdAt": "2023-08-25T04:54:48.145Z",
-                            "updatedAt": "2023-08-28T10:59:53.303Z",
-                            "__v": 6,
-                            "invitations": [
-                                "64ec674fee8a9f1553ce2db4",
-                                "64ec6ebcd676d3f18364293e",
-                                "64ec6fb91a2ee6c8e603343c",
-                                "64ec77064638b219c2a8c3fa",
-                                "64ec7dc5004db57ba2ff2702",
-                                "64ec7e2951e9567d808d9c3a"
-                            ]
-                        },
-                        "function": {
-                            "_id": "64ec7d88917266cca9e3bf1f",
-                            "name": "mehendi",
-                            "eventId": "64e5bc1c80a21cf7e4a7ec42",
-                            "invite": [
-                                "64ec7dc5004db57ba2ff2702",
-                                "64ec7e2951e9567d808d9c3a"
-                            ],
-                            "guestList": [],
-                            "__v": 2,
-                            "createdAt": "2023-08-28T10:57:12.322Z",
-                            "updatedAt": "2023-08-28T10:59:53.524Z"
-                        },
-                        "createdAt": "2023-08-28T10:59:53.081Z",
-                        "updatedAt": "2023-08-28T10:59:53.081Z",
-                        "__v": 0
+                        "_id": "64ec7e2951e9567d808d9c3b"
+                      },
+                      "template": {
+                        "_id": "64e8341823f1c67607fbccb0",
+                        "path": "http://localhost:3000/http://localhost:3000/uploads/invitationTemplates/2023-08              -25T04:54:48.132Z - butterfly.png",
+                        "tags": [],
+                        "createdAt": "2023-08-25T04:54:48.145Z",
+                        "updatedAt": "2023-08-28T10:59:53.303Z",
+                        "__v": 6,
+                        "invitations": [
+                          "64ec674fee8a9f1553ce2db4",
+                          "64ec6ebcd676d3f18364293e",
+                          "64ec6fb91a2ee6c8e603343c",
+                          "64ec77064638b219c2a8c3fa",
+                          "64ec7dc5004db57ba2ff2702",
+                          "64ec7e2951e9567d808d9c3a"
+                        ]
+                      },
+                      "function": {
+                        "_id": "64ec7d88917266cca9e3bf1f",
+                        "name": "mehendi",
+                        "eventId": "64e5bc1c80a21cf7e4a7ec42",
+                        "invite": [
+                          "64ec7dc5004db57ba2ff2702",
+                          "64ec7e2951e9567d808d9c3a"
+                        ],
+                        "guestList": [],
+                        "__v": 2,
+                        "createdAt": "2023-08-28T10:57:12.322Z",
+                        "updatedAt": "2023-08-28T10:59:53.524Z"
+                      },
+                      "createdAt": "2023-08-28T10:59:53.081Z",
+                      "updatedAt": "2023-08-28T10:59:53.081Z",
+                      "__v": 0
                     }
                   ]
                 }
@@ -3396,11 +3416,13 @@
         }
       }
     },
-     "/invitation/edit/{invitationId}": {
+    "/invitation/edit/{invitationId}": {
       "put": {
         "summary": "Edit an invitation",
-        "tags": ["Invitation"],
-            "parameters": [
+        "tags": [
+          "Invitation"
+        ],
+        "parameters": [
           {
             "name": "invitationId",
             "in": "path",
@@ -3414,7 +3436,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json":{
+            "application/json": {
               "schema": {
                 "type": "object",
                 "required": [
@@ -3471,10 +3493,13 @@
                 "example": {
                   "template": "64e8341823f1c67607fbccb0",
                   "sectionConfig": {
-                      "title": {
-                          "position": {"x": 0, "y": -55},
-                          "text": "test 2"
-                      }
+                    "title": {
+                      "position": {
+                        "x": 0,
+                        "y": -55
+                      },
+                      "text": "test 2"
+                    }
                   }
                 }
               }
@@ -3490,24 +3515,24 @@
                   "example": {
                     "msg": "Invitation updated successfully",
                     "updatedInvitation": {
-                        "_id": "64ec7dc5004db57ba2ff2702",
-                        "sectionConfig": {
-                            "title": {
-                                "position": {
-                                    "x": 0,
-                                    "y": -55,
-                                    "_id": "64ec8e0e45e5e6d62f72e024"
-                                },
-                                "text": "test 2",
-                                "_id": "64ec8e0e45e5e6d62f72e023"
-                            },
-                            "_id": "64ec8e0e45e5e6d62f72e022"
+                      "_id": "64ec7dc5004db57ba2ff2702",
+                      "sectionConfig": {
+                        "title": {
+                          "position": {
+                            "x": 0,
+                            "y": -55,
+                            "_id": "64ec8e0e45e5e6d62f72e024"
+                          },
+                          "text": "test 2",
+                          "_id": "64ec8e0e45e5e6d62f72e023"
                         },
-                        "template": "64e8341823f1c67607fbccb0",
-                        "function": "64ec7d88917266cca9e3bf1f",
-                        "createdAt": "2023-08-28T10:58:13.100Z",
-                        "updatedAt": "2023-08-28T12:07:42.545Z",
-                        "__v": 0
+                        "_id": "64ec8e0e45e5e6d62f72e022"
+                      },
+                      "template": "64e8341823f1c67607fbccb0",
+                      "function": "64ec7d88917266cca9e3bf1f",
+                      "createdAt": "2023-08-28T10:58:13.100Z",
+                      "updatedAt": "2023-08-28T12:07:42.545Z",
+                      "__v": 0
                     }
                   }
                 }
@@ -3520,7 +3545,9 @@
     "/invitation/delete/{invitationId}": {
       "delete": {
         "summary": "Delete an invitation",
-        "tags": ["Invitation"],
+        "tags": [
+          "Invitation"
+        ],
         "parameters": [
           {
             "name": "invitationId",
@@ -3547,7 +3574,229 @@
           }
         }
       }
-    }
-    
+    },
+    "/comment/addImages/{commentId}": {
+      "post": {
+        "summary": "Add images to a comment",
+        "tags": [
+          "Comments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "commentId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the comment in which the image is to be added"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "commentImage",
+                  "authorId"
+                ],
+                "properties": {
+                  "commentImage": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The file of the image to be uploaded"
+                  },
+                  "authorId": {
+                    "type": "string",
+                    "description": "The Id of the user who wants to add image to the comment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Images added successfully",
+                    "images": [
+                      {
+                        "path": "http://localhost:3000/uploads/commentImages/2023-09-04T06:25:14.689Z - invitation                  (4).png",
+                        "_id": "64f5784adb1d9c3084cfb863",
+                        "__v": 0,
+                        "createdAt": "2023-09-04T06:25:14.695Z",
+                        "updatedAt": "2023-09-04T06:25:14.695Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment/deleteImage/{commentId}": {
+      "delete": {
+        "summary": "Delete image from a comment",
+        "tags": [
+          "Comments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "commentId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the comment from which the image is to be deleted"
+          },
+          {
+            "in": "query",
+            "name": "imageId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the image to be deleted"
+          },
+          {
+            "in": "query",
+            "name": "authorId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the user who wants to delete the image"
+          },
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+          }
+        },
+      }
+    },
+    "/task/addImages/{taskId}": {
+      "post": {
+        "summary": "Add images to a task",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "taskId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the task in which the image is to be added"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "taskImage",
+                  "authorId"
+                ],
+                "properties": {
+                  "taskImage": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The file of the image to be uploaded"
+                  },
+                  "authorId": {
+                    "type": "string",
+                    "description": "The Id of the user who wants to add image to the task"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "msg": "Images added successfully",
+                    "images": [
+                      {
+                        "path": "http://localhost:3000/uploads/taskImages/2023-09-04T06:46:56.266Z - invitation (2               ).png",
+                        "_id": "64f57d603d8f1f4867fa8725",
+                        "__v": 0,
+                        "createdAt": "2023-09-04T06:46:56.285Z",
+                        "updatedAt": "2023-09-04T06:46:56.285Z"
+                      },
+                      {
+                        "path": "http://localhost:3000/uploads/taskImages/2023-09-04T06:46:56.271Z - invitation (3               ).png",
+                        "_id": "64f57d603d8f1f4867fa8726",
+                        "__v": 0,
+                        "createdAt": "2023-09-04T06:46:56.285Z",
+                        "updatedAt": "2023-09-04T06:46:56.285Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/deleteImage/{taskId}": {
+      "delete": {
+        "summary": "Delete image from a task",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "taskId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the task from which the image is to be deleted"
+          },
+          {
+            "in": "query",
+            "name": "imageId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the image to be deleted"
+          },
+          {
+            "in": "query",
+            "name": "authorId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The id of the user who wants to delete the image"
+          },
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+          }
+        },
+      }
+    },
   }
 }
