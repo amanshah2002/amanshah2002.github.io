@@ -1959,18 +1959,18 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
                 "required": [
-                  "name"
+                  "name",
+                  "icon",
+                  "userId"
                 ],
-                "items": {
                   "type": "object",
                   "properties": {
                     "name": {
                       "type": "string",
                       "description": "Name of the function"
                     },
-                    "iconId": {
+                    "icon": {
                       "type": "string",
                       "description": "The id of the icon to used"
                     },
@@ -2008,9 +2008,8 @@
                       "description": "The city in which the function is organized"
                     }
                   }
-                }
               },
-              "example": [
+              "example": 
                 {
                   "name": "Haldi",
                   "iconId": "64c7bb85fb7a6973b490790a",
@@ -2023,7 +2022,6 @@
                   "endTime": "11am",
                   "city": "Ahmedabad"
                 }
-              ]
             }
           }
         },
@@ -3798,5 +3796,104 @@
         },
       }
     },
+    
+    "/user/getEvents": {
+      "get": {
+        "summary": "Get Events related to a user",
+        "tags": ["User"],
+        "parameters": [
+          {
+          "in": "query",
+          "name": "userId",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "the id of the user whose events are to be fetched"
+          }
+        ],
+        
+        "responses": {
+          "200": {
+            "description": "success response",
+            "content":{
+              "application/json": {
+                "schema": {
+                  "example": [
+                  {
+                      "event": {
+                          "_id": "652fce67c42aadfe098bf8ba",
+                          "organizers": "652fce67c42aadfe098bf8b8",
+                          "name": "test event",
+                          "shop": null,
+                          "code": "64e5bbf080a21cf7e4a7ec24",
+                          "type": "Wedding",
+                          "functions": [
+                              "652fd7a7daaeb1ef278a122a",
+                              "652fdd2c60d609f96cc1dbe9"
+                          ],
+                          "createdAt": "2023-10-18T12:24:07.868Z",
+                          "updatedAt": "2023-10-18T13:27:24.221Z",
+                          "__v": 28
+                      },
+                      "role": "SUPER ADMIN",
+                      "occasionRole": "GROOM",
+                      "firstName": "Aman",
+                      "lastName": "shah",
+                      "gender": "male",
+                      "tags": null,
+                      "friendsAndFamily": [],
+                      "rsvp": false,
+                      "meals": null,
+                      "_id": "652fce67c42aadfe098bf8b6"
+                 }
+                ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    "/code/{code}": {
+      "get": {
+        "summary": "Get details of the code",
+        "tags": ["Code"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The code for which details are to be fetched"
+          }],
+          
+          "responses": {
+            "200":{
+              "description": "Success response",
+              "content": {
+                "application/json": {
+                  "schema":{
+                    "example": {                  
+                      "_id": "64e5bbf180a21cf7e4a7ec27",
+                      "code": "TIY327",
+                      "used": false,
+                      "price": 100,
+                      "retailerId": null,
+                      "type": "wedding",
+                      "createdAt": "2023-08-23T07:57:37.113Z",
+                      "updatedAt": "2023-08-23T07:57:37.113Z",
+                      "__v": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+      }
+    }
   }
 }
