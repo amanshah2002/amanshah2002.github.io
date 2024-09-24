@@ -1,0 +1,875 @@
+openapi: 3.0.3
+info:
+  title: Violette weddings
+  description: Violette weddings apis
+  version: 1.0.0
+components:
+  responses:
+    '400':
+      description: Bad request - invalid input or missing parameters
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+    '404':
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+    '409':
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+                
+    
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+                
+    '500':
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+paths:
+  /accommodation/move-guests:
+    post:
+      summary: Move guest from one accommodation to another
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - currentAccommodationId
+                - newAccommodationId
+                - guestIds
+                - checkInDate
+                - checkOutDate
+              properties:
+                currentAccommodationId:
+                  type: string
+                  description: >-
+                    The id of the accommodation from which the guest has to be
+                    moved.
+                  example: 66ed36bc01b9f930d23d02f8
+                newAccommodationId:
+                  type: string
+                  description: The id of the new accommodation.
+                  example: 66ebff5fa21050521623928c
+                guestIds:
+                  type: array
+                  description: The id of the new accommodation.
+                  example:
+                    - 66ebdad07cd2bf56d488449c
+                    - 66e3f1c27679a1a4f0076cdb
+                  items:
+                    type: string
+                checkInDate:
+                  type: string
+                  description: The check in date for the new accommodation (ISO 8601 format)
+                  format: date-time
+                checkOutDate:
+                  type: string
+                  description: The check out date for the new accommodation (ISO 8601 format)
+                  format: date-time
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    description: Message displayed after api is successfully executed
+                    example: >-
+                      Guests have been successfully moved to the new
+                      accommodation.
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Accommodation
+  /accommodation/add-guest:
+    post:
+      summary: Add guest to accommodation from guest list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - eventId
+                - guestIds
+                - companyProfileId
+                - roomId
+                - hotelId
+                - bookingDetails
+              properties:
+                eventId:
+                  type: string
+                  format: objectId
+                  description: The ID of the event.
+                  example: 66e189a48dacf4f20d7e51d2
+                guestIds:
+                  type: array
+                  items:
+                    type: string
+                    format: objectId
+                  description: Array of guest IDs to be added to the accommodation.
+                  example:
+                    - 66e3f1c27679a1a4f0076ce2
+                companyProfileId:
+                  type: string
+                  format: objectId
+                  description: The company profile ID associated with the booking.
+                  example: 66e1839f04bcf8e6974a4bdf
+                roomId:
+                  type: string
+                  format: objectId
+                  description: The ID of the room where guests will be accommodated.
+                  example: 66e1839f04bcq8e6974a8hjf
+                hotelId:
+                  type: string
+                  format: objectId
+                  description: The ID of the hotel where guests will be accommodated.
+                  example: 66e1700f04bef8e6674a4fvg
+                bookingDetails:
+                  type: object
+                  required:
+                    - checkInDate
+                    - checkOutDate
+                  description: Details of the booking.
+                  properties:
+                    checkInDate:
+                      type: string
+                      format: date-time
+                      description: The check-in date. (ISO 8601 format)
+                    checkOutDate:
+                      type: string
+                      format: date-time
+                      description: The check-out date. (ISO 8601 format)
+                    checkInTime:
+                      type: string
+                      format: time
+                      description: (Optional) The check in time of the guests
+                      example: '13:00'
+                    checkOutTime:
+                      type: string
+                      format: time
+                      description: (Optional) The check out time of the guests
+                      example: '10:00'
+                accommodationId:
+                  type: string
+                  format: objectId
+                  description: >-
+                    (Optional) The ID of the accommodation, if already
+                    available.
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    description: Message displayed after api is successfully executed
+                    example: Guests accommodated successfully.
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Accommodation
+  /accommodation/change-hotel:
+    post:
+      summary: Change Hotel of the accommodation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - accommodationId
+                - newHotelRef
+                - newRoomRef
+              properties:
+                accommodationId:
+                  type: string
+                  format: objectId
+                  description: The ID of the accommodation that needs to be changed.
+                  example: 66ed44851f6853179b4d90f4
+                newHotelRef:
+                  type: string
+                  format: objectId
+                  description: The ID of the new hotel reference.
+                  example: 66f11af7b026c0eb71d5b5f6
+                newRoomRef:
+                  type: string
+                  format: objectId
+                  description: The ID of the new room reference in the hotel.
+                  example: 66f119beb026c0eb71d5b5e4
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    description: Message displayed after api is successfully executed
+                    example: >-
+                      The hotel for the accommodation has been successfully
+                      updated.
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Accommodation
+        
+  /accommodation/change-room-type:
+    post:
+      summary: Change the room type of accommodation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - accommodationId
+                - newRoomRef
+              properties:
+                accommodationId:
+                  type: string
+                  format: objectId
+                  description: The ID of the accommodation that needs to have its room type changed.
+                  example: "60b8d8a7f1a2b40f30b5b60e"  # Example of an ObjectId
+                newRoomRef:
+                  type: string
+                  format: objectId
+                  description: The ID of the new room reference to be assigned to the accommodation.
+                  example: "60b8d8a7f1a2b40f30b5b60f"  # Example of an ObjectId
+
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    description: Message displayed after api is successfully executed
+                    example: >-
+                     Room type for the accommodation has been successfully updated.
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Accommodation
+        
+  
+  /accommodation/edit-guest-accommodation:
+    post:
+      summary: Edit guest check-in-out dates inside accommodation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - accommodationId
+                - guestId
+                - checkInDate
+                - checkOutDate
+              properties:
+                accommodationId:
+                  type: string
+                  format: objectId
+                  description: The ID of the accommodation where the guest is staying.
+                  example: "60b8d8a7f1a2b40f30b5b60e"  # Example of an ObjectId
+                guestId:
+                  type: string
+                  format: objectId
+                  description: The ID of the guest whose accommodation details are being edited.
+                  example: "60b8d8a7f1a2b40f30b5b60f"  # Example of an ObjectId
+                checkInDate:
+                  type: string
+                  format: date-time
+                  description: The date when the guest checks in (ISO 8601 format).
+                checkOutDate:
+                  type: string
+                  format: date-time
+                  description: The date when the guest checks out (ISO 8601 format).
+
+
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    description: Message displayed after api is successfully executed
+                    example: >-
+                     The guest's accommodation has been successfully updated.
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Accommodation
+        
+  /accommodation/get:
+    get:
+      summary: Get accommodations
+      parameters: 
+        - name: eventId
+          in: query
+          required: true
+          description: The id of the event from which accommodations are to be fetched
+          schema: 
+            type: string
+            format: objectId
+            example: 60b8d8a7f1a2b40f30b5b60e
+        
+        - name: guestId
+          in: query
+          required: false
+          description: (Optional) The id of the guest whose accommodation is to be fetched
+          schema: 
+            type: string
+            format: objectId
+            example: 60b8d8a7f1a2b40f30b5b62e
+            
+      responses:
+        '200':
+          description: "Successfully retrieved accommodation details."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accommodations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          format: objectId
+                          description: "The unique ID of the accommodation."
+                          example: "66ed44851f6853179b4d90f4"
+                        guests:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              type: string
+                              format: objectId
+                              description: "Array of guest IDs associated with the accommodation."
+                              example: "66e3f1c27679a1a4f0076cdb"
+                        checkInTime:
+                          type: string
+                          description: "The time when the guest can check in."
+                          example: "12 PM"
+                        checkOutTime:
+                          type: string
+                          description: "The time when the guest must check out."
+                          example: "1 PM"
+                        checkInDate:
+                          type: string
+                          format: date-time
+                          description: "The date when the guest checks in."
+                          example: "2024-09-19T18:04:55+05:30"  # ISO 8601 format
+                        checkOutDate:
+                          type: string
+                          format: date-time
+                          description: "The date when the guest checks out."
+                          example: "2024-09-24T12:04:55+05:30"  # ISO 8601 format
+                        totalNights:
+                          type: integer
+                          description: "Total number of nights booked."
+                          example: 5
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: "Timestamp when the accommodation record was created."
+                          example: "2024-09-20T09:46:45.887Z"  # ISO 8601 format
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: "Timestamp when the accommodation record was last updated."
+                          example: "2024-09-23T07:47:02.434Z"  # ISO 8601 format
+                        __v:
+                          type: integer
+                          description: "Version key for the accommodation document."
+                          example: 6
+                        event:
+                          type: string
+                          format: objectId
+                          description: "The ID of the associated event."
+                          example: "66e189a48dacf4f20d7e51d2"
+                        id:
+                          type: string
+                          format: objectId
+                          description: "Legacy ID of the accommodation."
+                          example: "66ed44851f6853179b4d90f4"
+
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Accommodation
+        
+        
+  /accommodation/remove-guest/{accommodationId}:
+    delete:
+      summary: Remove guest from a accommodation
+      parameters: 
+        - name: accommodationId
+          in: path
+          required: true
+          description: The id of the accommodation from which the guest is to be removed
+          schema: 
+            type: string
+            format: objectId
+            example: 60b8d8a7f1a2b40f30b5b60e
+        
+        - name: guestId
+          in: query
+          required: true
+          description: The id of the guest to be removed
+          schema: 
+            type: string
+            format: objectId
+            example: 60b8d8a7f1a2b40f30b5b62e
+            
+      responses:
+        '200':
+          description: "Successfully removed guest from accommodation."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guest has been successfully removed from the accommodation.
+
+        '404':
+          $ref: '#/components/responses/404'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Accommodation
+        
+  
+  /accommodation/delete/{accommodationId}:
+     delete:
+      summary: Remove guest from a accommodation
+      parameters: 
+        - name: accommodationId
+          in: path
+          required: true
+          description: The id of the accommodation to be deleted
+          schema: 
+            type: string
+            format: objectId
+            example: 60b8d8a7f1a2b40f30b5b60e
+        
+        - name: forceDelete
+          in: query
+          required: false
+          description: (Optional) Whether or not to force delete accommodation with guest (Not case sensitive).
+          schema: 
+            type: string
+            description: The value is not case sensitive
+            enum:
+              - Yes
+              - No
+            format: objectId
+            example: Yes
+            
+      responses:
+        '200':
+          description: "Successfully Deleted accommodation."
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Accommodation successfully deleted."
+                - type: object
+                  properties:
+                      guestList:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            firstName:
+                              type: string
+                              example: "John"
+                            lastName:
+                              type: string
+                              example: "Doe"
+                            contactNumber:
+                              type: integer
+                              example: 1234567890
+                            gender:
+                              type: string
+                              enum: 
+                                - "male"
+                                - "female"
+                                - "other"
+                              example: "male"
+                            avatar:
+                              type: string
+                              format: uri
+                              example: "https://example.com/avatar.jpg"
+                            functionDetails:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  functionName:
+                                    type: string
+                                    example: "Best Man"
+                                  functionDescription:
+                                    type: string
+                                    example: "Responsible for the best man speech."
+                            tags:
+                              type: array
+                              items:
+                                type: string
+                                format: objectId
+                                example: "60b8d8a7f1a2b40f30b5b60e"
+                            subGuests:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  firstName:
+                                    type: string
+                                    example: "Jane"
+                                  lastName:
+                                    type: string
+                                    example: "Doe"
+                            primaryGuest:
+                              type: string
+                              format: objectId
+                              example: "60b8d8a7f1a2b40f30b5b60e"
+                            meal:
+                              type: string
+                              format: objectId
+                              example: "60b8d8a7f1a2b40f30b5b60f"
+                            user:
+                              type: string
+                              format: objectId
+                              example: "60b8d8a7f1a2b40f30b5b60g"
+                            event:
+                              type: string
+                              format: objectId
+                              example: "60b8d8a7f1a2b40f30b5b60h"
+      
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Accommodation
+        
+        
+
+  /attachments/upload-image:
+    post:
+      summary: "Upload attachments to a task."
+      description: "Uploads attachments to a specified task if the task exists. If no task ID is provided, it uploads attachments without associating them with a task."
+      operationId: "uploadTaskAttachments"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: 
+                - taskAttachments
+              properties:
+                taskId:
+                  type: string
+                  format: objectId
+                  description: "(Optional) The ID of the task to which the attachments should be added."
+                  example: "60b8d8a7f1a2b40f30b5b60e"
+                taskAttachments:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: "Files to be uploaded as attachments."
+      responses:
+        '200':
+          description: "Attachments uploaded successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Attachments uploaded successfully."
+        '400':
+          description: "Bad request - invalid input."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Maximum number of attachments exceeded."
+        '404':
+          description: "Task not found."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Task not found."
+        '500':
+          description: "Internal server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred."
+      
+      tags: 
+        - Attachments
+        
+        
+  
+  /auth/create-user-details: 
+    post: 
+      summary: Create details of a existing user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  description: "The first name of the user."
+                  example: "John"
+                lastName:
+                  type: string
+                  description: "The last name of the user."
+                  example: "Doe"
+                email:
+                  type: string
+                  format: email
+                  description: "The email address of the user."
+                  example: "john.doe@example.com"
+              required:
+                - firstName
+                - lastName
+                - email
+                
+      responses:
+        '200':
+          description: "OTP details set successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  signature:
+                    type: string
+                    description: "The generated OTP signature."
+                    example: "abcdef1234567890"
+                  publicKey:
+                    type: string
+                    description: "The public key associated with the OTP."
+                    example: "publicKeyExample12345"
+                  otpExpiration:
+                    type: string
+                    format: date-time
+                    description: "The expiration time of the OTP in ISO 8601 format."
+                    example: "2024-09-24T12:00:00Z"
+                    
+                    
+        '404':
+          $ref: '#/components/responses/404'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      tags: 
+        - Auth
+        
+        
+  /auth/verify-otp:
+    post:
+      summary: "Verify OTP for user"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contactNumber:
+                  type: string
+                  description: "The contact number of the user."
+                  example: "1234567890"
+                otp:
+                  type: string
+                  description: "The OTP provided by the user."
+                  example: "123456"
+              required:
+                - contactNumber
+                - otp
+      responses:
+        '200':
+          description: "OTP Verified successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "OTP Verified"
+        '404':
+          $ref: '#/components/responses/404'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+        '401':
+          $ref: '#/components/responses/401'
+                    
+      tags: 
+        - Auth
+
+  
+  
+  /auth/verification-status/{contactNumber}:
+    get:
+      summary: "Get user verification status."
+      description: "Checks if the user has verified their OTP and whether they have a password set based on their contact number."
+      operationId: "userVerificationStatus"
+      parameters:
+        - name: contactNumber
+          in: path
+          required: true
+          description: "The contact number of the user to check verification status."
+          schema:
+            type: string
+            example: "1234567890"  # Example contact number (as a string)
+      responses:
+        '200':
+          description: "Successfully retrieved verification status."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  verified:
+                    type: boolean
+                    example: true  # Indicates if the user is verified
+        '400':
+          description: "Bad request - invalid contact number."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid contact number format."
+        '404':
+          description: "User not found."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found."
+        '500':
+          description: "Internal server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred."
+      tags:
+        - Auth
+        
+    
+servers:
+  - url: http://localhost:3000
+    variables: {}
+    description: Development/local server
