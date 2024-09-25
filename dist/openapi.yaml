@@ -44,6 +44,16 @@ components:
                 type: string
                 description: specifies the error message
                 
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+                
     '500':
       description: Internal server error
       content:
@@ -54,6 +64,8 @@ components:
                 type: string
                 description: specifies the error message
 paths:
+  #Accommodation apis
+  
   /accommodation/move-guests:
     post:
       summary: Move guest from one accommodation to another
@@ -119,6 +131,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
+        
   /accommodation/add-guest:
     post:
       summary: Add guest to accommodation from guest list
@@ -214,6 +227,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
+        
   /accommodation/change-hotel:
     post:
       summary: Change Hotel of the accommodation
@@ -310,7 +324,6 @@ paths:
       tags:
         - Accommodation
         
-  
   /accommodation/edit-guest-accommodation:
     post:
       summary: Edit guest check-in-out dates inside accommodation
@@ -470,7 +483,6 @@ paths:
       tags:
         - Accommodation
         
-        
   /accommodation/remove-guest/{accommodationId}:
     delete:
       summary: Remove guest from a accommodation
@@ -514,7 +526,6 @@ paths:
       tags:
         - Accommodation
         
-  
   /accommodation/delete/{accommodationId}:
      delete:
       summary: Remove guest from a accommodation
@@ -630,7 +641,7 @@ paths:
       tags:
         - Accommodation
         
-        
+  #Attachment apis
 
   /attachments/upload-image:
     post:
@@ -702,8 +713,8 @@ paths:
       tags: 
         - Attachments
         
+  #Auth apis
         
-  
   /auth/create-user-details: 
     post: 
       summary: Create details of a existing user
@@ -764,10 +775,138 @@ paths:
       tags: 
         - Auth
         
+  /auth/create-password: 
+    post: 
+      summary: Create password for a user
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema:
+                type: object
+                properties:
+                  contactNumber:
+                    type: integer
+                    example: 1234567890
+                    description: User's contact number.
+                  password:
+                    type: string
+                    format: password
+                    description: User's password.
+                    example: "P@ssword123"
+                  confirmPassword:
+                    type: string
+                    format: password
+                    description: Confirmation of the password, should match the           `password` field.
+                    example: "P@ssword123"
+                  publicKey:
+                    type: string
+                    description: User's public key in PEM or DER format.
+                    example: "-----BEGIN PUBLIC KEY-----...-----END PUBLIC KEY-----"
+                  signature:
+                    type: string
+                    description: Signature to verify the request authenticity.
+                    example: "dGVzdHNpZ25hdHVyZQ==" # Base64-encoded string for           signature
+                required:
+                  - contactNumber
+                  - password
+                  - confirmPassword
+                  - publicKey
+                  - signature
+      responses: 
+        '200':
+          description: Password created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password created"
+                  token:
+                    type: string
+                    description: JWT access token provided after successful password creation.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    
+        '404': 
+          $ref: '#/components/responses/404'
+        '400':
+          $ref: '#/components/responses/400'
+        '403': 
+          $ref: '#/components/responses/403'
+          
+      tags: 
+        - Auth
+          
+  /auth/forgot-password/{contactNumber}: 
+    post:
+      summary: Api to reset password if user forgets their passowrd
+      parameters: 
+        - name: contactNumber
+          in: path
+          required: true
+          description: Contact number of the user whose passoword is to changed
+          schema:
+            type: string
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                  password:
+                    type: string
+                    format: password
+                    description: New user password.
+                    example: "NewP@ssword123"
+                  confirmPassword:
+                    type: string
+                    format: password
+                    description: Confirmation of the new password, should match the           `password` field.
+                    example: "NewP@ssword123"
+                  publicKey:
+                    type: string
+                    description: User's public key for signature verification.
+                    example: "-----BEGIN PUBLIC KEY-----...-----END PUBLIC KEY-----"
+                  signature:
+                    type: string
+                    description: Signature for the request authentication.
+                    example: "dGVzdHNpZ25hdHVyZQ=="
+                    
+      responses: 
+        '200':
+          description: "Password Changed successfully."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password changed successfully." 
+        '404': 
+          $ref: '#/components/responses/404'
+        '400':
+          $ref: '#/components/responses/400'
+        '403': 
+          $ref: '#/components/responses/403'  
+          
+      tags: 
+       - Auth
         
-  /auth/verify-otp:
+  /auth/verify-otp/{contactNumber}:
     post:
       summary: "Verify OTP for user"
+      parameters: 
+        - name: contactNumber
+          in: path
+          required: true
+          description: contactNumber of the user whose otp is to be verified
+          schema:
+            type: string
+            example: 9825606702
       requestBody:
         required: true
         content:
@@ -775,16 +914,11 @@ paths:
             schema:
               type: object
               properties:
-                contactNumber:
-                  type: string
-                  description: "The contact number of the user."
-                  example: "1234567890"
                 otp:
                   type: string
                   description: "The OTP provided by the user."
                   example: "123456"
               required:
-                - contactNumber
                 - otp
       responses:
         '200':
@@ -808,9 +942,134 @@ paths:
                     
       tags: 
         - Auth
-
-  
-  
+        
+  /auth/login: 
+    post: 
+      summary: User login
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema: 
+                type: object
+                properties:
+                  contactNumber:
+                    type: integer
+                    description: User's contact number.
+                    example: 1234567890
+                  password:
+                    type: string
+                    format: password
+                    description: User's password for login.
+                    example: "P@ssword123"
+                    
+                required:
+                  - contactNumber
+                  - password
+                  
+      responses: 
+        '200':
+          description: Login successful. Returns user details and an access token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      contactNumber:
+                        type: integer
+                        description: User's contact number.
+                        example: 1234567890
+                      email:
+                        type: string
+                        format: email
+                        description: User's email address.
+                        example: "user@example.com"
+                      firstName:
+                        type: string
+                        description: User's first name.
+                        example: "John"
+                      lastName:
+                        type: string
+                        description: User's last name.
+                        example: "Doe"
+                      password:
+                        type: string
+                        format: password
+                        description: User's password.
+                        example: "hashedPassword123"
+                      otp:
+                        type: integer
+                        description: OTP sent to the user.
+                        example: 123456
+                      isOtpVerified:
+                        type: boolean
+                        description: Whether the user has verified their OTP.
+                        example: true
+                      otpExpiration:
+                        type: string
+                        format: date-time
+                        description: Expiration time of the OTP.
+                        example: "2023-09-25T14:48:00.000Z"
+                      eventDetails:
+                        type: array
+                        description: List of event details associated with the user.
+                        items:
+                          type: object
+                          properties:
+                            event:
+                              type: string
+                              description: ObjectId of the event.
+                              example: "60d21b4667d0d8992e610c85"
+                            role:
+                              type: string
+                              description: ObjectId representing the user's role in the event.
+                              example: "60d21b4667d0d8992e610c86"
+                            acceptedDocuments:
+                              type: array
+                              description: List of ObjectIds of accepted documents for the event.
+                              items:
+                                type: string
+                                example: "60d21b4667d0d8992e610c87"
+                            rejectedDocuments:
+                              type: array
+                              description: List of ObjectIds of rejected documents for the event.
+                              items:
+                                type: string
+                                example: "60d21b4667d0d8992e610c88"
+                            pendingDocuments:
+                              type: array
+                              description: List of ObjectIds of pending documents for the event.
+                              items:
+                                type: string
+                                example: "60d21b4667d0d8992e610c89"
+                      partOf:
+                        type: array
+                        items:
+                          type: object
+                          description: List of companies or organizations the user is part of.
+                      documents:
+                        type: array
+                        items:
+                          type: string
+                          description: List of document IDs associated with the user.
+                          example: "60d21b4667d0d8992e610c85"
+                  token:
+                    type: string
+                    description: JWT access token provided after successful login.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+        '401':
+          $ref: '#/components/responses/401'
+          
+      tags: 
+        - Auth
+        
   /auth/verification-status/{contactNumber}:
     get:
       summary: "Get user verification status."
@@ -836,38 +1095,357 @@ paths:
                     type: boolean
                     example: true  # Indicates if the user is verified
         '400':
-          description: "Bad request - invalid contact number."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "Invalid contact number format."
+          $ref: '#/components/responses/400'
         '404':
-          description: "User not found."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "User not found."
+           $ref: '#/components/responses/404'
         '500':
-          description: "Internal server error."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "An unexpected error occurred."
+           $ref: '#/components/responses/500'
       tags:
         - Auth
+  
+  /auth/resend-otp/{contactNumber}:
+    get:
+      summary: Resend OTP
+      description: Resends an OTP to the user based on their contact number and updates OTP verification status.
+      parameters:
+        - in: path
+          name: contactNumber
+          schema:
+            type: string
+            example: "1234567890"
+          required: true
+          description: The contact number of the user to resend OTP to.
+      responses:
+        '200':
+          description: OTP resent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    example: "OTP sent successfully"
+        '404':
+          $ref: '#/components/responses/404'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      tags: 
+        - Auth
         
+  #Category apis
+  
+  /category/add: 
+    post:
+      summary: Add category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "John Weds Doe"
+                  description: The name of the category.
+                eventId:
+                  type: string
+                  format: objectId
+                  example: "507f1f77bcf86cd799439011"
+                  description: (Optional) The ID of the associated event.
+      responses: 
+        '200':
+          description: New category successfully created
+          content: 
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: "New category successfully created."
+                      
+      tags: 
+          - Category
+          
+  /category/get: 
+    get: 
+      summary: Get categories
+      parameters: 
+        - name: eventId
+          in: query
+          description: (Optional) Id of the event if event specific categories are to be fetched
+          required: false
+          schema:
+            type: string
+            format: objectId
+      responses: 
+        '200': 
+          description: Successfully fetched categories
+          content:
+            application/json:
+              schema:
+                properties:
+                  _id: 
+                    type: string
+                    format: objectId
+                    description: The id of the document
+                    example: 66e189dc8dacf4f20d7e51dk
+                  
+                  name: 
+                    type: string
+                    description: The name of the category
+                    example: Category 1
+                    
+                  eventId: 
+                    type: string
+                    format: objectId
+                    description: (Optional) Id of the event to which the category belongs to
+                    
+        '500': 
+          $ref: '#/components/responses/500'
+          
+      tags:
+        - Category
+            
+  /categories/{categoryId}:
+    delete:
+      summary: Delete a category
+      description: Deletes a category by its ID. If the category is associated with an event, it will be removed from the event's categories.
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema: 
+            type: string
+          description: The ID of the category to be deleted.
+      responses:
+        '200':
+          description: Category successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Category successfully deleted."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+          
+      tags: 
+        - Category
+        
+  #Codes apis
+  
+  /codes/purchase: 
+    post: 
+      summary: Purchase a code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                companyId:
+                  type: string
+                  format: objectId
+                  example: "507f1f77bcf86cd799439011"
+                  description: The ID of the company associated with the purchase.
+                eventPlan:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      planId:
+                        type: string
+                        format: objectId
+                        example: "507f1f77bcf86cd799439012"
+                        description: The ID of the event plan.
+                      discount:
+                        type: string
+                        example: "10%"
+                        description: (Optional) Discount applicable to the event plan.
+                      quantity:
+                        type: integer
+                        example: 5
+                        description: The number of codes to purchase for the event plan.
+                      unitPrice:
+                        type: object
+                        properties:
+                          currency:
+                            type: string
+                            example: "USD"
+                            description: The currency of the price.
+                          amount:
+                            type: number
+                            format: double
+                            example: 100.00
+                            description: The unit price of the event plan.
+                      codes:
+                        type: array
+                        items:
+                          type: string
+                          format: objectId
+                          example: "507f1f77bcf86cd799439015"
+                          description: (Optional) An array of ObjectIds representing codes associated with the event plan.
+              required:
+                - companyId
+                - eventPlan
+      responses:
+        '200':
+          description: Purchase successful
+          content:
+            application/json: 
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Purchase successful"
+                  response:
+                    type: object
+                    properties:
+                      <planName>:
+                        type: array
+                        description: The plan name key will be the name of the event type
+                        items:
+                          type: string
+                          example: "aafb89"
+                          
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+          
+      tags: 
+        - Codes
+        
+  /codes/redeem:
+   post:
+      summary: Redeem a promotional code
+      description: Allows a user to redeem a promotional code. The code must be valid and not previously used.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usedCode:
+                  type: string
+                  example: "F820CC"
+                  description: The promotional code to redeem.
+      responses:
+        '200':
+          description: Code redeemed successfully
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Code redeemed Successfully"
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+      tags: 
+        - Codes
+        
+  /codes/purchase/{companyId}:
+    get:
+      summary: Retrieve purchase codes for a company
+      description: Fetches the purchase codes associated with a specified company ID.
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema: 
+            type: string
+            format: objectId
+          description: The ID of the company for which to retrieve purchase codes.
+      responses:
+        '200':
+          description: Successfully retrieved purchase codes
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        totalPrice:
+                          type: object
+                          properties:
+                            amount:
+                              type: number
+                              format: double
+                              example: 1800
+                            currency:
+                              type: string
+                              example: "INR"
+                        _id:
+                          type: string
+                          format: objectId
+                          example: "66e188a2ca7f8e1974ed240c"
+                        company:
+                          type: string
+                          format: objectId
+                          example: "66e1839f04bcf8e6974a4bdf"
+                        eventPlan:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              unitPrice:
+                                type: object
+                                properties:
+                                  amount:
+                                    type: number
+                                    format: double
+                                    example: 1000
+                                  currency:
+                                    type: string
+                                    example: "INR"
+                              planId:
+                                type: string
+                                format: objectId
+                                example: "66bf3cd458c15bfaae59b34a"
+                              discount:
+                                type: string
+                                example: "10%"
+                              quantity:
+                                type: integer
+                                example: 2
+                              codes:
+                                type: array
+                                items:
+                                  type: string
+                                  example: "66e188a2ca7f8e1974ed240f"
+                              _id:
+                                type: string
+                                format: objectId
+                                example: "66e188a2ca7f8e1974ed240d"
+                      
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+          
+      tags: 
+        - Codes
     
 servers:
   - url: http://localhost:3000
