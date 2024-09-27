@@ -3,76 +3,1589 @@ info:
   title: Violette weddings
   description: Violette weddings apis
   version: 1.0.0
-components:
-  securitySchemes:
-    bearerAuth: # arbitrary name for the security scheme
-      type: http
-      scheme: bearer
-      bearerFormat: JWT 
-  responses:
-    '400':
-      description: Bad request - invalid input or missing parameters
-      content:
-        application/json:
-          schema:
-            properties:
-              error:
-                type: string
-                description: specifies the error message
-    '404':
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            properties:
-              error:
-                type: string
-                description: specifies the error message
-    '409':
-      description: Conflict
-      content:
-        application/json:
-          schema:
-            properties:
-              error:
-                type: string
-                description: specifies the error message
-                
-    
-    '401':
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            properties:
-              error:
-                type: string
-                description: specifies the error message
-                
-    '403':
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            properties:
-              error:
-                type: string
-                description: specifies the error message
-                
-    '500':
-      description: Internal server error
-      content:
-        application/json:
-          schema:
-            properties:
-              error:
-                type: string
-                description: specifies the error message
 security:
   - bearerAuth: []
 paths:
-  #Accommodation apis
-  
+  /guest-list/add:
+    post:
+      summary: >-
+        Add a new primary guest along with optional sub-guests to a specified
+        event
+      description: >-
+        This endpoint allows the addition of a new primary guest to the event,
+        with the option to include multiple sub-guests. Ensure that all required
+        guest details are provided in the request payload.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IAddGuestPayload'
+      responses:
+        '200':
+          description: Success response indicating the guest was added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: New guest added successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/move-sub-guests:
+    post:
+      summary: >-
+        Transfer sub-guests from one primary guest to another designated primary
+        guest
+      description: >-
+        This endpoint allows the transfer of sub-guests from one primary guest
+        to another. The request should specify the source primary guest and the
+        target primary guest to ensure correct grouping of sub-guests.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IMoveSubGuestPayload'
+      responses:
+        '200':
+          description: >-
+            Success response indicating that the sub-guests were moved
+            successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guest successfully moved to another group
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/move-primary-guest:
+    post:
+      summary: Relocate a primary guest to a different group
+      description: >-
+        This endpoint allows the relocation of a primary guest from their
+        current group to another specified group. The request must include the
+        details of the new group to which the guest will be moved.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IMovePrimaryGuestPayload'
+      responses:
+        '200':
+          description: Success response confirming that the primary guest has been moved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Primary guest successfully moved.
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/edit:
+    patch:
+      summary: Update a primary guest and their associated sub-guests
+      description: >-
+        Modifies the details of a specified primary guest, including any
+        associated sub-guests, ensuring all related information is synchronized.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchGuestPayload'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guest updated successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/edit-guests:
+    patch:
+      summary: Update multiple primary guests and their associated sub-guests
+      description: >-
+        Modifies the details of an array of primary guests, including their
+        related sub-guests, ensuring all information is accurately synchronized
+        for each guest.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchGuestPayloadArray'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guests updated successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/edit-cell:
+    patch:
+      summary: Update a single guest's details
+      description: >-
+        Modifies the information of a specific guest object, allowing updates to
+        various attributes while ensuring data integrity.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchGuestCellPayload'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guest updated successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/get:
+    get:
+      summary: Retrieve all guests for a specific event
+      description: >-
+        Fetches the complete list of guests associated with the specified event,
+        providing details about each guest.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: eventId
+          schema:
+            type: string
+          required: true
+          description: Unique identifier for the event whose guests are to be retrieved.
+      responses:
+        '200':
+          description: Successfully retrieved the list of guests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestsResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/{guestId}:
+    get:
+      summary: Retrieve details of a specific guest
+      description: >-
+        Fetches detailed information about a particular guest. If the guest is a
+        primary guest, the response will also include the details of any
+        associated sub-guests.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: guestId
+          schema:
+            type: string
+          required: true
+          description: Unique identifier for the guest whose details are to be retrieved.
+      responses:
+        '200':
+          description: Successfully retrieved guest details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guest'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/delete:
+    post:
+      summary: Delete guests based on provided IDs
+      description: >-
+        Removes specified guests from the guest list. If the guest being deleted
+        is a primary guest and a `newPrimaryGuestId` is provided, that ID will
+        be set as the new primary guest. Additionally, if a `subGuestToKeep` is
+        specified, only that particular sub-guest will remain, while all other
+        sub-guests will be deleted.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IDeleteGuestsPayload'
+      responses:
+        '200':
+          description: Guests successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guest successfully deleted.
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/send-invite:
+    post:
+      summary: Send invitations to all guests of a specified event
+      description: >-
+        Triggers the sending of invitations to all guests associated with the
+        provided event ID. This ensures that all attendees receive their
+        invitations in a timely manner.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  type: string
+                  example: 64a51e6a4f1a2d63f7d25c9b
+      responses:
+        '200':
+          description: Invitations successfully sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invitations successfully sent.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/import-contacts:
+    post:
+      summary: Import guests from a contacts file
+      description: >-
+        Allows users to upload a VCF (.vcf) file containing contact information
+        to create guest entries for an event. The system processes the file and
+        imports the contacts as guests.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                contacts:
+                  type: string
+                  format: binary
+                  description: VCF file containing contacts to be imported
+      responses:
+        '200':
+          description: Contacts imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Contacts imported successfully.
+                  contactsCount:
+                    type: number
+                    example: 10
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/import-guest-list:
+    post:
+      summary: Import guests from a CSV file
+      description: >-
+        Allows users to upload a CSV file to import guests into the event. This
+        operation will overwrite the current guest list with the entries from
+        the uploaded file.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - guestList
+              properties:
+                guestList:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Guests imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: CSV imported successfully
+                  independentSubGuests:
+                    type: array
+                    items:
+                      type: string
+                      example: 64a51e6a4f1a2d63f7d25c9b
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/export-guest-list:
+    post:
+      summary: Export the guest list in CSV format
+      description: >-
+        This endpoint allows users to export the guest list for a specified
+        event in CSV format. Users must provide an array of guest IDs to
+        generate the export.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              example:
+                - 66f27de4eb8b262925cff11b
+                - 66f27de4eb8b262925cff11c
+      responses:
+        '200':
+          description: Export successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Export successful
+                  fileName:
+                    type: string
+                    example: guestList_1727343502829.csv
+        '500':
+          $ref: '#/components/responses/500'
+  /hotel/add:
+    post:
+      summary: Add a hotel at the company level
+      description: >-
+        This endpoint allows a company to add a new hotel to its profile. Only
+        the company that adds the hotel can use it for its events.
+      tags:
+        - Hotel
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IAddHotelPayload'
+      responses:
+        '200':
+          description: Hotel added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hotel successfully added.
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /hotel/edit:
+    patch:
+      summary: Edit a hotel at the company level
+      description: >-
+        This endpoint allows a company to update the details of an existing
+        hotel in its profile. Only the company that added the hotel can modify
+        it.
+      tags:
+        - Hotel
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchHotelPayload'
+      responses:
+        '200':
+          description: Hotel updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hotel successfully updated.
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /hotel/get:
+    get:
+      summary: Retrieve a list of hotels associated with a specific company
+      description: >-
+        This endpoint fetches all hotels linked to the provided company ID. Only
+        hotels that belong to the requesting company will be returned.
+      tags:
+        - Hotel
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: companyId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: >-
+            The unique identifier of the company whose hotel details are to be
+            fetched.
+      responses:
+        '200':
+          description: Successfully retrieved the list of hotels
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelsResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /hotel/{hotelId}:
+    delete:
+      summary: Delete a hotel by its ID
+      description: >-
+        This endpoint allows for the deletion of a hotel. If the hotel is
+        associated with future events, the response will include details about
+        the events and the guests. To permanently delete the hotel, guests must
+        be moved to another accommodation, or delete the hotel without
+        reloacting the guests.
+      tags:
+        - Hotel
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: hotelId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: The unique identifier of the hotel that needs to be deleted.
+        - in: query
+          name: forceDelete
+          schema:
+            type: boolean
+          description: >-
+            Indicates whether to forcefully delete the hotel, bypassing checks
+            for associated guests or events.
+      responses:
+        '200':
+          description: Hotel deletion successful, with possible guest/event details
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UniqueGuestsByEvents'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Hotel successfully deleted
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve details of a specific hotel
+      description: >-
+        This endpoint returns comprehensive information about the hotel
+        identified by the provided hotel ID.
+      tags:
+        - Hotel
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: hotelId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: The unique identifier of the hotel whose details are to be fetched.
+      responses:
+        '200':
+          description: Successfully retrieved hotel details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /hotel/add-to-event:
+    post:
+      summary: Add a hotel to an event
+      description: >-
+        This endpoint allows the addition of a specified hotel to a particular
+        event. The hotel must be associated with the company managing the event.
+      tags:
+        - Hotel
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IAddHotelToEventPayload'
+      responses:
+        '200':
+          description: Hotel successfully added to the event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hotel successfully added to the event.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /hotel/edit-event-hotel:
+    patch:
+      summary: Update hotel details associated with a specific event
+      tags:
+        - Hotel
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IAddHotelToEventPayload'
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hotel details successfully updated.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /hotel/delete-from-event/{hotelId}:
+    delete:
+      summary: Remove a hotel from an event
+      description: >
+        This endpoint allows you to remove a hotel from a specific event. 
+
+        If there are guests currently allocated to this hotel, they must be
+        reallocated 
+
+        to a different accommodation before deleting the hotel. 
+
+        If the `forceDelete` flag is provided, the hotel can be deleted without 
+
+        reallocating guests, leaving them without accommodation.
+      tags:
+        - Hotel
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: hotelId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: ID of the hotel to be removed from the event
+        - in: query
+          name: eventId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: ID of the event from which the hotel is to be deleted
+        - in: query
+          name: forceDelete
+          schema:
+            type: string
+          description: >-
+            Optional flag to force delete the hotel, leaving guests without
+            accommodation
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UniqueGuestsByEvent'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Hotel successfully removed from the event.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /meal/create:
+    post:
+      summary: Add a new meal type
+      description: |
+        This endpoint allows you to create a new meal type in the system. 
+        You must provide a `name` for the meal (e.g., "Veg") and a `color` 
+        representing the meal type visually (e.g., "Green").
+      tags:
+        - Meal
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - color
+              properties:
+                name:
+                  type: string
+                  example: Veg
+                color:
+                  type: string
+                  example: Green
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Meal successfully created.
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /meal/{mealId}:
+    delete:
+      summary: Remove a meal from the system using its ID
+      description: >-
+        This endpoint allows you to delete a meal by specifying the unique
+        `mealId`.
+      tags:
+        - Meal
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: mealId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: Unique identifier of the meal to be deleted from the system.
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Meal successfully deleted.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /plan/create:
+    post:
+      summary: Create a new subscription plan
+      description: >-
+        This endpoint allows the user to create a new subscription plan with
+        specific attributes, such as plan name, guest capacity, function limits,
+        storage capacity, and price. The plan will be associated with the
+        company and can be used to manage event-related services.
+      tags:
+        - Plan
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPlanType'
+      responses:
+        '200':
+          description: Successful creation of the plan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Plan successfully created.
+                  plan:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: 66f52228e5fbfdff9cf4e477
+                        description: Unique identifier for the newly created plan.
+                      planName:
+                        type: string
+                        example: Silver
+                        description: The name assigned to the subscription plan.
+                      numberOfGuests:
+                        type: integer
+                        example: 1500
+                        description: Maximum number of guests included in the plan.
+                      numberOfFunctions:
+                        type: integer
+                        example: 15
+                        description: Maximum number of functions allowed under the plan.
+                      storageCapacity:
+                        type: string
+                        example: 2TB
+                        description: Allocated storage capacity for the plan.
+                      price:
+                        $ref: '#/components/schemas/Price'
+                        description: Details about the pricing of the plan.
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /plan/{planId}:
+    delete:
+      summary: Delete a subscription plan by its ID
+      description: >-
+        This endpoint allows the user to delete a specific subscription plan
+        using its unique identifier (`planId`). Only plans that are not
+        currently associated with any active subscriptions or events can be
+        deleted. The user must provide the `planId` in the request path to
+        identify which plan needs to be removed.
+      tags:
+        - Plan
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: planId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: The unique identifier of the plan to be deleted.
+      responses:
+        '200':
+          description: Plan successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Plan has been successfully deleted.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /role/create:
+    post:
+      summary: Create a new role with specific permissions
+      description: >-
+        This endpoint allows the user to create a new role by specifying a name
+        and a set of permissions. Each role defines a collection of permissions
+        that dictate what actions the role holder can perform within the
+        application. The user must provide a list of permission IDs and a unique
+        role name in the request body.
+      tags:
+        - Role
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - permissions
+                - name
+              properties:
+                permissions:
+                  type: array
+                  items:
+                    type: string
+                    format: ObjectId
+                  example:
+                    - 66f27de4eb8b262925cff11b
+                    - 66f27de4eb8b262925cff11c
+                  description: A list of permission IDs to be assigned to the new role.
+                name:
+                  type: string
+                  example: Groom
+                  description: >-
+                    The name of the new role to be created. It should be unique
+                    within the organization.
+      responses:
+        '200':
+          description: Role successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Role has been created successfully.
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  /room/add:
+    post:
+      summary: Create a new global room type
+      description: >-
+        This endpoint allows the creation of a new room type at the global
+        level. The newly created room type will be available for use in various
+        events and accommodations across the platform. The user must provide the
+        necessary details, such as room name and configuration, in the request
+        body. This action is intended for administrative use to define standard
+        room types.
+      tags:
+        - Room
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IRoom'
+      responses:
+        '200':
+          description: Room type successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Room type has been successfully created.
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  /room/edit:
+    patch:
+      summary: Update a global room type
+      description: >-
+        This endpoint allows for the modification of an existing room type at
+        the global level. The user must provide the room ID and the updated
+        details in the request body. This is typically used to update the
+        properties of a room type such as name, amenities, or capacity. Only
+        users with the necessary permissions can perform this action.
+      tags:
+        - Room
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchRoomTypePayload'
+      responses:
+        '200':
+          description: Room type successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Room type has been successfully updated.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /room/types:
+    get:
+      summary: Retrieve all available room types
+      description: >-
+        This endpoint provides a list of all room types available at the global
+        level. It returns details such as room names, amenities, capacity, and
+        other relevant information. Users can use this endpoint to view and
+        select different room types for their events or accommodations. Access
+        to this endpoint requires appropriate authorization.
+      tags:
+        - Room
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of room types retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomTypesResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /room/{roomId}:
+    delete:
+      summary: Delete a room by its Id
+      description: >-
+        This endpoint allows users to delete a specific room from the system
+        using its unique identifier (`roomId`). If the room type is currently
+        associated with any future events, the user must reallocate the guests
+        accommodated in the room. Alternatively, the user can choose to force
+        delete the room, which will leave the guests without accommodation.
+      tags:
+        - Room
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: roomId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: The unique identifier of the room to be deleted.
+        - in: query
+          name: forceDelete
+          schema:
+            type: string
+          description: >-
+            Flag indicating whether to force delete the room, even if it is
+            associated with future events, leaving guests without accommodation.
+      responses:
+        '200':
+          description: Room deleted successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UniqueGuestsByEvents'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Room successfully deleted
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve details of a specific room
+      description: >-
+        This endpoint allows users to fetch detailed information about a
+        particular room using its unique identifier (`roomId`). The response
+        includes room attributes such as name, type, capacity, and amenities. It
+        also indicates if the room has been marked as deleted. Access to this
+        endpoint requires appropriate authorization.
+      tags:
+        - Room
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: roomId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: >-
+            The unique identifier of the room whose details need to be
+            retrieved.
+      responses:
+        '200':
+          description: Room details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  room:
+                    type: object
+                    allOf:
+                      - $ref: '#/components/schemas/IRoom'
+                      - type: object
+                        properties:
+                          isDeleted:
+                            type: boolean
+                            example: false
+                            description: Indicates if the room is marked as deleted.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /room/add-to-event:
+    post:
+      summary: Add a room type to an event
+      description: >-
+        This endpoint allows users to associate a specific room type with an
+        event. The room type is added to the list of available accommodations
+        for the event, making it accessible for guest allocations and bookings.
+        The request must include details such as the room type, the hotel it
+        belongs to, and the event it is being added to.
+      tags:
+        - Room
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IAddRoomToEventPayload'
+      responses:
+        '200':
+          description: Room added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Room successfully added to the event.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /room/edit-event-room:
+    patch:
+      summary: Edit a room type in an event
+      description: >-
+        This endpoint allows users to modify the details of a room type
+        associated with a specific event. Users can update information such as
+        the quantity or features of the room. If the number of rooms is reduced
+        and existing guest allocations exceed the new quantity, users must
+        reallocate the affected guests. Alternatively, users can choose to force
+        delete these accommodations using the `forceDelete` option.
+      tags:
+        - Room
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: forceDelete
+          schema:
+            type: string
+            description: >-
+              Whether to force delete accommodations for excess guests if the
+              room quantity is reduced.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchEventRoomTypePayload'
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UniqueGuestsByEvent'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Room type successfully updated in the event.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /room/delete-from-event:
+    delete:
+      summary: Delete a room type from an event
+      description: >-
+        This endpoint allows users to remove a specific room type from an event.
+        If there are guests allocated to this room, users must either reallocate
+        them to another room or choose to force delete the room type along with
+        its guest allocations using the `forceDelete` option.
+      tags:
+        - Room
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: eventRoomRef
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: Reference ID of the room type to be deleted from the event.
+        - in: query
+          name: forceDelete
+          schema:
+            type: string
+          description: >-
+            Indicates whether to force delete the room type along with any
+            associated guest allocations.
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - $ref: '#/components/schemas/UniqueGuestsByEvent'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Room type successfully deleted from the event.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /tag/create:
+    post:
+      summary: Create a new tag
+      description: >-
+        This endpoint allows users to create a new tag for categorization or
+        identification purposes. Tags can be associated with specific events or
+        created at the global level to help organize and identify relevant
+        content easily.
+      tags:
+        - Tag
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ITag'
+      responses:
+        '200':
+          description: Tag created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tag created successfully.
+                  tag:
+                    type: object
+                    description: >-
+                      Schema representing a tag used for categorization or
+                      identification.
+                    required:
+                      - _id
+                      - name
+                      - color
+                    properties:
+                      _id:
+                        type: string
+                        format: ObjectId
+                        example: 66f558aaddf1449a32dcd4b8
+                        description: Unique identifier for the tag.
+                      name:
+                        type: string
+                        example: test 2
+                        description: The name of the tag.
+                      color:
+                        type: string
+                        example: red
+                        description: The color associated with the tag.
+                      eventId:
+                        type: string
+                        example: 66f119beb026c0eb71d5b5e4
+                        description: Event ID of the event if the tag is event-specific.
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /tag/{tagId}:
+    delete:
+      summary: Delete a tag by its unique identifier
+      description: >-
+        This endpoint allows users to delete a specific tag by providing its
+        unique identifier (ID). Deleting a tag will remove it from all
+        associated events if applicable, and it cannot be undone.
+      tags:
+        - Tag
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: tagId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: Unique identifier of the tag that needs to be deleted.
+      responses:
+        '200':
+          description: Tag deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tag deleted successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /task-list/create:
+    post:
+      summary: Create a new task for a specific event
+      description: >-
+        This endpoint allows users to create a new task associated with a
+        specific event. The task will include details such as the task name, due
+        date, and any additional notes.
+      tags:
+        - Task List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ICreateTaskPayload'
+      responses:
+        '200':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Task created successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /task-list/edit-checkList:
+    patch:
+      summary: Update the status of a checklist item
+      description: >-
+        This endpoint allows users to modify the status of a specific checklist
+        item associated with a task. Users can mark the checklist item as
+        complete or incomplete, providing an updated status to help track
+        progress on tasks effectively.
+      tags:
+        - Task List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IUpdateCheckListStatus'
+      responses:
+        '200':
+          description: Checklist status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Checklist status changed successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /task-list/{taskId}:
+    delete:
+      summary: Delete a task by its ID
+      description: >-
+        This endpoint allows users to delete a specific task from the task list
+        using its unique identifier (taskId). Deleting a task will remove it
+        permanently from the system, ensuring that the task list remains up to
+        date.
+      tags:
+        - Task List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: taskId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: The unique identifier of the task that needs to be deleted
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Task deleted successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve details of a specific task
+      description: >-
+        This endpoint fetches the details of a task identified by its unique
+        task ID. It allows users to view all relevant information about the
+        specified task.
+      tags:
+        - Task List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: taskId
+          schema:
+            type: string
+            format: ObjectId
+          description: The unique identifier of the task whose details are to be retrieved
+          required: true
+      responses:
+        '200':
+          description: Task details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Edit a task by its ID
+      description: >-
+        This endpoint allows users to modify an existing task using its unique
+        identifier. Users can update details such as the task name, due date,
+        status, and any additional notes. A successful update will return a
+        confirmation message.
+      tags:
+        - Task List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: taskId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: Unique identifier of the task to be modified.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IBaseTaskPayload'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Task updated successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /task-list/get-tasks:
+    get:
+      summary: Retrieve tasks for a specific event
+      description: >-
+        This endpoint fetches all tasks associated with a particular event.
+        Users can filter tasks by providing the function ID to narrow down the
+        results.
+      tags:
+        - Task List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: eventId
+          schema:
+            type: string
+            format: ObjectId
+          description: >-
+            The unique identifier of the event for which tasks are to be
+            retrieved
+          required: true
+        - in: query
+          name: functionId
+          schema:
+            type: string
+            format: ObjectId
+          description: (Optional) The unique identifier of the function to filter the tasks
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tasks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   /accommodation/move-guests:
     post:
       summary: Move guest from one accommodation to another
@@ -109,11 +1622,15 @@ paths:
                     type: string
                 checkInDate:
                   type: string
-                  description: The check in date for the new accommodation (ISO 8601 format)
+                  description: >-
+                    The check in date for the new accommodation (ISO 8601
+                    format)
                   format: date-time
                 checkOutDate:
                   type: string
-                  description: The check out date for the new accommodation (ISO 8601 format)
+                  description: >-
+                    The check out date for the new accommodation (ISO 8601
+                    format)
                   format: date-time
       responses:
         '200':
@@ -138,7 +1655,6 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
-        
   /accommodation/add-guest:
     post:
       summary: Add guest to accommodation from guest list
@@ -234,7 +1750,6 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
-        
   /accommodation/change-hotel:
     post:
       summary: Change Hotel of the accommodation
@@ -285,7 +1800,6 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
-        
   /accommodation/change-room-type:
     post:
       summary: Change the room type of accommodation
@@ -302,14 +1816,17 @@ paths:
                 accommodationId:
                   type: string
                   format: objectId
-                  description: The ID of the accommodation that needs to have its room type changed.
-                  example: "60b8d8a7f1a2b40f30b5b60e"  # Example of an ObjectId
+                  description: >-
+                    The ID of the accommodation that needs to have its room type
+                    changed.
+                  example: 60b8d8a7f1a2b40f30b5b60e
                 newRoomRef:
                   type: string
                   format: objectId
-                  description: The ID of the new room reference to be assigned to the accommodation.
-                  example: "60b8d8a7f1a2b40f30b5b60f"  # Example of an ObjectId
-
+                  description: >-
+                    The ID of the new room reference to be assigned to the
+                    accommodation.
+                  example: 60b8d8a7f1a2b40f30b5b60f
       responses:
         '200':
           description: Success response
@@ -321,7 +1838,8 @@ paths:
                     type: string
                     description: Message displayed after api is successfully executed
                     example: >-
-                     Room type for the accommodation has been successfully updated.
+                      Room type for the accommodation has been successfully
+                      updated.
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -330,7 +1848,6 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
-        
   /accommodation/edit-guest-accommodation:
     post:
       summary: Edit guest check-in-out dates inside accommodation
@@ -350,12 +1867,14 @@ paths:
                   type: string
                   format: objectId
                   description: The ID of the accommodation where the guest is staying.
-                  example: "60b8d8a7f1a2b40f30b5b60e"  # Example of an ObjectId
+                  example: 60b8d8a7f1a2b40f30b5b60e
                 guestId:
                   type: string
                   format: objectId
-                  description: The ID of the guest whose accommodation details are being edited.
-                  example: "60b8d8a7f1a2b40f30b5b60f"  # Example of an ObjectId
+                  description: >-
+                    The ID of the guest whose accommodation details are being
+                    edited.
+                  example: 60b8d8a7f1a2b40f30b5b60f
                 checkInDate:
                   type: string
                   format: date-time
@@ -364,8 +1883,6 @@ paths:
                   type: string
                   format: date-time
                   description: The date when the guest checks out (ISO 8601 format).
-
-
       responses:
         '200':
           description: Success response
@@ -376,8 +1893,7 @@ paths:
                   message:
                     type: string
                     description: Message displayed after api is successfully executed
-                    example: >-
-                     The guest's accommodation has been successfully updated.
+                    example: The guest's accommodation has been successfully updated.
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -386,32 +1902,29 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
-        
   /accommodation/get:
     get:
       summary: Get accommodations
-      parameters: 
+      parameters:
         - name: eventId
           in: query
           required: true
           description: The id of the event from which accommodations are to be fetched
-          schema: 
+          schema:
             type: string
             format: objectId
             example: 60b8d8a7f1a2b40f30b5b60e
-        
         - name: guestId
           in: query
           required: false
           description: (Optional) The id of the guest whose accommodation is to be fetched
-          schema: 
+          schema:
             type: string
             format: objectId
             example: 60b8d8a7f1a2b40f30b5b62e
-            
       responses:
         '200':
-          description: "Successfully retrieved accommodation details."
+          description: Successfully retrieved accommodation details.
           content:
             application/json:
               schema:
@@ -425,8 +1938,8 @@ paths:
                         _id:
                           type: string
                           format: objectId
-                          description: "The unique ID of the accommodation."
-                          example: "66ed44851f6853179b4d90f4"
+                          description: The unique ID of the accommodation.
+                          example: 66ed44851f6853179b4d90f4
                         guests:
                           type: array
                           items:
@@ -434,87 +1947,87 @@ paths:
                             items:
                               type: string
                               format: objectId
-                              description: "Array of guest IDs associated with the accommodation."
-                              example: "66e3f1c27679a1a4f0076cdb"
+                              description: >-
+                                Array of guest IDs associated with the
+                                accommodation.
+                              example: 66e3f1c27679a1a4f0076cdb
                         checkInTime:
                           type: string
-                          description: "The time when the guest can check in."
-                          example: "12 PM"
+                          description: The time when the guest can check in.
+                          example: 12 PM
                         checkOutTime:
                           type: string
-                          description: "The time when the guest must check out."
-                          example: "1 PM"
+                          description: The time when the guest must check out.
+                          example: 1 PM
                         checkInDate:
                           type: string
                           format: date-time
-                          description: "The date when the guest checks in."
-                          example: "2024-09-19T18:04:55+05:30"  # ISO 8601 format
+                          description: The date when the guest checks in.
+                          example: '2024-09-19T18:04:55+05:30'
                         checkOutDate:
                           type: string
                           format: date-time
-                          description: "The date when the guest checks out."
-                          example: "2024-09-24T12:04:55+05:30"  # ISO 8601 format
+                          description: The date when the guest checks out.
+                          example: '2024-09-24T12:04:55+05:30'
                         totalNights:
                           type: integer
-                          description: "Total number of nights booked."
+                          description: Total number of nights booked.
                           example: 5
                         createdAt:
                           type: string
                           format: date-time
-                          description: "Timestamp when the accommodation record was created."
-                          example: "2024-09-20T09:46:45.887Z"  # ISO 8601 format
+                          description: Timestamp when the accommodation record was created.
+                          example: '2024-09-20T09:46:45.887Z'
                         updatedAt:
                           type: string
                           format: date-time
-                          description: "Timestamp when the accommodation record was last updated."
-                          example: "2024-09-23T07:47:02.434Z"  # ISO 8601 format
+                          description: >-
+                            Timestamp when the accommodation record was last
+                            updated.
+                          example: '2024-09-23T07:47:02.434Z'
                         __v:
                           type: integer
-                          description: "Version key for the accommodation document."
+                          description: Version key for the accommodation document.
                           example: 6
                         event:
                           type: string
                           format: objectId
-                          description: "The ID of the associated event."
-                          example: "66e189a48dacf4f20d7e51d2"
+                          description: The ID of the associated event.
+                          example: 66e189a48dacf4f20d7e51d2
                         id:
                           type: string
                           format: objectId
-                          description: "Legacy ID of the accommodation."
-                          example: "66ed44851f6853179b4d90f4"
-
+                          description: Legacy ID of the accommodation.
+                          example: 66ed44851f6853179b4d90f4
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
-        
   /accommodation/remove-guest/{accommodationId}:
     delete:
       summary: Remove guest from a accommodation
-      parameters: 
+      parameters:
         - name: accommodationId
           in: path
           required: true
           description: The id of the accommodation from which the guest is to be removed
-          schema: 
+          schema:
             type: string
             format: objectId
             example: 60b8d8a7f1a2b40f30b5b60e
-        
         - name: guestId
           in: query
           required: true
           description: The id of the guest to be removed
-          schema: 
+          schema:
             type: string
             format: objectId
             example: 60b8d8a7f1a2b40f30b5b62e
-            
       responses:
         '200':
-          description: "Successfully removed guest from accommodation."
+          description: Successfully removed guest from accommodation.
           content:
             application/json:
               schema:
@@ -522,57 +2035,57 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Guest has been successfully removed from the accommodation.
-
-        '404':
-          $ref: '#/components/responses/404'
+                    example: >-
+                      Guest has been successfully removed from the
+                      accommodation.
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
-        
-  /accommodation/delete/{accommodationId}:
-     delete:
+  /accommodation/{accommodationId}:
+    delete:
       summary: Remove guest from a accommodation
-      parameters: 
+      parameters:
         - name: accommodationId
           in: path
           required: true
           description: The id of the accommodation to be deleted
-          schema: 
+          schema:
             type: string
             format: objectId
             example: 60b8d8a7f1a2b40f30b5b60e
-        
         - name: forceDelete
           in: query
           required: false
-          description: (Optional) Whether or not to force delete accommodation with guest (Not case sensitive).
-          schema: 
+          description: >-
+            (Optional) Whether or not to force delete accommodation with guest
+            (Not case sensitive).
+          schema:
             type: string
             description: The value is not case sensitive
             enum:
-              - Yes
-              - No
+              - 'Yes'
+              - 'No'
             format: objectId
-            example: Yes
-            
+            example: 'Yes'
       responses:
         '200':
-          description: "Successfully Deleted accommodation."
+          description: Successfully Deleted accommodation.
           content:
             application/json:
               schema:
                 oneOf:
-                - type: object
-                  properties:
-                    message:
-                      type: string
-                      example: "Accommodation successfully deleted."
-                - type: object
-                  properties:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Accommodation successfully deleted.
+                  - type: object
+                    properties:
                       guestList:
                         type: array
                         items:
@@ -580,24 +2093,24 @@ paths:
                           properties:
                             firstName:
                               type: string
-                              example: "John"
+                              example: John
                             lastName:
                               type: string
-                              example: "Doe"
+                              example: Doe
                             contactNumber:
                               type: integer
                               example: 1234567890
                             gender:
                               type: string
-                              enum: 
-                                - "male"
-                                - "female"
-                                - "other"
-                              example: "male"
+                              enum:
+                                - male
+                                - female
+                                - other
+                              example: male
                             avatar:
                               type: string
                               format: uri
-                              example: "https://example.com/avatar.jpg"
+                              example: https://example.com/avatar.jpg
                             functionDetails:
                               type: array
                               items:
@@ -605,16 +2118,16 @@ paths:
                                 properties:
                                   functionName:
                                     type: string
-                                    example: "Best Man"
+                                    example: Best Man
                                   functionDescription:
                                     type: string
-                                    example: "Responsible for the best man speech."
+                                    example: Responsible for the best man speech.
                             tags:
                               type: array
                               items:
                                 type: string
                                 format: objectId
-                                example: "60b8d8a7f1a2b40f30b5b60e"
+                                example: 60b8d8a7f1a2b40f30b5b60e
                             subGuests:
                               type: array
                               items:
@@ -622,62 +2135,63 @@ paths:
                                 properties:
                                   firstName:
                                     type: string
-                                    example: "Jane"
+                                    example: Jane
                                   lastName:
                                     type: string
-                                    example: "Doe"
+                                    example: Doe
                             primaryGuest:
                               type: string
                               format: objectId
-                              example: "60b8d8a7f1a2b40f30b5b60e"
+                              example: 60b8d8a7f1a2b40f30b5b60e
                             meal:
                               type: string
                               format: objectId
-                              example: "60b8d8a7f1a2b40f30b5b60f"
+                              example: 60b8d8a7f1a2b40f30b5b60f
                             user:
                               type: string
                               format: objectId
-                              example: "60b8d8a7f1a2b40f30b5b60g"
+                              example: 60b8d8a7f1a2b40f30b5b60g
                             event:
                               type: string
                               format: objectId
-                              example: "60b8d8a7f1a2b40f30b5b60h"
-      
+                              example: 60b8d8a7f1a2b40f30b5b60h
         '500':
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
-        
-  #Attachment apis
-
   /attachments/upload-image:
     post:
-      summary: "Upload attachments to a task."
-      description: "Uploads attachments to a specified task if the task exists. If no task ID is provided, it uploads attachments without associating them with a task."
-      operationId: "uploadTaskAttachments"
+      summary: Upload attachments to a task.
+      description: >-
+        Uploads attachments to a specified task if the task exists. If no task
+        ID is provided, it uploads attachments without associating them with a
+        task.
+      operationId: uploadTaskAttachments
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
               type: object
-              required: 
+              required:
                 - taskAttachments
               properties:
                 taskId:
                   type: string
                   format: objectId
-                  description: "(Optional) The ID of the task to which the attachments should be added."
-                  example: "60b8d8a7f1a2b40f30b5b60e"
+                  description: >-
+                    (Optional) The ID of the task to which the attachments
+                    should be added.
+                  example: 60b8d8a7f1a2b40f30b5b60e
                 taskAttachments:
                   type: array
                   items:
                     type: string
                     format: binary
-                  description: "Files to be uploaded as attachments."
+                  description: Files to be uploaded as attachments.
       responses:
         '200':
-          description: "Attachments uploaded successfully."
+          description: Attachments uploaded successfully.
           content:
             application/json:
               schema:
@@ -685,9 +2199,9 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Attachments uploaded successfully."
+                    example: Attachments uploaded successfully.
         '400':
-          description: "Bad request - invalid input."
+          description: Bad request - invalid input.
           content:
             application/json:
               schema:
@@ -695,9 +2209,9 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: "Maximum number of attachments exceeded."
+                    example: Maximum number of attachments exceeded.
         '404':
-          description: "Task not found."
+          description: Task not found.
           content:
             application/json:
               schema:
@@ -705,9 +2219,9 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: "Task not found."
+                    example: Task not found.
         '500':
-          description: "Internal server error."
+          description: Internal server error.
           content:
             application/json:
               schema:
@@ -715,15 +2229,11 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: "An unexpected error occurred."
-      
-      tags: 
+                    example: An unexpected error occurred.
+      tags:
         - Attachments
-        
-  #Auth apis
-        
-  /auth/create-user-details: 
-    post: 
+  /auth/create-user-details:
+    post:
       summary: Create details of a existing user
       requestBody:
         required: true
@@ -734,25 +2244,24 @@ paths:
               properties:
                 firstName:
                   type: string
-                  description: "The first name of the user."
-                  example: "John"
+                  description: The first name of the user.
+                  example: John
                 lastName:
                   type: string
-                  description: "The last name of the user."
-                  example: "Doe"
+                  description: The last name of the user.
+                  example: Doe
                 email:
                   type: string
                   format: email
-                  description: "The email address of the user."
-                  example: "john.doe@example.com"
+                  description: The email address of the user.
+                  example: john.doe@example.com
               required:
                 - firstName
                 - lastName
                 - email
-                
       responses:
         '200':
-          description: "OTP details set successfully."
+          description: OTP details set successfully.
           content:
             application/json:
               schema:
@@ -760,67 +2269,66 @@ paths:
                 properties:
                   signature:
                     type: string
-                    description: "The generated OTP signature."
-                    example: "abcdef1234567890"
+                    description: The generated OTP signature.
+                    example: abcdef1234567890
                   publicKey:
                     type: string
-                    description: "The public key associated with the OTP."
-                    example: "publicKeyExample12345"
+                    description: The public key associated with the OTP.
+                    example: publicKeyExample12345
                   otpExpiration:
                     type: string
                     format: date-time
-                    description: "The expiration time of the OTP in ISO 8601 format."
-                    example: "2024-09-24T12:00:00Z"
-                    
-                    
-        '404':
-          $ref: '#/components/responses/404'
+                    description: The expiration time of the OTP in ISO 8601 format.
+                    example: '2024-09-24T12:00:00Z'
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-      tags: 
+      tags:
         - Auth
-        
-  /auth/create-password: 
-    post: 
+  /auth/create-password:
+    post:
       summary: Create password for a user
-      requestBody: 
+      requestBody:
         required: true
-        content: 
-          application/json: 
+        content:
+          application/json:
             schema:
-                type: object
-                properties:
-                  contactNumber:
-                    type: integer
-                    example: 1234567890
-                    description: User's contact number.
-                  password:
-                    type: string
-                    format: password
-                    description: User's password.
-                    example: "P@ssword123"
-                  confirmPassword:
-                    type: string
-                    format: password
-                    description: Confirmation of the password, should match the           `password` field.
-                    example: "P@ssword123"
-                  publicKey:
-                    type: string
-                    description: User's public key in PEM or DER format.
-                    example: "-----BEGIN PUBLIC KEY-----...-----END PUBLIC KEY-----"
-                  signature:
-                    type: string
-                    description: Signature to verify the request authenticity.
-                    example: "dGVzdHNpZ25hdHVyZQ==" # Base64-encoded string for           signature
-                required:
-                  - contactNumber
-                  - password
-                  - confirmPassword
-                  - publicKey
-                  - signature
-      responses: 
+              type: object
+              properties:
+                contactNumber:
+                  type: integer
+                  example: 1234567890
+                  description: User's contact number.
+                password:
+                  type: string
+                  format: password
+                  description: User's password.
+                  example: P@ssword123
+                confirmPassword:
+                  type: string
+                  format: password
+                  description: >-
+                    Confirmation of the password, should match the          
+                    `password` field.
+                  example: P@ssword123
+                publicKey:
+                  type: string
+                  description: User's public key in PEM or DER format.
+                  example: '-----BEGIN PUBLIC KEY-----...-----END PUBLIC KEY-----'
+                signature:
+                  type: string
+                  description: Signature to verify the request authenticity.
+                  example: dGVzdHNpZ25hdHVyZQ==
+              required:
+                - contactNumber
+                - password
+                - confirmPassword
+                - publicKey
+                - signature
+      responses:
         '200':
           description: Password created successfully.
           content:
@@ -830,66 +2338,66 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Password created"
+                    example: Password created
                   token:
                     type: string
-                    description: JWT access token provided after successful password creation.
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                    
-        '404': 
-          $ref: '#/components/responses/404'
+                    description: >-
+                      JWT access token provided after successful password
+                      creation.
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '400':
           $ref: '#/components/responses/400'
-        '403': 
+        '403':
           $ref: '#/components/responses/403'
-          
-      tags: 
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
         - Auth
-          
-  /auth/forgot-password/{contactNumber}: 
+  /auth/forgot-password/{contactNumber}:
     post:
       summary: Api to reset password if user forgets their passowrd
-      parameters: 
+      parameters:
         - name: contactNumber
           in: path
           required: true
           description: Contact number of the user whose passoword is to changed
           schema:
             type: string
-      requestBody: 
+      requestBody:
         required: true
-        content: 
+        content:
           application/json:
             schema:
               type: object
-              required: 
-                 - password
-                 - confirmPassword
-                 - publicKey
-                 - signature
+              required:
+                - password
+                - confirmPassword
+                - publicKey
+                - signature
               properties:
-                  password:
-                    type: string
-                    format: password
-                    description: New user password.
-                    example: "NewP@ssword123"
-                  confirmPassword:
-                    type: string
-                    format: password
-                    description: Confirmation of the new password, should match the           `password` field.
-                    example: "NewP@ssword123"
-                  publicKey:
-                    type: string
-                    description: User's public key for signature verification.
-                    example: "-----BEGIN PUBLIC KEY-----...-----END PUBLIC KEY-----"
-                  signature:
-                    type: string
-                    description: Signature for the request authentication.
-                    example: "dGVzdHNpZ25hdHVyZQ=="
-                    
-      responses: 
+                password:
+                  type: string
+                  format: password
+                  description: New user password.
+                  example: NewP@ssword123
+                confirmPassword:
+                  type: string
+                  format: password
+                  description: >-
+                    Confirmation of the new password, should match the          
+                    `password` field.
+                  example: NewP@ssword123
+                publicKey:
+                  type: string
+                  description: User's public key for signature verification.
+                  example: '-----BEGIN PUBLIC KEY-----...-----END PUBLIC KEY-----'
+                signature:
+                  type: string
+                  description: Signature for the request authentication.
+                  example: dGVzdHNpZ25hdHVyZQ==
+      responses:
         '200':
-          description: "Password Changed successfully."
+          description: Password Changed successfully.
           content:
             application/json:
               schema:
@@ -897,21 +2405,19 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Password changed successfully." 
-        '404': 
-          $ref: '#/components/responses/404'
+                    example: Password changed successfully.
         '400':
           $ref: '#/components/responses/400'
-        '403': 
-          $ref: '#/components/responses/403'  
-          
-      tags: 
-       - Auth
-        
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+      tags:
+        - Auth
   /auth/verify-otp/{contactNumber}:
     post:
-      summary: "Verify OTP for user"
-      parameters: 
+      summary: Verify OTP for user
+      parameters:
         - name: contactNumber
           in: path
           required: true
@@ -928,13 +2434,13 @@ paths:
               properties:
                 otp:
                   type: string
-                  description: "The OTP provided by the user."
-                  example: "123456"
+                  description: The OTP provided by the user.
+                  example: '123456'
               required:
                 - otp
       responses:
         '200':
-          description: "OTP Verified successfully."
+          description: OTP Verified successfully.
           content:
             application/json:
               schema:
@@ -942,44 +2448,40 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "OTP Verified"
-        '404':
-          $ref: '#/components/responses/404'
+                    example: OTP Verified
         '400':
           $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
         '401':
           $ref: '#/components/responses/401'
-                    
-      tags: 
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
         - Auth
-        
-  /auth/login: 
-    post: 
+  /auth/login:
+    post:
       summary: User login
-      requestBody: 
+      requestBody:
         required: true
-        content: 
+        content:
           application/json:
-            schema: 
-                type: object
-                properties:
-                  contactNumber:
-                    type: integer
-                    description: User's contact number.
-                    example: 1234567890
-                  password:
-                    type: string
-                    format: password
-                    description: User's password for login.
-                    example: "P@ssword123"
-                    
-                required:
-                  - contactNumber
-                  - password
-                  
-      responses: 
+            schema:
+              type: object
+              properties:
+                contactNumber:
+                  type: integer
+                  description: User's contact number.
+                  example: 1234567890
+                password:
+                  type: string
+                  format: password
+                  description: User's password for login.
+                  example: P@ssword123
+              required:
+                - contactNumber
+                - password
+      responses:
         '200':
           description: Login successful. Returns user details and an access token.
           content:
@@ -998,20 +2500,20 @@ paths:
                         type: string
                         format: email
                         description: User's email address.
-                        example: "user@example.com"
+                        example: user@example.com
                       firstName:
                         type: string
                         description: User's first name.
-                        example: "John"
+                        example: John
                       lastName:
                         type: string
                         description: User's last name.
-                        example: "Doe"
+                        example: Doe
                       password:
                         type: string
                         format: password
                         description: User's password.
-                        example: "hashedPassword123"
+                        example: hashedPassword123
                       otp:
                         type: integer
                         description: OTP sent to the user.
@@ -1024,7 +2526,7 @@ paths:
                         type: string
                         format: date-time
                         description: Expiration time of the OTP.
-                        example: "2023-09-25T14:48:00.000Z"
+                        example: '2023-09-25T14:48:00.000Z'
                       eventDetails:
                         type: array
                         description: List of event details associated with the user.
@@ -1034,70 +2536,80 @@ paths:
                             event:
                               type: string
                               description: ObjectId of the event.
-                              example: "60d21b4667d0d8992e610c85"
+                              example: 60d21b4667d0d8992e610c85
                             role:
                               type: string
-                              description: ObjectId representing the user's role in the event.
-                              example: "60d21b4667d0d8992e610c86"
+                              description: >-
+                                ObjectId representing the user's role in the
+                                event.
+                              example: 60d21b4667d0d8992e610c86
                             acceptedDocuments:
                               type: array
-                              description: List of ObjectIds of accepted documents for the event.
+                              description: >-
+                                List of ObjectIds of accepted documents for the
+                                event.
                               items:
                                 type: string
-                                example: "60d21b4667d0d8992e610c87"
+                                example: 60d21b4667d0d8992e610c87
                             rejectedDocuments:
                               type: array
-                              description: List of ObjectIds of rejected documents for the event.
+                              description: >-
+                                List of ObjectIds of rejected documents for the
+                                event.
                               items:
                                 type: string
-                                example: "60d21b4667d0d8992e610c88"
+                                example: 60d21b4667d0d8992e610c88
                             pendingDocuments:
                               type: array
-                              description: List of ObjectIds of pending documents for the event.
+                              description: >-
+                                List of ObjectIds of pending documents for the
+                                event.
                               items:
                                 type: string
-                                example: "60d21b4667d0d8992e610c89"
+                                example: 60d21b4667d0d8992e610c89
                       partOf:
                         type: array
                         items:
                           type: object
-                          description: List of companies or organizations the user is part of.
+                          description: >-
+                            List of companies or organizations the user is part
+                            of.
                       documents:
                         type: array
                         items:
                           type: string
                           description: List of document IDs associated with the user.
-                          example: "60d21b4667d0d8992e610c85"
+                          example: 60d21b4667d0d8992e610c85
                   token:
                     type: string
                     description: JWT access token provided after successful login.
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '401':
+          $ref: '#/components/responses/401'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-        '401':
-          $ref: '#/components/responses/401'
-          
-      tags: 
+      tags:
         - Auth
-        
   /auth/verification-status/{contactNumber}:
     get:
-      summary: "Get user verification status."
-      description: "Checks if the user has verified their OTP and whether they have a password set based on their contact number."
-      operationId: "userVerificationStatus"
+      summary: Get user verification status.
+      description: >-
+        Checks if the user has verified their OTP and whether they have a
+        password set based on their contact number.
+      operationId: userVerificationStatus
       parameters:
         - name: contactNumber
           in: path
           required: true
-          description: "The contact number of the user to check verification status."
+          description: The contact number of the user to check verification status.
           schema:
             type: string
-            example: "1234567890"  # Example contact number (as a string)
+            example: '1234567890'
       responses:
         '200':
-          description: "Successfully retrieved verification status."
+          description: Successfully retrieved verification status.
           content:
             application/json:
               schema:
@@ -1105,26 +2617,27 @@ paths:
                 properties:
                   verified:
                     type: boolean
-                    example: true  # Indicates if the user is verified
+                    example: true
         '400':
           $ref: '#/components/responses/400'
         '404':
-           $ref: '#/components/responses/404'
+          $ref: '#/components/responses/404'
         '500':
-           $ref: '#/components/responses/500'
+          $ref: '#/components/responses/500'
       tags:
         - Auth
-  
   /auth/resend-otp/{contactNumber}:
     get:
       summary: Resend OTP
-      description: Resends an OTP to the user based on their contact number and updates OTP verification status.
+      description: >-
+        Resends an OTP to the user based on their contact number and updates OTP
+        verification status.
       parameters:
         - in: path
           name: contactNumber
           schema:
             type: string
-            example: "1234567890"
+            example: '1234567890'
           required: true
           description: The contact number of the user to resend OTP to.
       responses:
@@ -1137,19 +2650,16 @@ paths:
                 properties:
                   response:
                     type: string
-                    example: "OTP sent successfully"
-        '404':
-          $ref: '#/components/responses/404'
+                    example: OTP sent successfully
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-      tags: 
+      tags:
         - Auth
-        
-  #Category apis
-  
-  /category/add: 
+  /category/add:
     post:
       summary: Add category
       requestBody:
@@ -1158,81 +2668,80 @@ paths:
           application/json:
             schema:
               type: object
-              required: 
+              required:
                 - name
               properties:
                 name:
                   type: string
-                  example: "John Weds Doe"
+                  example: John Weds Doe
                   description: The name of the category.
                 eventId:
                   type: string
                   format: objectId
-                  example: "507f1f77bcf86cd799439011"
+                  example: 507f1f77bcf86cd799439011
                   description: (Optional) The ID of the associated event.
-      responses: 
+      responses:
         '200':
           description: New category successfully created
-          content: 
+          content:
             application/json:
               schema:
                 properties:
                   message:
                     type: string
-                    example: "New category successfully created."
-                      
-      tags: 
-          - Category
-          
-  /category/get: 
-    get: 
+                    example: New category successfully created.
+      tags:
+        - Category
+  /category/get:
+    get:
       summary: Get categories
-      parameters: 
+      parameters:
         - name: eventId
           in: query
-          description: (Optional) Id of the event if event specific categories are to be fetched
+          description: >-
+            (Optional) Id of the event if event specific categories are to be
+            fetched
           required: false
           schema:
             type: string
             format: objectId
-      responses: 
-        '200': 
+      responses:
+        '200':
           description: Successfully fetched categories
           content:
             application/json:
               schema:
                 properties:
-                  _id: 
+                  _id:
                     type: string
                     format: objectId
                     description: The id of the document
                     example: 66e189dc8dacf4f20d7e51dk
-                  
-                  name: 
+                  name:
                     type: string
                     description: The name of the category
                     example: Category 1
-                    
-                  eventId: 
+                  eventId:
                     type: string
                     format: objectId
-                    description: (Optional) Id of the event to which the category belongs to
-                    
-        '500': 
+                    description: >-
+                      (Optional) Id of the event to which the category belongs
+                      to
+        '500':
           $ref: '#/components/responses/500'
-          
       tags:
         - Category
-            
   /categories/{categoryId}:
     delete:
       summary: Delete a category
-      description: Deletes a category by its ID. If the category is associated with an event, it will be removed from the event's categories.
+      description: >-
+        Deletes a category by its ID. If the category is associated with an
+        event, it will be removed from the event's categories.
       parameters:
         - name: categoryId
           in: path
           required: true
-          schema: 
+          schema:
             type: string
           description: The ID of the category to be deleted.
       responses:
@@ -1245,19 +2754,15 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Category successfully deleted."
+                    example: Category successfully deleted.
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-          
-      tags: 
+      tags:
         - Category
-        
-  #Codes apis
-  
-  /codes/purchase: 
-    post: 
+  /codes/purchase:
+    post:
       summary: Purchase a code
       requestBody:
         required: true
@@ -1269,7 +2774,7 @@ paths:
                 companyId:
                   type: string
                   format: objectId
-                  example: "507f1f77bcf86cd799439011"
+                  example: 507f1f77bcf86cd799439011
                   description: The ID of the company associated with the purchase.
                 eventPlan:
                   type: array
@@ -1279,11 +2784,11 @@ paths:
                       planId:
                         type: string
                         format: objectId
-                        example: "507f1f77bcf86cd799439012"
+                        example: 507f1f77bcf86cd799439012
                         description: The ID of the event plan.
                       discount:
                         type: string
-                        example: "10%"
+                        example: 10%
                         description: (Optional) Discount applicable to the event plan.
                       quantity:
                         type: integer
@@ -1294,20 +2799,22 @@ paths:
                         properties:
                           currency:
                             type: string
-                            example: "USD"
+                            example: USD
                             description: The currency of the price.
                           amount:
                             type: number
                             format: double
-                            example: 100.00
+                            example: 100
                             description: The unit price of the event plan.
                       codes:
                         type: array
                         items:
                           type: string
                           format: objectId
-                          example: "507f1f77bcf86cd799439015"
-                          description: (Optional) An array of ObjectIds representing codes associated with the event plan.
+                          example: 507f1f77bcf86cd799439015
+                          description: >-
+                            (Optional) An array of ObjectIds representing codes
+                            associated with the event plan.
               required:
                 - companyId
                 - eventPlan
@@ -1315,13 +2822,13 @@ paths:
         '200':
           description: Purchase successful
           content:
-            application/json: 
+            application/json:
               schema:
                 type: object
                 properties:
                   message:
                     type: string
-                    example: "Purchase successful"
+                    example: Purchase successful
                   response:
                     type: object
                     properties:
@@ -1330,53 +2837,51 @@ paths:
                         description: The plan name key will be the name of the event type
                         items:
                           type: string
-                          example: "aafb89"
-                          
+                          example: aafb89
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-          
-      tags: 
+      tags:
         - Codes
-        
   /codes/redeem:
-   post:
+    post:
       summary: Redeem a promotional code
-      description: Allows a user to redeem a promotional code. The code must be valid and not previously used.
+      description: >-
+        Allows a user to redeem a promotional code. The code must be valid and
+        not previously used.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: 
+              required:
                 - usedCode
               properties:
                 usedCode:
                   type: string
-                  example: "F820CC"
+                  example: F820CC
                   description: The promotional code to redeem.
       responses:
         '200':
           description: Code redeemed successfully
-          content: 
+          content:
             application/json:
               schema:
                 type: object
                 properties:
                   message:
                     type: string
-                    example: "Code redeemed Successfully"
+                    example: Code redeemed Successfully
         '404':
           $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
-      tags: 
+      tags:
         - Codes
-        
   /codes/purchase/{companyId}:
     get:
       summary: Retrieve purchase codes for a company
@@ -1385,14 +2890,14 @@ paths:
         - name: companyId
           in: path
           required: true
-          schema: 
+          schema:
             type: string
             format: objectId
           description: The ID of the company for which to retrieve purchase codes.
       responses:
         '200':
           description: Successfully retrieved purchase codes
-          content: 
+          content:
             application/json:
               schema:
                 type: object
@@ -1411,15 +2916,15 @@ paths:
                               example: 1800
                             currency:
                               type: string
-                              example: "INR"
+                              example: INR
                         _id:
                           type: string
                           format: objectId
-                          example: "66e188a2ca7f8e1974ed240c"
+                          example: 66e188a2ca7f8e1974ed240c
                         company:
                           type: string
                           format: objectId
-                          example: "66e1839f04bcf8e6974a4bdf"
+                          example: 66e1839f04bcf8e6974a4bdf
                         eventPlan:
                           type: array
                           items:
@@ -1434,14 +2939,14 @@ paths:
                                     example: 1000
                                   currency:
                                     type: string
-                                    example: "INR"
+                                    example: INR
                               planId:
                                 type: string
                                 format: objectId
-                                example: "66bf3cd458c15bfaae59b34a"
+                                example: 66bf3cd458c15bfaae59b34a
                               discount:
                                 type: string
-                                example: "10%"
+                                example: 10%
                               quantity:
                                 type: integer
                                 example: 2
@@ -1449,26 +2954,25 @@ paths:
                                 type: array
                                 items:
                                   type: string
-                                  example: "66e188a2ca7f8e1974ed240f"
+                                  example: 66e188a2ca7f8e1974ed240f
                               _id:
                                 type: string
                                 format: objectId
-                                example: "66e188a2ca7f8e1974ed240d"
-                      
+                                example: 66e188a2ca7f8e1974ed240d
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-          
-      tags: 
+      tags:
         - Codes
-        
-  /codes/get/{companyId}:
+  /codes/{companyId}:
     get:
       tags:
         - Codes
       summary: Get codes for a company
-      description: Retrieve purchase codes and their associated event information for a given company.
+      description: >-
+        Retrieve purchase codes and their associated event information for a
+        given company.
       parameters:
         - name: companyId
           in: path
@@ -1492,7 +2996,7 @@ paths:
                         code:
                           type: string
                           description: The code itself.
-                          example: "aafb89"
+                          example: aafb89
                         used:
                           type: boolean
                           description: Indicates if the code has been used.
@@ -1501,11 +3005,8 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-          
-  # Company profile apis
-  
-  /company-profile/create: 
-    post: 
+  /company-profile/create:
+    post:
       summary: Create a company profile
       requestBody:
         description: Request body for creating a company profile
@@ -1517,49 +3018,49 @@ paths:
               properties:
                 companyName:
                   type: string
-                  example: "Tech Solutions Pvt. Ltd."
+                  example: Tech Solutions Pvt. Ltd.
                 gstNumber:
                   type: string
-                  example: "29ABCDE1234F2Z5"
+                  example: 29ABCDE1234F2Z5
                 primaryContact:
                   type: object
                   properties:
                     firstName:
                       type: string
-                      example: "John"
+                      example: John
                     lastName:
                       type: string
-                      example: "Doe"
+                      example: Doe
                     contactNumber:
                       type: number
                       example: 1234567890
                     inviteMethod:
                       type: string
-                      enum: 
+                      enum:
                         - Email
                         - Sms
                         - Whatsapp
-                      example: "Email"
+                      example: Email
                 address:
                   type: string
-                  example: "123, Business Street, Bangalore, India"
+                  example: 123, Business Street, Bangalore, India
                 website:
                   type: string
-                  example: "https://www.techsolutions.com"
+                  example: https://www.techsolutions.com
                 email:
                   type: string
                   format: email
-                  example: "info@techsolutions.com"
+                  example: info@techsolutions.com
                 secondaryContact:
                   type: object
                   nullable: true
                   properties:
                     firstName:
                       type: string
-                      example: "Jane"
+                      example: Jane
                     lastName:
                       type: string
-                      example: "Doe"
+                      example: Doe
                     contactNumber:
                       type: number
                       example: 9876543210
@@ -1569,7 +3070,7 @@ paths:
                         - Email
                         - Sms
                         - Whatsapp
-                      example: "Sms"
+                      example: Sms
               required:
                 - companyName
                 - gstNumber
@@ -1578,41 +3079,43 @@ paths:
                 - website
                 - email
       responses:
-        200:
+        '200':
           description: Company profile created successfully. Please verify OTP to continue.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  msg:
+                  message:
                     type: string
-                    example: "Company profile created successfully. Please verify otp to continue"
+                    example: >-
+                      Company profile created successfully. Please verify otp to
+                      continue
                   newProfile:
                     type: object
                     properties:
                       id:
                         type: string
                         format: uuid
-                        example: "6123e4b6f2c8fa5f6b9d1234"
+                        example: 6123e4b6f2c8fa5f6b9d1234
                       companyName:
                         type: string
-                        example: "Tech Solutions Pvt. Ltd."
+                        example: Tech Solutions Pvt. Ltd.
                       otpVerified:
                         type: boolean
                         example: false
                       gstNumber:
                         type: string
-                        example: "29ABCDE1234F2Z5"
+                        example: 29ABCDE1234F2Z5
                       primaryContact:
                         type: object
                         properties:
                           firstName:
                             type: string
-                            example: "John"
+                            example: John
                           lastName:
                             type: string
-                            example: "Doe"
+                            example: Doe
                           contactNumber:
                             type: number
                             example: 1234567890
@@ -1621,24 +3124,24 @@ paths:
                             example: false
                       address:
                         type: string
-                        example: "123, Business Street, Bangalore, India"
+                        example: 123, Business Street, Bangalore, India
                       website:
                         type: string
-                        example: "https://www.techsolutions.com"
+                        example: https://www.techsolutions.com
                       email:
                         type: string
                         format: email
-                        example: "info@techsolutions.com"
+                        example: info@techsolutions.com
                       secondaryContact:
                         type: object
                         nullable: true
                         properties:
                           firstName:
                             type: string
-                            example: "Jane"
+                            example: Jane
                           lastName:
                             type: string
-                            example: "Doe"
+                            example: Doe
                           contactNumber:
                             type: number
                             example: 9876543210
@@ -1650,23 +3153,21 @@ paths:
                         items:
                           type: string
                           format: uuid
-                          example: "5f4e5c67f9d8d12345678901"
-        400: 
+                          example: 5f4e5c67f9d8d12345678901
+        '400':
           $ref: '#/components/responses/400'
-          
-        409: 
+        '409':
           $ref: '#/components/responses/409'
-          
-        500: 
+        '500':
           $ref: '#/components/responses/500'
-          
-      tags: 
+      tags:
         - Company Profile
-        
   /company-profiles/{profileId}/verify-contact:
     post:
       summary: Verify company contact using OTP
-      description: Verifies the contact information (either primary or secondary) for the company profile using the provided OTP.
+      description: >-
+        Verifies the contact information (either primary or secondary) for the
+        company profile using the provided OTP.
       tags:
         - Company Profile
       parameters:
@@ -1689,7 +3190,7 @@ paths:
                   description: The contact number of the user to be verified
                 otp:
                   type: string
-                  example: "123456"
+                  example: '123456'
                   description: OTP provided to verify the contact number
               required:
                 - contactNumber
@@ -1702,20 +3203,17 @@ paths:
               schema:
                 type: object
                 properties:
-                  msg:
+                  message:
                     type: string
-                    example: "John Doe's contact information has been verified"
+                    example: John Doe's contact information has been verified
         '400':
           $ref: '#/components/responses/400'
-          
         '404':
           $ref: '#/components/responses/404'
-          
         '500':
           $ref: '#/components/responses/500'
-          
-  /company-profile/{profileId}: 
-    get: 
+  /company-profile/{profileId}:
+    get:
       summary: Fetch a company profile by id
       parameters:
         - name: profileId
@@ -1726,7 +3224,7 @@ paths:
             format: objectId
             example: 66e1839f04bcf8e6974a4bdf
       responses:
-        200:
+        '200':
           description: Company profile successfully fetched.
           content:
             application/json:
@@ -1736,15 +3234,15 @@ paths:
                   _id:
                     type: string
                     format: uuid
-                    example: "66e1839f04bcf8e6974a4bdf"
+                    example: 66e1839f04bcf8e6974a4bdf
                     description: Unique identifier of the company profile
                   companyName:
                     type: string
-                    example: "test"
+                    example: test
                     description: The name of the company
                   gstNumber:
                     type: string
-                    example: "123456789012346"
+                    example: '123456789012346'
                     description: GST number of the company
                   primaryContact:
                     type: object
@@ -1752,12 +3250,16 @@ paths:
                       user:
                         type: string
                         format: uuid
-                        example: "66e1839f04bcf8e6974a4bea"
-                        description: Unique identifier of the user associated with the primary contact
+                        example: 66e1839f04bcf8e6974a4bea
+                        description: >-
+                          Unique identifier of the user associated with the
+                          primary contact
                       otpVerified:
                         type: boolean
                         example: true
-                        description: Whether the OTP for the primary contact has been verified
+                        description: >-
+                          Whether the OTP for the primary contact has been
+                          verified
                       otp:
                         type: number
                         example: 116580
@@ -1765,7 +3267,7 @@ paths:
                       _id:
                         type: string
                         format: uuid
-                        example: "66e1839f04bcf8e6974a4bec"
+                        example: 66e1839f04bcf8e6974a4bec
                         description: Unique identifier of the primary contact
                   secondaryContact:
                     type: object
@@ -1774,12 +3276,16 @@ paths:
                       user:
                         type: string
                         format: uuid
-                        example: "66e1839f04bcf8e6974a4be4"
-                        description: Unique identifier of the user associated with the secondary contact
+                        example: 66e1839f04bcf8e6974a4be4
+                        description: >-
+                          Unique identifier of the user associated with the
+                          secondary contact
                       otpVerified:
                         type: boolean
                         example: true
-                        description: Whether the OTP for the secondary contact has been verified
+                        description: >-
+                          Whether the OTP for the secondary contact has been
+                          verified
                       otp:
                         type: number
                         example: 503379
@@ -1787,40 +3293,34 @@ paths:
                       _id:
                         type: string
                         format: uuid
-                        example: "66e1839f04bcf8e6974a4be6"
+                        example: 66e1839f04bcf8e6974a4be6
                         description: Unique identifier of the secondary contact
                   address:
                     type: string
-                    example: "address"
+                    example: address
                     description: The physical address of the company
                   website:
                     type: string
-                    example: "test.com"
+                    example: test.com
                     description: The company's website URL
                   email:
                     type: string
                     format: email
-                    example: "aman.shah02@gmail.com"
+                    example: aman.shah02@gmail.com
                     description: Email address of the company
                   purchaseCodes:
                     type: array
                     items:
                       type: string
                       format: uuid
-                      example: "66e188a2ca7f8e1974ed240c"
+                      example: 66e188a2ca7f8e1974ed240c
                       description: Unique identifier of the associated purchase codes
- 
-        404: 
+        '404':
           $ref: '#/components/responses/404'
-          
-        500: 
+        '500':
           $ref: '#/components/responses/500'
-      
-      tags: 
+      tags:
         - Company Profile
-          
-  # Documents api
-  
   /document/upload:
     post:
       summary: Upload a user document
@@ -1839,35 +3339,37 @@ paths:
                     - passport
                     - panCard
                   description: The type of document being uploaded
-                  example: "passport"
+                  example: passport
                 country:
                   type: string
                   description: Country where the document was issued
-                  example: "India"
+                  example: India
                 path:
                   type: array
                   items:
                     type: string
-                  description: An array of file paths where the document is stored (adjust based on storage       solution)
+                  description: >-
+                    An array of file paths where the document is stored (adjust
+                    based on storage       solution)
                   example:
-                    - "uploads/documents/passport-1234.jpg"
-                    - "uploads/documents/passport-1234-back.jpg"
+                    - uploads/documents/passport-1234.jpg
+                    - uploads/documents/passport-1234-back.jpg
                 userId:
                   type: string
                   format: uuid
                   description: The user ID associated with the document upload
-                  example: "66e1839f04bcf8e6974a4bdf"
+                  example: 66e1839f04bcf8e6974a4bdf
                 documentNumber:
                   type: string
                   description: The document number (optional)
-                  example: "A1234567"
+                  example: A1234567
               required:
                 - type
                 - country
                 - path
                 - userId
       responses:
-        200:
+        '200':
           description: Document successfully uploaded.
           content:
             application/json:
@@ -1876,24 +3378,21 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Document successfully uploaded. Your document is now available for use."
-        400: 
+                    example: >-
+                      Document successfully uploaded. Your document is now
+                      available for use.
+        '400':
           $ref: '#/components/responses/400'
-          
-        404: 
+        '404':
           $ref: '#/components/responses/404'
-          
-        409: 
+        '409':
           $ref: '#/components/responses/409'
-          
-        500: 
+        '500':
           $ref: '#/components/responses/500'
-          
       tags:
         - Documents
-          
   /document/add-required:
-    post: 
+    post:
       summary: Add required document
       requestBody:
         description: Payload for required documents related to an event
@@ -1910,23 +3409,22 @@ paths:
                     - passport
                     - panCard
                   description: The type of document required
-                  example: "passport"
+                  example: passport
                 eventId:
                   type: string
                   description: The unique identifier of the event
                   format: objectId
-                  example: "1234567890abcdef"
+                  example: 1234567890abcdef
                 country:
                   type: string
                   nullable: true
                   description: The country where the document is issued (optional)
-                  example: "India"
+                  example: India
               required:
                 - type
                 - eventId
-                
       responses:
-        200:
+        '200':
           description: Required document successfully added to the event
           content:
             application/json:
@@ -1935,27 +3433,23 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Required document successfully added to the event. This document is now required for all guests."
-      
-        400: 
+                    example: >-
+                      Required document successfully added to the event. This
+                      document is now required for all guests.
+        '400':
           $ref: '#/components/responses/400'
-          
-        404: 
+        '404':
           $ref: '#/components/responses/404'
-          
-        409: 
+        '409':
           $ref: '#/components/responses/409'
-          
-        500: 
+        '500':
           $ref: '#/components/responses/500'
-          
-      tags: 
+      tags:
         - Documents
-        
-  /document/{documentId}/changes: 
+  /document/{documentId}/changes:
     post:
       summary: Request changes in a document
-      parameters: 
+      parameters:
         - name: documentId
           in: path
           required: true
@@ -1965,28 +3459,29 @@ paths:
             format: objectId
             example: 66e189a48dacf4f20d7e51d2
       requestBody:
-       description: Payload for requesting a change in document status related to an event
-       required: true
-       content:
-         application/json:
-           schema:
-             type: object
-             properties:
-               eventId:
-                 type: string
-                 format: uuid
-                 description: The unique identifier of the event for which the document change is requested
-                 example: "65123f4d5a45b12cd4aeb67e"
-               comment:
-                 type: string
-                 description: A comment or reason for requesting the document change
-                 example: "Please update the document type to include the new passport."
-             required:
-               - eventId
-               - comment
-               
+        description: Payload for requesting a change in document status related to an event
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  type: string
+                  format: uuid
+                  description: >-
+                    The unique identifier of the event for which the document
+                    change is requested
+                  example: 65123f4d5a45b12cd4aeb67e
+                comment:
+                  type: string
+                  description: A comment or reason for requesting the document change
+                  example: Please update the document type to include the new passport.
+              required:
+                - eventId
+                - comment
       responses:
-        200:
+        '200':
           description: Change request for document successfully submitted
           content:
             application/json:
@@ -1995,27 +3490,25 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Change request for document successfully submitted. The event organizer will review your request."
-                    
-        400:
+                    example: >-
+                      Change request for document successfully submitted. The
+                      event organizer will review your request.
+        '400':
           $ref: '#/components/responses/400'
-          
-        403:
+        '403':
           $ref: '#/components/responses/403'
-          
-        404:
+        '404':
           $ref: '#/components/responses/404'
-          
-        500:
+        '500':
           $ref: '#/components/responses/500'
-          
-      tags: 
+      tags:
         - Documents
-        
-  /document/{documentId}/change-status: 
+  /document/{documentId}/change-status:
     patch:
       summary: Change the status of a document in an event
-      description: Update the status of a specific event document to either `approved`, `rejected`, or `pending`.
+      description: >-
+        Update the status of a specific event document to either `approved`,
+        `rejected`, or `pending`.
       parameters:
         - in: path
           name: documentId
@@ -2024,7 +3517,7 @@ paths:
             type: string
             format: uuid
           description: The unique identifier of the document whose status is being changed
-          example: "65123f4d5a45b12cd4aeb67e"
+          example: 65123f4d5a45b12cd4aeb67e
       requestBody:
         description: Payload containing the new document status
         required: true
@@ -2040,11 +3533,11 @@ paths:
                     - rejected
                     - pending
                   description: The new status for the document
-                  example: "approved"
+                  example: approved
               required:
                 - newStatus
       responses:
-        200:
+        '200':
           description: Document status successfully updated
           content:
             application/json:
@@ -2053,23 +3546,23 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Document status successfully updated. The document status has been changed to approved."
-        404:
+                    example: >-
+                      Document status successfully updated. The document status
+                      has been changed to approved.
+        '404':
           $ref: '#/components/responses/404'
-          
-        409:
+        '409':
           $ref: '#/components/responses/409'
-          
-        500:
+        '500':
           $ref: '#/components/responses/500'
-          
       tags:
         - Documents
-
   /documents/{documentId}:
     patch:
       summary: Update a document's information
-      description: Update the details of an existing document, including its path, status, and country.
+      description: >-
+        Update the details of an existing document, including its path, status,
+        and country.
       parameters:
         - in: path
           name: documentId
@@ -2078,7 +3571,7 @@ paths:
             type: string
             format: uuid
           description: The unique identifier of the document to be updated
-          example: "65123f4d5a45b12cd4aeb67e"
+          example: 65123f4d5a45b12cd4aeb67e
       requestBody:
         description: Payload for updating document information
         required: true
@@ -2092,21 +3585,23 @@ paths:
                   items:
                     type: string
                   description: Array of strings representing file paths for the document
-                  example: ["/path/to/document1.pdf", "/path/to/document2.pdf"]
+                  example:
+                    - /path/to/document1.pdf
+                    - /path/to/document2.pdf
                 status:
                   type: string
                   description: The current status of the document
-                  example: "approved"
+                  example: approved
                 country:
                   type: string
                   description: The country associated with the document
-                  example: "USA"
+                  example: USA
               required:
                 - path
                 - status
                 - country
       responses:
-        200:
+        '200':
           description: Document successfully updated
           content:
             application/json:
@@ -2115,13 +3610,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Document successfully updated. Your document has been updated with the new information."
-        404:
+                    example: >-
+                      Document successfully updated. Your document has been
+                      updated with the new information.
+        '404':
           $ref: '#/components/responses/404'
-          
-        500:
+        '500':
           $ref: '#/components/responses/500'
-          
       tags:
         - Documents
     get:
@@ -2135,9 +3630,9 @@ paths:
             type: string
             format: uuid
           description: The unique identifier of the document.
-          example: "66f54c41bc6cad2c33f2c68f"
+          example: 66f54c41bc6cad2c33f2c68f
       responses:
-        200:
+        '200':
           description: Document successfully retrieved
           content:
             application/json:
@@ -2150,29 +3645,31 @@ paths:
                       _id:
                         type: string
                         description: Document ID
-                        example: "66f54c41bc6cad2c33f2c68f"
+                        example: 66f54c41bc6cad2c33f2c68f
                       type:
                         type: string
                         description: Type of the document
-                        example: "aadhaar"
+                        example: aadhaar
                       country:
                         type: string
                         description: Country associated with the document
-                        example: "India"
+                        example: India
                       path:
                         type: array
                         items:
                           type: string
                         description: Paths or sections of the document
-                        example: ["Front", "Back"]
+                        example:
+                          - Front
+                          - Back
                       user:
                         type: string
                         description: User ID to whom the document belongs
-                        example: "66e1839f04bcf8e6974a4be4"
+                        example: 66e1839f04bcf8e6974a4be4
                       status:
                         type: string
                         description: Status of the document
-                        example: "approved"
+                        example: approved
                       eventDetails:
                         type: array
                         items:
@@ -2189,25 +3686,24 @@ paths:
                         type: string
                         format: date-time
                         description: Document creation timestamp
-                        example: "2024-09-26T11:57:53.225Z"
+                        example: '2024-09-26T11:57:53.225Z'
                       updatedAt:
                         type: string
                         format: date-time
                         description: Document update timestamp
-                        example: "2024-09-26T11:57:53.225Z"
-        404:
+                        example: '2024-09-26T11:57:53.225Z'
+        '404':
           $ref: '#/components/responses/404'
-          
-        500:
+        '500':
           $ref: '#/components/responses/500'
-          
       tags:
         - Documents
-        
   /documents/get-user-documents:
     get:
       summary: Retrieve user documents
-      description: Get the list of documents associated with a user by their user ID. Only documents with a status other than "rejected" are returned.
+      description: >-
+        Get the list of documents associated with a user by their user ID. Only
+        documents with a status other than "rejected" are returned.
       parameters:
         - in: query
           name: userId
@@ -2215,10 +3711,12 @@ paths:
           schema:
             type: string
             format: uuid
-          description: The unique identifier of the user whose documents are being retrieved.
-          example: "66e1839f04bcf8e6974a4be4"
+          description: >-
+            The unique identifier of the user whose documents are being
+            retrieved.
+          example: 66e1839f04bcf8e6974a4be4
       responses:
-        200:
+        '200':
           description: Documents successfully retrieved
           content:
             application/json:
@@ -2233,29 +3731,31 @@ paths:
                         _id:
                           type: string
                           description: Document ID
-                          example: "66f54c41bc6cad2c33f2c68f"
+                          example: 66f54c41bc6cad2c33f2c68f
                         type:
                           type: string
                           description: Type of the document
-                          example: "aadhaar"
+                          example: aadhaar
                         country:
                           type: string
                           description: Country associated with the document
-                          example: "India"
+                          example: India
                         path:
                           type: array
                           items:
                             type: string
                           description: Paths or sections of the document
-                          example: ["Front", "Back"]
+                          example:
+                            - Front
+                            - Back
                         user:
                           type: string
                           description: User ID to whom the document belongs
-                          example: "66e1839f04bcf8e6974a4be4"
+                          example: 66e1839f04bcf8e6974a4be4
                         status:
                           type: string
                           description: Status of the document
-                          example: "approved"
+                          example: approved
                         eventDetails:
                           type: array
                           items:
@@ -2272,28 +3772,26 @@ paths:
                           type: string
                           format: date-time
                           description: Document creation timestamp
-                          example: "2024-09-26T11:57:53.225Z"
+                          example: '2024-09-26T11:57:53.225Z'
                         updatedAt:
                           type: string
                           format: date-time
                           description: Document update timestamp
-                          example: "2024-09-26T11:57:53.225Z"
-        400:
+                          example: '2024-09-26T11:57:53.225Z'
+        '400':
           $ref: '#/components/responses/400'
-          
-        404:
+        '404':
           $ref: '#/components/responses/404'
-          
-        500:
+        '500':
           $ref: '#/components/responses/500'
-          
       tags:
         - Documents
-        
   /documents/request:
     get:
       summary: Request required documents from event guests
-      description: Request specific required documents from the primary and sub-guests of an event. Guests will be notified to upload the required documents.
+      description: >-
+        Request specific required documents from the primary and sub-guests of
+        an event. Guests will be notified to upload the required documents.
       parameters:
         - in: query
           name: eventId
@@ -2301,9 +3799,9 @@ paths:
             type: string
           required: true
           description: The unique identifier of the event
-          example: "65123f4d5a45b12cd4aeb67e"
+          example: 65123f4d5a45b12cd4aeb67e
       responses:
-        200:
+        '200':
           description: Documents successfully requested from guests
           content:
             application/json:
@@ -2312,22 +3810,21 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Documents successfully requested from guests. Guests will be notified to upload the required documents."
-        404:
+                    example: >-
+                      Documents successfully requested from guests. Guests will
+                      be notified to upload the required documents.
+        '404':
           $ref: '#/components/responses/404'
-        
-        500:
+        '500':
           $ref: '#/components/responses/500'
-          
       tags:
         - Documents
-        
-  # Events api
-  
   /event/create:
     post:
       summary: Create a new event
-      description: Creates a new event, validates company and code, and associates the event with the bride and groom users.
+      description: >-
+        Creates a new event, validates company and code, and associates the
+        event with the bride and groom users.
       requestBody:
         required: true
         content:
@@ -2339,24 +3836,24 @@ paths:
                   type: string
                   format: uuid
                   description: ID of the company organizing the event
-                  example: "66f54c41bc6cad2c33f2c68f"
+                  example: 66f54c41bc6cad2c33f2c68f
                 code:
                   type: string
                   description: Unique event code
-                  example: "ABC123"
+                  example: ABC123
                 eventName:
                   type: string
                   description: Name of the event
-                  example: "Wedding Ceremony"
+                  example: Wedding Ceremony
                 finalEventDate:
                   type: string
                   format: date
                   description: Date of the final event
-                  example: "2024-10-15"
+                  example: '2024-10-15'
                 finalEventCity:
                   type: string
                   description: The city where the final event will take place
-                  example: "New York"
+                  example: New York
                 groomDetails:
                   type: object
                   description: Details of the groom
@@ -2364,11 +3861,11 @@ paths:
                     firstName:
                       type: string
                       description: Groom's first name
-                      example: "John"
+                      example: John
                     lastName:
                       type: string
                       description: Groom's last name
-                      example: "Doe"
+                      example: Doe
                     contactNumber:
                       type: number
                       description: Groom's contact number
@@ -2376,7 +3873,7 @@ paths:
                     city:
                       type: string
                       description: Groom's city of residence
-                      example: "Los Angeles"
+                      example: Los Angeles
                 brideDetails:
                   type: object
                   description: Details of the bride
@@ -2384,11 +3881,11 @@ paths:
                     firstName:
                       type: string
                       description: Bride's first name
-                      example: "Jane"
+                      example: Jane
                     lastName:
                       type: string
                       description: Bride's last name
-                      example: "Smith"
+                      example: Smith
                     contactNumber:
                       type: number
                       description: Bride's contact number
@@ -2396,11 +3893,11 @@ paths:
                     city:
                       type: string
                       description: Bride's city of residence
-                      example: "San Francisco"
+                      example: San Francisco
                 budget:
                   type: string
                   description: Optional event budget
-                  example: "$50000"
+                  example: $50000
               required:
                 - companyId
                 - code
@@ -2409,7 +3906,7 @@ paths:
                 - groomDetails
                 - brideDetails
       responses:
-        200:
+        '200':
           description: Event successfully created
           content:
             application/json:
@@ -2418,21 +3915,15 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Event created successfully"
-        404:
+                    example: Event created successfully
+        '404':
           $ref: '#/components/responses/404'
-          
-        409:
+        '409':
           $ref: '#/components/responses/409'
-          
-        500:
+        '500':
           $ref: '#/components/responses/500'
-          
       tags:
         - Events
-        
-  #Functions api
-  
   /function/create:
     post:
       summary: Create a new function for an event
@@ -2444,17 +3935,17 @@ paths:
           application/json:
             schema:
               type: object
-              required: 
+              required:
                 - name
                 - eventId
               properties:
                 name:
                   type: string
-                  example: "Stage Setup"
+                  example: Stage Setup
                 eventId:
                   type: string
                   format: ObjectId
-                  example: "650b3b5d4f3a2a00123abc45"
+                  example: 650b3b5d4f3a2a00123abc45
       responses:
         '200':
           description: Function successfully created.
@@ -2465,16 +3956,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Function successfully created."
+                    example: Function successfully created.
         '404':
           $ref: '#/components/responses/404'
-          
         '409':
           $ref: '#/components/responses/409'
-          
         '500':
           $ref: '#/components/responses/500'
-          
   /functions/{functionId}:
     delete:
       summary: Delete a function by its ID
@@ -2488,7 +3976,7 @@ paths:
             format: ObjectId
           required: true
           description: The ID of the function to be deleted
-          example: "650b3b5d4f3a2a00123abc45"
+          example: 650b3b5d4f3a2a00123abc45
       responses:
         '200':
           description: Function successfully deleted.
@@ -2499,14 +3987,1478 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Function successfully deleted."
+                    example: Function successfully deleted.
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-        
-  
-    
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    IBaseGuestPayload:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: First name of the guest
+          example: John
+        lastName:
+          type: string
+          description: Last name of the guest
+          example: Doe
+        gender:
+          type: string
+          enum:
+            - Male
+            - Female
+          description: Gender of the guest
+          example: Male
+        avatar:
+          type: string
+          description: URL to the guest's avatar
+          example: https://example.com/avatar.jpg
+        eventId:
+          type: string
+          format: objectId
+          description: ID of the event the guest is attending
+          example: 64a51e6a4f1a2d63f7d25c9b
+        meal:
+          type: string
+          format: objectId
+          description: Meal preference ID for the guest
+          example: 64a51e6a4f1a2d63f7d25c9b
+        tags:
+          type: array
+          items:
+            type: string
+            format: objectId
+          description: List of tag IDs for the guest
+          example:
+            - 64a51e6a4f1a2d63f7d25c9b
+        functions:
+          type: array
+          items:
+            type: string
+            format: objectId
+          description: List of function IDs assigned to the guest
+          example:
+            - 64a51e6a4f1a2d63f7d25c9b
+    IAddGuestPayload:
+      required:
+        - contactNumber
+        - firstName
+        - lastName
+        - gender
+        - avatar
+        - eventId
+      allOf:
+        - $ref: '#/components/schemas/IBaseGuestPayload'
+      properties:
+        contactNumber:
+          type: number
+          description: Contact number of the guest
+          example: 1234567890
+        subGuests:
+          type: array
+          items:
+            $ref: '#/components/schemas/IAddGuestPayload'
+          description: List of sub-guests under this guest
+    IPatchGuestPayload:
+      allOf:
+        - $ref: '#/components/schemas/IAddGuestPayload'
+      properties:
+        guestId:
+          type: string
+          format: objectId
+          description: ID of the guest to be patched
+          example: 64a51e6a4f1a2d63f7d25c9b
+    IPatchGuestPayloadArray:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/IAddGuestPayload'
+        properties:
+          guestId:
+            type: string
+            format: objectId
+            description: ID of the guest to be patched
+            example: 64a51e6a4f1a2d63f7d25c9b
+    IPatchGuestCellPayload:
+      required:
+        - guestId
+      anyOf:
+        - $ref: '#/components/schemas/IBaseGuestPayload'
+      properties:
+        guestId:
+          type: string
+          format: objectId
+          description: ID of the guest cell to patch
+          example: 64a51e6a4f1a2d63f7d25c9b
+    IDeleteGuestsPayload:
+      type: array
+      items:
+        type: object
+        required:
+          - guestId
+        properties:
+          guestId:
+            type: string
+            format: objectId
+            description: ID of the guest to delete
+            example: 64a51e6a4f1a2d63f7d25c9b
+          newPrimaryGuestId:
+            type: string
+            format: objectId
+            description: New primary guest ID if reassigning sub-guests
+            example: 64a51e6a4f1a2d63f7d25c9b
+          subGuestToKeep:
+            type: array
+            items:
+              type: string
+              format: objectId
+            description: List of sub-guest IDs to keep after deletion
+            example:
+              - 64a51e6a4f1a2d63f7d25c9b
+    IMoveSubGuestPayload:
+      type: object
+      required:
+        - guestIds
+        - newPrimaryGuestId
+        - currentPrimaryGuestId
+      properties:
+        guestIds:
+          type: array
+          items:
+            type: string
+            format: objectId
+          description: List of sub-guest IDs to move
+          example:
+            - 64a51e6a4f1a2d63f7d25c9b
+        newPrimaryGuestId:
+          type: string
+          format: objectId
+          description: ID of the new primary guest for the sub-guests
+          example: 64a51e6a4f1a2d63f7d25c9b
+        currentPrimaryGuestId:
+          type: string
+          format: objectId
+          description: ID of the current primary guest
+          example: 64a51e6a4f1a2d63f7d25c9b
+    IMovePrimaryGuestPayload:
+      type: object
+      required:
+        - currentPrimaryGuestId
+        - newGroupPrimaryGuestId
+      properties:
+        currentPrimaryGuestId:
+          type: string
+          format: objectId
+          description: ID of the current primary guest
+          example: 64a51e6a4f1a2d63f7d25c9b
+        newGroupPrimaryGuestId:
+          type: string
+          format: objectId
+          description: ID of the new group primary guest
+          example: 64a51e6a4f1a2d63f7d25c9b
+        currentGroupNewPrimaryGuestId:
+          type: string
+          format: objectId
+          description: ID of the current group for the new primary guest (optional)
+          example: 64a51e6a4f1a2d63f7d25c9b
+    IAddHotelPayload:
+      type: object
+      required:
+        - name
+        - companyId
+        - address
+        - contactNumber
+        - checkInDetails
+      properties:
+        name:
+          type: string
+          description: Name of the hotel
+          example: Sunrise Hotel
+        companyId:
+          type: string
+          format: ObjectId
+          description: The ID of the associated company
+          example: 64a51e6a4f1a2d63f7d25c9b
+        address:
+          type: object
+          description: Address details of the hotel
+          required:
+            - add1
+            - city
+            - state
+            - country
+            - pinCode
+            - coordinates
+          properties:
+            add1:
+              type: string
+              description: First line of the address
+              example: 123 Main St
+            add2:
+              type: string
+              description: Second line of the address (optional)
+              example: Suite 101
+            city:
+              type: string
+              description: City of the hotel
+              example: New York
+            state:
+              type: string
+              description: State of the hotel
+              example: NY
+            country:
+              type: string
+              description: Country of the hotel
+              example: USA
+            pinCode:
+              type: number
+              description: Postal code of the hotel
+              example: 10001
+            coordinates:
+              type: object
+              description: Coordinates of the hotel
+              required:
+                - lat
+                - lng
+              properties:
+                lat:
+                  type: number
+                  description: Latitude of the hotel
+                  example: 40.7128
+                lng:
+                  type: number
+                  description: Longitude of the hotel
+                  example: -74.006
+        contactNumber:
+          type: number
+          description: Contact number of the hotel
+          example: 1234567890
+        checkInDetails:
+          type: object
+          description: Check-in and check-out details
+          properties:
+            checkInTime:
+              type: string
+              description: Check-in time
+              example: '14:00'
+            checkOutTime:
+              type: string
+              description: Check-out time
+              example: '11:00'
+    IPatchHotelPayload:
+      type: object
+      required:
+        - hotelId
+      properties:
+        hotelId:
+          type: string
+          format: ObjectId
+          description: The ID of the hotel
+          example: 64a51e6a4f1a2d63f7d25c9x
+        name:
+          type: string
+          description: Name of the hotel
+          example: Sunrise Hotel
+        address:
+          type: object
+          description: Address details of the hotel
+          properties:
+            add1:
+              type: string
+              description: First line of the address
+              example: 123 Main St
+            add2:
+              type: string
+              description: Second line of the address (optional)
+              example: Suite 101
+            city:
+              type: string
+              description: City of the hotel
+              example: New York
+            state:
+              type: string
+              description: State of the hotel
+              example: NY
+            country:
+              type: string
+              description: Country of the hotel
+              example: USA
+            pinCode:
+              type: number
+              description: Postal code of the hotel
+              example: 10001
+            coordinates:
+              type: object
+              description: Coordinates of the hotel
+              required:
+                - lat
+                - lng
+              properties:
+                lat:
+                  type: number
+                  description: Latitude of the hotel
+                  example: 40.7128
+                lng:
+                  type: number
+                  description: Longitude of the hotel
+                  example: -74.006
+        contactNumber:
+          type: number
+          description: Contact number of the hotel
+          example: 1234567890
+        checkInDetails:
+          type: object
+          description: Check-in and check-out details
+          properties:
+            checkInTime:
+              type: string
+              description: Check-in time
+              example: '14:00'
+            checkOutTime:
+              type: string
+              description: Check-out time
+              example: '11:00'
+    IAddHotelToEventPayload:
+      type: object
+      required:
+        - eventId
+        - hotelId
+        - contactDetails
+        - tagIds
+      properties:
+        eventId:
+          type: string
+          format: ObjectId
+          description: ID of the event
+          example: 66e189a48dacf4f20d7e51d2
+        hotelId:
+          type: string
+          format: ObjectId
+          description: ID of the hotel
+          example: 66ea88b197a39eefb4f2eac3
+        contactDetails:
+          $ref: '#/components/schemas/IContactDetails'
+        tagIds:
+          type: array
+          items:
+            type: string
+            format: ObjectId
+            description: IDs of associated tags
+          example:
+            - 66e18b9a07c4906c47181669
+            - 66e18cdbf2d43d6993cd7b42
+    IContactDetails:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - primaryContactNumber
+        - email
+      properties:
+        firstName:
+          type: string
+          description: First name of the contact person
+          example: John
+        lastName:
+          type: string
+          description: Last name of the contact person
+          example: Doe
+        primaryContactNumber:
+          type: number
+          description: Primary contact number
+          example: 1234567890
+        secondaryContactNumber:
+          type: number
+          description: Secondary contact number (optional)
+          example: 9876543210
+        email:
+          type: string
+          description: Contact email address
+          example: john.doe@example.com
+    Price:
+      type: object
+      required:
+        - amount
+        - currency
+      properties:
+        amount:
+          type: number
+          example: 1000
+          description: The cost of the plan.
+        currency:
+          type: string
+          example: USD
+          description: The currency of the price.
+    IPlanType:
+      type: object
+      required:
+        - planName
+        - numberOfGuests
+        - numberOfFunctions
+        - storageCapacity
+        - price
+      properties:
+        planName:
+          type: string
+          example: Gold Plan
+          description: The name of the plan.
+        numberOfGuests:
+          type: integer
+          example: 200
+          description: The number of guests included in the plan.
+        numberOfFunctions:
+          type: integer
+          example: 5
+          description: The number of functions allowed under the plan.
+        storageCapacity:
+          type: string
+          example: 50GB
+          description: The storage capacity provided by the plan.
+        price:
+          $ref: '#/components/schemas/Price'
+    BedType:
+      type: string
+      enum:
+        - Single
+        - Double
+        - Queen
+        - King
+      example: Queen
+      description: Type of bed available in the room.
+    View:
+      type: string
+      enum:
+        - Sea
+        - Mountain
+        - City
+        - Garden
+      example: Sea
+      description: View type from the room.
+    IBaseRoom:
+      type: object
+      required:
+        - bedType
+        - maxGuests
+        - extraBedAllowed
+        - swimmingPool
+        - smokingAllowed
+        - gallery
+      properties:
+        bedType:
+          $ref: '#/components/schemas/BedType'
+        maxGuests:
+          type: integer
+          example: 3
+          description: Maximum number of guests allowed in the room.
+        extraBedAllowed:
+          type: integer
+          example: 1
+          description: Number of extra beds allowed in the room.
+        swimmingPool:
+          type: boolean
+          example: true
+          description: Indicates if the room has access to a swimming pool.
+        smokingAllowed:
+          type: boolean
+          example: false
+          description: Indicates if smoking is allowed in the room.
+        gallery:
+          type: boolean
+          example: true
+          description: Indicates if the room has a gallery/balcony.
+    IRoom:
+      type: object
+      required:
+        - name
+        - view
+      allOf:
+        - type: object
+          properties:
+            name:
+              type: string
+              example: Deluxe Room
+              description: The name of the room.
+            view:
+              $ref: '#/components/schemas/View'
+        - $ref: '#/components/schemas/IBaseRoom'
+    IPatchRoomTypePayload:
+      type: object
+      required:
+        - roomId
+      properties:
+        roomId:
+          type: string
+          format: ObjectId
+          description: The Id of the room that needs to be modified
+          example: 66f16453170329c8ff274872
+        name:
+          type: string
+          example: Deluxe Room
+          description: The name of the room.
+        bedType:
+          $ref: '#/components/schemas/BedType'
+        view:
+          $ref: '#/components/schemas/View'
+        maxGuests:
+          type: integer
+          example: 3
+          description: Maximum number of guests allowed in the room.
+        extraBedAllowed:
+          type: integer
+          example: 1
+          description: Number of extra beds allowed in the room.
+        swimmingPool:
+          type: boolean
+          example: true
+          description: Indicates if the room has access to a swimming pool.
+        smokingAllowed:
+          type: boolean
+          example: false
+          description: Indicates if smoking is allowed in the room.
+        gallery:
+          type: boolean
+          example: true
+          description: Indicates if the room has a gallery/balcony.
+    IAddRoomToEventPayload:
+      type: object
+      required:
+        - roomId
+        - hotelId
+        - eventId
+      allOf:
+        - type: object
+          properties:
+            roomId:
+              type: string
+              format: ObjectId
+              example: 66ea8a1c98d445d68e3f1759
+              description: >-
+                The unique identifier of the room being added to the event. This
+                ID references the specific room in the hotel.
+            eventId:
+              type: string
+              format: ObjectId
+              example: 66ea8a1c98d445d68e3f175
+              description: >-
+                The unique identifier of the event to which the room is being
+                associated. This ID corresponds to the event in the system.
+            hotelId:
+              type: string
+              format: ObjectId
+              example: 66ea8a1c98d445d68e3f1757
+              description: >-
+                The unique identifier of the hotel that contains the room being
+                added to the event. This ID references the hotel entity.
+            quantity:
+              type: integer
+              example: 10
+              description: Quantity of rooms to be booked for the event
+        - $ref: '#/components/schemas/IBaseRoom'
+    IPatchEventRoomTypePayload:
+      type: object
+      required:
+        - eventRoomRef
+      allOf:
+        - type: object
+          properties:
+            eventRoomRef:
+              type: string
+              format: ObjectId
+              example: 66ea8a1c98d445d68e3f1759
+        - $ref: '#/components/schemas/IBaseRoom'
+    ITag:
+      type: object
+      required:
+        - name
+        - color
+      properties:
+        name:
+          type: string
+          example: Friends
+          description: Name of the tag
+        color:
+          type: string
+          example: Blue
+          description: Color of the tag
+        eventId:
+          type: string
+          example: 66f119beb026c0eb71d5b5e4
+          description: Id of the event for an event specific tag
+    IBaseTaskPayload:
+      type: object
+      description: Payload for creating a new task associated with an event.
+      required:
+        - name
+        - status
+        - assignee
+        - priority
+        - dueDate
+        - contactName
+        - contactNumber
+        - description
+        - address
+        - checkList
+        - eventId
+      properties:
+        name:
+          type: string
+          example: Book a DJ
+          description: Name of the task.
+        categoryId:
+          type: string
+          format: ObjectId
+          example: 66e18b9a07c4906c47181669
+          description: Optional unique identifier for the category the task belongs to.
+        functionId:
+          type: string
+          format: ObjectId
+          example: 66e18aea07c4906c47181652
+          description: >-
+            Optional unique identifier for the function associated with the
+            task.
+        status:
+          type: string
+          example: Pending
+          description: Current status of the task (e.g., Pending, Completed, In Progress).
+        assignee:
+          type: array
+          items:
+            type: string
+            example: John Doe
+          description: List of individuals assigned to the task.
+        priority:
+          type: string
+          example: High
+          description: Priority level of the task (e.g., Low, Medium, High).
+        dueDate:
+          $ref: '#/components/schemas/IDueDate'
+        contactName:
+          type: string
+          example: Jane Smith
+          description: Name of the primary contact person for the task.
+        contactNumber:
+          type: integer
+          example: 9876543210
+          description: Contact number of the primary contact person for the task.
+        description:
+          type: string
+          example: Book a DJ for the reception.
+          description: Detailed description of the task.
+        address:
+          $ref: '#/components/schemas/IAddress'
+        checkList:
+          type: array
+          items:
+            $ref: '#/components/schemas/ICheckList'
+          description: Checklist items for the task.
+    ICreateTaskPayload:
+      allOf:
+        - $ref: '#/components/schemas/IBaseTaskPayload'
+      type: object
+      description: Payload for creating a new task associated with an event.
+      properties:
+        attachments:
+          type: array
+          items:
+            type: string
+            format: ObjectId
+            example: 66e18b9a07c4906c47181669
+          description: Optional list of attachment IDs associated with the task.
+        eventId:
+          type: string
+          format: ObjectId
+          example: 66e189a48dacf4f20d7e51d2
+          description: Unique identifier for the event to which the task is associated.
+    ICheckList:
+      type: object
+      description: A checklist item within a task.
+      required:
+        - label
+        - checked
+      properties:
+        label:
+          type: string
+          example: Confirm booking
+          description: Label for the checklist item.
+        checked:
+          type: boolean
+          example: false
+          description: Indicates whether the checklist item is completed.
+    IDueDate:
+      type: object
+      description: Due date details for the task.
+      required:
+        - date
+        - timezone
+      properties:
+        date:
+          type: string
+          format: date-time
+          example: '2024-10-01T09:00:00Z'
+          description: Due date and time for the task.
+        timezone:
+          type: string
+          example: UTC
+          description: Timezone for the due date.
+    IAddress:
+      type: object
+      description: Address details associated with the task.
+      required:
+        - street
+        - city
+        - state
+        - zipCode
+        - country
+      properties:
+        street:
+          type: string
+          example: 123 Main St
+          description: Street address.
+        city:
+          type: string
+          example: New York
+          description: City name.
+        state:
+          type: string
+          example: NY
+          description: State or province.
+        zipCode:
+          type: string
+          example: '10001'
+          description: Postal/Zip code.
+        country:
+          type: string
+          example: USA
+          description: Country name.
+    IUpdateCheckListStatus:
+      type: object
+      required:
+        - checkListId
+        - newStatus
+      properties:
+        checkListId:
+          type: string
+          format: ObjectId
+          description: Object Id of the check list item that needs to be changed
+          example: 66e1900966218dc66a806d39
+        newStatus:
+          type: boolean
+          description: new status of the check list
+          example: true
+    Meal:
+      type: object
+      description: Details of the meal option chosen by the guest.
+      properties:
+        _id:
+          type: string
+          example: 66cdd0cdacd65a7ab834b030
+          description: Unique identifier for the meal.
+        name:
+          type: string
+          example: Veg
+          description: Name of the meal option.
+        color:
+          type: string
+          example: '#00FF00'
+          description: Color code representing the meal type.
+    FunctionDetails:
+      type: object
+      description: Information about the function the guest is attending.
+      properties:
+        _id:
+          type: string
+          example: 66e3f3647679a1a4f0076cfd
+          description: Unique identifier for the function details.
+        rsvp:
+          type: string
+          example: Not Sure
+          description: RSVP status of the guest for the function.
+        function:
+          type: object
+          description: Details of the specific function the guest is attending.
+          properties:
+            _id:
+              type: string
+              example: 66e18aea07c4906c47181652
+              description: Unique identifier for the function.
+            name:
+              type: string
+              example: Haldi
+              description: Name of the function.
+            event:
+              type: string
+              example: 66e189a48dacf4f20d7e51d2
+              description: Identifier for the event associated with the function.
+    Tag:
+      type: object
+      description: A tag assigned to a guest for categorization or filtering.
+      properties:
+        _id:
+          type: string
+          example: 66e18b9a07c4906c47181669
+          description: Unique identifier for the tag.
+        name:
+          type: string
+          example: test
+          description: Name of the tag.
+        color:
+          type: string
+          example: red
+          description: Color associated with the tag.
+    AcceptedDocument:
+      type: object
+      description: Details of an accepted document submitted by a guest.
+      properties:
+        _id:
+          type: string
+          example: 66f27de4eb8b262925cff0e3
+          description: Unique identifier for the accepted document.
+        type:
+          type: string
+          example: passport
+          description: Type of the accepted document.
+        country:
+          type: string
+          example: India
+          description: Country associated with the document.
+        path:
+          type: array
+          items:
+            type: string
+          example:
+            - front
+            - back
+          description: Array containing paths to document images (e.g., front, back).
+        status:
+          type: string
+          example: pending
+          description: Current status of the document (e.g., pending, approved).
+    Document:
+      type: object
+      description: Details of a document submitted by a guest.
+      properties:
+        _id:
+          type: string
+          example: 66f27de4eb8b262925cff0e3
+          description: Unique identifier for the document.
+        type:
+          type: string
+          example: passport
+          description: Type of the document.
+        country:
+          type: string
+          example: India
+          description: Country associated with the document.
+    EventDetail:
+      type: object
+      description: Details related to an event, including document status.
+      properties:
+        event:
+          type: string
+          format: ObjectId
+          example: 66e189a48dacf4f20d7e51d2
+          description: Unique identifier for the event.
+        role:
+          type: string
+          format: ObjectId
+          example: 66ba2809799d0fb7db4fd5c0
+          description: Role identifier for the assignee within the event.
+        acceptedDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AcceptedDocument'
+          description: List of documents that have been accepted.
+        rejectedDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+          description: List of documents that have been rejected.
+        pendingDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+          description: List of documents that are pending approval.
+        _id:
+          type: string
+          format: ObjectId
+          example: 66e189a58dacf4f20d7e51d7
+          description: Unique identifier for the event detail.
+    User:
+      type: object
+      description: User information, including associated event details.
+      properties:
+        _id:
+          type: string
+          example: 66e1a313698a44e7d290b718
+          description: Unique identifier for the user.
+        eventDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventDetail'
+          description: List of event details associated with the user.
+    Guest:
+      type: object
+      description: Details of the guest attending the event.
+      properties:
+        _id:
+          type: string
+          example: 66e3f1c27679a1a4f0076cdb
+          description: Unique identifier for the guest.
+        firstName:
+          type: string
+          example: Marcelina
+          description: First name of the guest.
+        lastName:
+          type: string
+          example: Quigley
+          description: Last name of the guest.
+        contactNumber:
+          type: integer
+          example: 1234567890
+          description: Contact number of the guest.
+        gender:
+          type: string
+          example: Male
+          description: Gender of the guest.
+        avatar:
+          type: string
+          example: string
+          description: Avatar or profile image URL of the guest.
+        functionDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/FunctionDetails'
+          description: List of functions the guest is attending.
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+          description: Tags associated with the guest.
+        subGuests:
+          type: array
+          items:
+            type: object
+            description: Details of sub-guests accompanying the main guest.
+            properties:
+              _id:
+                type: string
+                example: 66e3f1c27679a1a4f0076cdb
+                description: Unique identifier for the sub-guest.
+              firstName:
+                type: string
+                example: Marcelina
+                description: First name of the sub-guest.
+              lastName:
+                type: string
+                example: Quigley
+                description: Last name of the sub-guest.
+              contactNumber:
+                type: integer
+                example: 1234567891
+                description: Contact number of the sub-guest.
+              gender:
+                type: string
+                example: Male
+                description: Gender of the sub-guest.
+              avatar:
+                type: string
+                example: string
+                description: Avatar or profile image URL of the sub-guest.
+              functionDetails:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FunctionDetails'
+                description: List of functions the sub-guest is attending.
+              user:
+                $ref: '#/components/schemas/User'
+                description: User information related to the sub-guest.
+              event:
+                type: string
+                example: 66e189a48dacf4f20d7e51d2
+                description: Event associated with the sub-guest.
+              meal:
+                $ref: '#/components/schemas/Meal'
+                description: Meal preferences for the sub-guest.
+        user:
+          $ref: '#/components/schemas/User'
+          description: User information related to the guest.
+        event:
+          type: string
+          example: 66e189a48dacf4f20d7e51d2
+          description: Event associated with the guest.
+        meal:
+          $ref: '#/components/schemas/Meal'
+          description: Meal preferences for the guest.
+    GuestsResponse:
+      type: object
+      description: Response schema for listing guests.
+      properties:
+        guests:
+          type: array
+          items:
+            $ref: '#/components/schemas/Guest'
+          description: Array of guest objects.
+    Hotel:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 66ea88b197a39eefb4f2eac3
+          description: Unique identifier for the hotel.
+        name:
+          type: string
+          example: Test Hotel
+          description: Name of the hotel.
+        company:
+          type: string
+          example: 66e1839f04bcf8e6974a4bdf
+          description: ID of the company that owns the hotel.
+        address:
+          type: object
+          properties:
+            coordinates:
+              type: object
+              properties:
+                lat:
+                  type: number
+                  example: 82.5008
+                  description: Latitude of the hotel's location.
+                lng:
+                  type: number
+                  example: 46.9297
+                  description: Longitude of the hotel's location.
+            add1:
+              type: string
+              example: 7752 Maude Junction
+              description: Primary address line of the hotel.
+            city:
+              type: string
+              example: Ernsermouth
+              description: City where the hotel is located.
+            state:
+              type: string
+              example: test
+              description: State where the hotel is located.
+            country:
+              type: string
+              example: Guyana
+              description: Country where the hotel is located.
+            pinCode:
+              type: integer
+              example: 123456
+              description: Postal code of the hotel's address.
+        contactNumber:
+          type: integer
+          example: 1234567890
+          description: Contact number for the hotel.
+        checkInDetails:
+          type: object
+          properties:
+            checkInTime:
+              type: string
+              example: 12 Pm
+              description: Check-in time for the hotel.
+            checkOutTime:
+              type: string
+              example: 1 Pm
+              description: Check-out time for the hotel.
+        isDeleted:
+          type: boolean
+          example: false
+          description: Flag indicating if the hotel has been deleted.
+    HotelsResponse:
+      type: object
+      properties:
+        hotels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hotel'
+    HotelResponse:
+      type: object
+      properties:
+        hotel:
+          type: object
+          $ref: '#/components/schemas/Hotel'
+    RoomTypesResponse:
+      type: object
+      properties:
+        rooms:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/IRoom'
+              - type: object
+                properties:
+                  isDeleted:
+                    type: boolean
+                    example: false
+                    description: Indicates if the room is marked as deleted.
+    UniqueGuestsByEvent:
+      type: object
+      properties:
+        uniqueGuestsByEvent:
+          type: object
+          description: Contains the guests for a single event.
+          properties:
+            eventName:
+              type: array
+              description: List of guests associated with the event.
+              items:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: 66e3f1c27679a1a4f0076ce2
+                    description: Unique identifier for the guest.
+                  firstName:
+                    type: string
+                    example: Hanna
+                    description: First name of the guest.
+                  lastName:
+                    type: string
+                    example: Goldner
+                    description: Last name of the guest.
+                  contactNumber:
+                    type: integer
+                    example: 1234567891
+                    description: Contact number of the guest.
+                  gender:
+                    type: string
+                    example: Female
+                    description: Gender of the guest.
+                  avatar:
+                    type: string
+                    example: string
+                    description: Avatar URL of the guest.
+                  functionDetails:
+                    type: array
+                    description: Details of functions associated with the guest.
+                    items:
+                      type: object
+                      properties:
+                        function:
+                          type: string
+                          example: 66e18aea07c4906c47181652
+                          description: Function identifier.
+                        rsvp:
+                          type: string
+                          example: Not Sure
+                          description: RSVP status of the guest.
+                        _id:
+                          type: string
+                          example: 66e3f3647679a1a4f0076d02
+                          description: Unique identifier for the function detail.
+                  tags:
+                    type: array
+                    description: Tags associated with the guest.
+                    items:
+                      type: string
+                      example: 66e18b9a07c4906c47181669
+                      description: Tag identifier.
+                  subGuests:
+                    type: array
+                    description: Sub-guests associated with the guest.
+                    items:
+                      type: string
+                      example: 66e3f1c27679a1a4f0076ce2
+                      description: Identifier for the sub-guest.
+                  user:
+                    type: string
+                    example: 66e1a313698a44e7d290b721
+                    description: Unique identifier for the user.
+                  event:
+                    type: string
+                    example: 66e189a48dacf4f20d7e51d2
+                    description: Unique identifier for the event.
+                  primaryGuest:
+                    type: string
+                    example: 66e3f1c27679a1a4f0076cdb
+                    description: Identifier for the primary guest.
+                  meal:
+                    type: string
+                    example: 66cdd0cdacd65a7ab834b030
+                    description: Meal identifier.
+    UniqueGuestsByEvents:
+      type: object
+      properties:
+        uniqueGuestsByEvent:
+          type: object
+          additionalProperties:
+            description: Each property key represents the event name
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                  example: 66e3f1c27679a1a4f0076cdb
+                  description: Unique identifier for the guest.
+                firstName:
+                  type: string
+                  example: Marcelina
+                  description: First name of the guest.
+                lastName:
+                  type: string
+                  example: Quigley
+                  description: Last name of the guest.
+                contactNumber:
+                  type: integer
+                  example: 1234567890
+                  description: Contact number of the guest.
+                gender:
+                  type: string
+                  example: Male
+                  description: Gender of the guest.
+                avatar:
+                  type: string
+                  example: string
+                  description: Avatar URL of the guest.
+                functionDetails:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      function:
+                        type: string
+                        example: 66e18aea07c4906c47181652
+                      rsvp:
+                        type: string
+                        example: Not Sure
+                      _id:
+                        type: string
+                        example: 66e3f3647679a1a4f0076cfd
+                tags:
+                  type: array
+                  items:
+                    type: string
+                    example: 66e18b9a07c4906c47181669
+                subGuests:
+                  type: array
+                  items:
+                    type: string
+                    example: 66e3f1c27679a1a4f0076ce2
+                user:
+                  type: string
+                  example: 66e1a313698a44e7d290b718
+                event:
+                  type: string
+                  example: 66e189a48dacf4f20d7e51d2
+                meal:
+                  type: string
+                  example: 66cdd0cdacd65a7ab834b030
+    Task:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: ObjectId
+          example: 66e197a7c85bb9fa2f910f11
+          description: Unique identifier for the task.
+        category:
+          $ref: '#/components/schemas/Category'
+          description: Category associated with the task.
+        function:
+          $ref: '#/components/schemas/Function'
+          description: Function associated with the task.
+        assignee:
+          type: array
+          description: List of assignees assigned to the task.
+          items:
+            $ref: '#/components/schemas/Assignee'
+        attachments:
+          type: array
+          description: List of attachments related to the task.
+          items:
+            $ref: '#/components/schemas/Attachment'
+    Category:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: ObjectId
+          example: 66e18a158dacf4f20d7e51e6
+          description: Unique identifier for the category.
+        name:
+          type: string
+          example: Test
+          description: Name of the category associated with the task.
+    Function:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: ObjectId
+          example: 66e18aea07c4906c47181652
+          description: Unique identifier for the function.
+        name:
+          type: string
+          example: Haldi
+          description: Name of the function associated with the task.
+    Assignee:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: ObjectId
+          example: 66e1839f04bcf8e6974a4be4
+          description: Unique identifier for the assignee.
+        contactNumber:
+          type: integer
+          example: 9725008500
+          description: Contact number of the assignee.
+        firstName:
+          type: string
+          example: Nirmay
+          description: First name of the assignee.
+        lastName:
+          type: string
+          example: Choksi
+          description: Last name of the assignee.
+        isOtpVerified:
+          type: boolean
+          example: false
+          description: Indicates if the assignee has verified their OTP.
+        documents:
+          type: array
+          description: List of documents associated with the assignee.
+          items:
+            type: string
+            format: ObjectId
+            example: 66e197a7c85bb9fa2f910f11
+            description: Document identifier.
+        eventDetails:
+          type: array
+          description: List of event details associated with the assignee.
+          items:
+            $ref: '#/components/schemas/EventDetail'
+        partOf:
+          type: array
+          description: Details of the assignee's role and company associations.
+          items:
+            $ref: '#/components/schemas/PartOf'
+    PartOf:
+      type: object
+      properties:
+        roleDetails:
+          type: object
+          properties:
+            role:
+              type: string
+              format: ObjectId
+              example: 66ba2667799d0fb7db4fd5b4
+              description: Role identifier for the assignee.
+            permissions:
+              type: array
+              description: List of permissions associated with the role.
+              items:
+                type: string
+                example: READ
+        company:
+          type: string
+          format: ObjectId
+          example: 66e1839f04bcf8e6974a4bdf
+          description: Identifier of the company the assignee is part of.
+        accepted:
+          type: boolean
+          example: true
+          description: Indicates if the assignee has accepted the invitation.
+        inviteMethod:
+          type: string
+          example: whatsapp
+          description: Method used to invite the assignee.
+        _id:
+          type: string
+          format: ObjectId
+          example: 66e1839f04bcf8e6974a4be5
+          description: Unique identifier for the role assignment.
+    Attachment:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: ObjectId
+          example: 66e1972d6c7757ac71fa6189
+          description: Unique identifier for the attachment.
+        path:
+          type: string
+          example: src\uploads\taskList\2024-09-11T13-12-13.876Z - Untitled1.jpg
+          description: Path to the attachment file.
+        name:
+          type: string
+          example: Untitled1.jpg
+          description: Name of the attachment file.
+        referenceType:
+          type: string
+          example: TaskAttachment
+          description: Type of reference for the attachment.
+        taskId:
+          type: string
+          format: ObjectId
+          example: 66e197a7c85bb9fa2f910f11
+          description: Identifier for the task associated with the attachment.
+  responses:
+    '400':
+      description: Bad request - invalid input or missing parameters
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+    '404':
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+    '409':
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
+    '500':
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+                description: specifies the error message
 servers:
   - url: http://localhost:3000
     variables: {}
