@@ -4,6 +4,11 @@ info:
   description: Violette weddings apis
   version: 1.0.0
 components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
   responses:
     '400':
       description: Bad request - invalid input or missing parameters
@@ -63,6 +68,8 @@ components:
               error:
                 type: string
                 description: specifies the error message
+security:
+  - bearerAuth: []
 paths:
   #Accommodation apis
   
@@ -855,6 +862,11 @@ paths:
           application/json:
             schema:
               type: object
+              required: 
+                 - password
+                 - confirmPassword
+                 - publicKey
+                 - signature
               properties:
                   password:
                     type: string
@@ -1146,6 +1158,8 @@ paths:
           application/json:
             schema:
               type: object
+              required: 
+                - name
               properties:
                 name:
                   type: string
@@ -1336,6 +1350,8 @@ paths:
           application/json:
             schema:
               type: object
+              required: 
+                - usedCode
               properties:
                 usedCode:
                   type: string
@@ -1446,6 +1462,1050 @@ paths:
           
       tags: 
         - Codes
+        
+  /codes/get/{companyId}:
+    get:
+      tags:
+        - Codes
+      summary: Get codes for a company
+      description: Retrieve purchase codes and their associated event information for a given company.
+      parameters:
+        - name: companyId
+          in: path
+          description: ID of the company whose codes you want to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          description: The code itself.
+                          example: "aafb89"
+                        used:
+                          type: boolean
+                          description: Indicates if the code has been used.
+                          example: false
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+          
+  # Company profile apis
+  
+  /company-profile/create: 
+    post: 
+      summary: Create a company profile
+      requestBody:
+        description: Request body for creating a company profile
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                companyName:
+                  type: string
+                  example: "Tech Solutions Pvt. Ltd."
+                gstNumber:
+                  type: string
+                  example: "29ABCDE1234F2Z5"
+                primaryContact:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                      example: "John"
+                    lastName:
+                      type: string
+                      example: "Doe"
+                    contactNumber:
+                      type: number
+                      example: 1234567890
+                    inviteMethod:
+                      type: string
+                      enum: 
+                        - Email
+                        - Sms
+                        - Whatsapp
+                      example: "Email"
+                address:
+                  type: string
+                  example: "123, Business Street, Bangalore, India"
+                website:
+                  type: string
+                  example: "https://www.techsolutions.com"
+                email:
+                  type: string
+                  format: email
+                  example: "info@techsolutions.com"
+                secondaryContact:
+                  type: object
+                  nullable: true
+                  properties:
+                    firstName:
+                      type: string
+                      example: "Jane"
+                    lastName:
+                      type: string
+                      example: "Doe"
+                    contactNumber:
+                      type: number
+                      example: 9876543210
+                    inviteMethod:
+                      type: string
+                      enum:
+                        - Email
+                        - Sms
+                        - Whatsapp
+                      example: "Sms"
+              required:
+                - companyName
+                - gstNumber
+                - primaryContact
+                - address
+                - website
+                - email
+      responses:
+        200:
+          description: Company profile created successfully. Please verify OTP to continue.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Company profile created successfully. Please verify otp to continue"
+                  newProfile:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: "6123e4b6f2c8fa5f6b9d1234"
+                      companyName:
+                        type: string
+                        example: "Tech Solutions Pvt. Ltd."
+                      otpVerified:
+                        type: boolean
+                        example: false
+                      gstNumber:
+                        type: string
+                        example: "29ABCDE1234F2Z5"
+                      primaryContact:
+                        type: object
+                        properties:
+                          firstName:
+                            type: string
+                            example: "John"
+                          lastName:
+                            type: string
+                            example: "Doe"
+                          contactNumber:
+                            type: number
+                            example: 1234567890
+                          otpVerified:
+                            type: boolean
+                            example: false
+                      address:
+                        type: string
+                        example: "123, Business Street, Bangalore, India"
+                      website:
+                        type: string
+                        example: "https://www.techsolutions.com"
+                      email:
+                        type: string
+                        format: email
+                        example: "info@techsolutions.com"
+                      secondaryContact:
+                        type: object
+                        nullable: true
+                        properties:
+                          firstName:
+                            type: string
+                            example: "Jane"
+                          lastName:
+                            type: string
+                            example: "Doe"
+                          contactNumber:
+                            type: number
+                            example: 9876543210
+                          otpVerified:
+                            type: boolean
+                            example: false
+                      purchaseCodes:
+                        type: array
+                        items:
+                          type: string
+                          format: uuid
+                          example: "5f4e5c67f9d8d12345678901"
+        400: 
+          $ref: '#/components/responses/400'
+          
+        409: 
+          $ref: '#/components/responses/409'
+          
+        500: 
+          $ref: '#/components/responses/500'
+          
+      tags: 
+        - Company Profile
+        
+  /company-profiles/{profileId}/verify-contact:
+    post:
+      summary: Verify company contact using OTP
+      description: Verifies the contact information (either primary or secondary) for the company profile using the provided OTP.
+      tags:
+        - Company Profile
+      parameters:
+        - in: path
+          name: profileId
+          schema:
+            type: string
+          required: true
+          description: ID of the company profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contactNumber:
+                  type: number
+                  example: 1234567890
+                  description: The contact number of the user to be verified
+                otp:
+                  type: string
+                  example: "123456"
+                  description: OTP provided to verify the contact number
+              required:
+                - contactNumber
+                - otp
+      responses:
+        '200':
+          description: Contact information successfully verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "John Doe's contact information has been verified"
+        '400':
+          $ref: '#/components/responses/400'
+          
+        '404':
+          $ref: '#/components/responses/404'
+          
+        '500':
+          $ref: '#/components/responses/500'
+          
+  /company-profile/{profileId}: 
+    get: 
+      summary: Fetch a company profile by id
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectId
+            example: 66e1839f04bcf8e6974a4bdf
+      responses:
+        200:
+          description: Company profile successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    format: uuid
+                    example: "66e1839f04bcf8e6974a4bdf"
+                    description: Unique identifier of the company profile
+                  companyName:
+                    type: string
+                    example: "test"
+                    description: The name of the company
+                  gstNumber:
+                    type: string
+                    example: "123456789012346"
+                    description: GST number of the company
+                  primaryContact:
+                    type: object
+                    properties:
+                      user:
+                        type: string
+                        format: uuid
+                        example: "66e1839f04bcf8e6974a4bea"
+                        description: Unique identifier of the user associated with the primary contact
+                      otpVerified:
+                        type: boolean
+                        example: true
+                        description: Whether the OTP for the primary contact has been verified
+                      otp:
+                        type: number
+                        example: 116580
+                        description: OTP sent to the primary contact
+                      _id:
+                        type: string
+                        format: uuid
+                        example: "66e1839f04bcf8e6974a4bec"
+                        description: Unique identifier of the primary contact
+                  secondaryContact:
+                    type: object
+                    nullable: true
+                    properties:
+                      user:
+                        type: string
+                        format: uuid
+                        example: "66e1839f04bcf8e6974a4be4"
+                        description: Unique identifier of the user associated with the secondary contact
+                      otpVerified:
+                        type: boolean
+                        example: true
+                        description: Whether the OTP for the secondary contact has been verified
+                      otp:
+                        type: number
+                        example: 503379
+                        description: OTP sent to the secondary contact
+                      _id:
+                        type: string
+                        format: uuid
+                        example: "66e1839f04bcf8e6974a4be6"
+                        description: Unique identifier of the secondary contact
+                  address:
+                    type: string
+                    example: "address"
+                    description: The physical address of the company
+                  website:
+                    type: string
+                    example: "test.com"
+                    description: The company's website URL
+                  email:
+                    type: string
+                    format: email
+                    example: "aman.shah02@gmail.com"
+                    description: Email address of the company
+                  purchaseCodes:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                      example: "66e188a2ca7f8e1974ed240c"
+                      description: Unique identifier of the associated purchase codes
+ 
+        404: 
+          $ref: '#/components/responses/404'
+          
+        500: 
+          $ref: '#/components/responses/500'
+      
+      tags: 
+        - Company Profile
+          
+  # Documents api
+  
+  /document/upload:
+    post:
+      summary: Upload a user document
+      requestBody:
+        description: Payload for uploading a document
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - aadhaar
+                    - passport
+                    - panCard
+                  description: The type of document being uploaded
+                  example: "passport"
+                country:
+                  type: string
+                  description: Country where the document was issued
+                  example: "India"
+                path:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of file paths where the document is stored (adjust based on storage       solution)
+                  example:
+                    - "uploads/documents/passport-1234.jpg"
+                    - "uploads/documents/passport-1234-back.jpg"
+                userId:
+                  type: string
+                  format: uuid
+                  description: The user ID associated with the document upload
+                  example: "66e1839f04bcf8e6974a4bdf"
+                documentNumber:
+                  type: string
+                  description: The document number (optional)
+                  example: "A1234567"
+              required:
+                - type
+                - country
+                - path
+                - userId
+      responses:
+        200:
+          description: Document successfully uploaded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Document successfully uploaded. Your document is now available for use."
+        400: 
+          $ref: '#/components/responses/400'
+          
+        404: 
+          $ref: '#/components/responses/404'
+          
+        409: 
+          $ref: '#/components/responses/409'
+          
+        500: 
+          $ref: '#/components/responses/500'
+          
+      tags:
+        - Documents
+          
+  /document/add-required:
+    post: 
+      summary: Add required document
+      requestBody:
+        description: Payload for required documents related to an event
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - aadhaar
+                    - passport
+                    - panCard
+                  description: The type of document required
+                  example: "passport"
+                eventId:
+                  type: string
+                  description: The unique identifier of the event
+                  format: objectId
+                  example: "1234567890abcdef"
+                country:
+                  type: string
+                  nullable: true
+                  description: The country where the document is issued (optional)
+                  example: "India"
+              required:
+                - type
+                - eventId
+                
+      responses:
+        200:
+          description: Required document successfully added to the event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Required document successfully added to the event. This document is now required for all guests."
+      
+        400: 
+          $ref: '#/components/responses/400'
+          
+        404: 
+          $ref: '#/components/responses/404'
+          
+        409: 
+          $ref: '#/components/responses/409'
+          
+        500: 
+          $ref: '#/components/responses/500'
+          
+      tags: 
+        - Documents
+        
+  /document/{documentId}/changes: 
+    post:
+      summary: Request changes in a document
+      parameters: 
+        - name: documentId
+          in: path
+          required: true
+          description: The id of the document for which changes are requested
+          schema:
+            type: string
+            format: objectId
+            example: 66e189a48dacf4f20d7e51d2
+      requestBody:
+       description: Payload for requesting a change in document status related to an event
+       required: true
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               eventId:
+                 type: string
+                 format: uuid
+                 description: The unique identifier of the event for which the document change is requested
+                 example: "65123f4d5a45b12cd4aeb67e"
+               comment:
+                 type: string
+                 description: A comment or reason for requesting the document change
+                 example: "Please update the document type to include the new passport."
+             required:
+               - eventId
+               - comment
+               
+      responses:
+        200:
+          description: Change request for document successfully submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Change request for document successfully submitted. The event organizer will review your request."
+                    
+        400:
+          $ref: '#/components/responses/400'
+          
+        403:
+          $ref: '#/components/responses/403'
+          
+        404:
+          $ref: '#/components/responses/404'
+          
+        500:
+          $ref: '#/components/responses/500'
+          
+      tags: 
+        - Documents
+        
+  /document/{documentId}/change-status: 
+    patch:
+      summary: Change the status of a document in an event
+      description: Update the status of a specific event document to either `approved`, `rejected`, or `pending`.
+      parameters:
+        - in: path
+          name: documentId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique identifier of the document whose status is being changed
+          example: "65123f4d5a45b12cd4aeb67e"
+      requestBody:
+        description: Payload containing the new document status
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newStatus:
+                  type: string
+                  enum:
+                    - approved
+                    - rejected
+                    - pending
+                  description: The new status for the document
+                  example: "approved"
+              required:
+                - newStatus
+      responses:
+        200:
+          description: Document status successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Document status successfully updated. The document status has been changed to approved."
+        404:
+          $ref: '#/components/responses/404'
+          
+        409:
+          $ref: '#/components/responses/409'
+          
+        500:
+          $ref: '#/components/responses/500'
+          
+      tags:
+        - Documents
+
+  /documents/{documentId}:
+    patch:
+      summary: Update a document's information
+      description: Update the details of an existing document, including its path, status, and country.
+      parameters:
+        - in: path
+          name: documentId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique identifier of the document to be updated
+          example: "65123f4d5a45b12cd4aeb67e"
+      requestBody:
+        description: Payload for updating document information
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of strings representing file paths for the document
+                  example: ["/path/to/document1.pdf", "/path/to/document2.pdf"]
+                status:
+                  type: string
+                  description: The current status of the document
+                  example: "approved"
+                country:
+                  type: string
+                  description: The country associated with the document
+                  example: "USA"
+              required:
+                - path
+                - status
+                - country
+      responses:
+        200:
+          description: Document successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Document successfully updated. Your document has been updated with the new information."
+        404:
+          $ref: '#/components/responses/404'
+          
+        500:
+          $ref: '#/components/responses/500'
+          
+      tags:
+        - Documents
+    get:
+      summary: Retrieve a specific document
+      description: Get the details of a document by its unique document ID.
+      parameters:
+        - in: path
+          name: documentId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique identifier of the document.
+          example: "66f54c41bc6cad2c33f2c68f"
+      responses:
+        200:
+          description: Document successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  document:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: Document ID
+                        example: "66f54c41bc6cad2c33f2c68f"
+                      type:
+                        type: string
+                        description: Type of the document
+                        example: "aadhaar"
+                      country:
+                        type: string
+                        description: Country associated with the document
+                        example: "India"
+                      path:
+                        type: array
+                        items:
+                          type: string
+                        description: Paths or sections of the document
+                        example: ["Front", "Back"]
+                      user:
+                        type: string
+                        description: User ID to whom the document belongs
+                        example: "66e1839f04bcf8e6974a4be4"
+                      status:
+                        type: string
+                        description: Status of the document
+                        example: "approved"
+                      eventDetails:
+                        type: array
+                        items:
+                          type: object
+                        description: Event-related details for the document
+                        example: []
+                      changeRequest:
+                        type: array
+                        items:
+                          type: object
+                        description: Change requests related to the document
+                        example: []
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: Document creation timestamp
+                        example: "2024-09-26T11:57:53.225Z"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: Document update timestamp
+                        example: "2024-09-26T11:57:53.225Z"
+        404:
+          $ref: '#/components/responses/404'
+          
+        500:
+          $ref: '#/components/responses/500'
+          
+      tags:
+        - Documents
+        
+  /documents/get-user-documents:
+    get:
+      summary: Retrieve user documents
+      description: Get the list of documents associated with a user by their user ID. Only documents with a status other than "rejected" are returned.
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique identifier of the user whose documents are being retrieved.
+          example: "66e1839f04bcf8e6974a4be4"
+      responses:
+        200:
+          description: Documents successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  documents:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          description: Document ID
+                          example: "66f54c41bc6cad2c33f2c68f"
+                        type:
+                          type: string
+                          description: Type of the document
+                          example: "aadhaar"
+                        country:
+                          type: string
+                          description: Country associated with the document
+                          example: "India"
+                        path:
+                          type: array
+                          items:
+                            type: string
+                          description: Paths or sections of the document
+                          example: ["Front", "Back"]
+                        user:
+                          type: string
+                          description: User ID to whom the document belongs
+                          example: "66e1839f04bcf8e6974a4be4"
+                        status:
+                          type: string
+                          description: Status of the document
+                          example: "approved"
+                        eventDetails:
+                          type: array
+                          items:
+                            type: object
+                          description: Event-related details for the document
+                          example: []
+                        changeRequest:
+                          type: array
+                          items:
+                            type: object
+                          description: Change requests related to the document
+                          example: []
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: Document creation timestamp
+                          example: "2024-09-26T11:57:53.225Z"
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: Document update timestamp
+                          example: "2024-09-26T11:57:53.225Z"
+        400:
+          $ref: '#/components/responses/400'
+          
+        404:
+          $ref: '#/components/responses/404'
+          
+        500:
+          $ref: '#/components/responses/500'
+          
+      tags:
+        - Documents
+        
+  /documents/request:
+    get:
+      summary: Request required documents from event guests
+      description: Request specific required documents from the primary and sub-guests of an event. Guests will be notified to upload the required documents.
+      parameters:
+        - in: query
+          name: eventId
+          schema:
+            type: string
+          required: true
+          description: The unique identifier of the event
+          example: "65123f4d5a45b12cd4aeb67e"
+      responses:
+        200:
+          description: Documents successfully requested from guests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Documents successfully requested from guests. Guests will be notified to upload the required documents."
+        404:
+          $ref: '#/components/responses/404'
+        
+        500:
+          $ref: '#/components/responses/500'
+          
+      tags:
+        - Documents
+        
+  # Events api
+  
+  /event/create:
+    post:
+      summary: Create a new event
+      description: Creates a new event, validates company and code, and associates the event with the bride and groom users.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                companyId:
+                  type: string
+                  format: uuid
+                  description: ID of the company organizing the event
+                  example: "66f54c41bc6cad2c33f2c68f"
+                code:
+                  type: string
+                  description: Unique event code
+                  example: "ABC123"
+                eventName:
+                  type: string
+                  description: Name of the event
+                  example: "Wedding Ceremony"
+                finalEventDate:
+                  type: string
+                  format: date
+                  description: Date of the final event
+                  example: "2024-10-15"
+                finalEventCity:
+                  type: string
+                  description: The city where the final event will take place
+                  example: "New York"
+                groomDetails:
+                  type: object
+                  description: Details of the groom
+                  properties:
+                    firstName:
+                      type: string
+                      description: Groom's first name
+                      example: "John"
+                    lastName:
+                      type: string
+                      description: Groom's last name
+                      example: "Doe"
+                    contactNumber:
+                      type: number
+                      description: Groom's contact number
+                      example: 9876543210
+                    city:
+                      type: string
+                      description: Groom's city of residence
+                      example: "Los Angeles"
+                brideDetails:
+                  type: object
+                  description: Details of the bride
+                  properties:
+                    firstName:
+                      type: string
+                      description: Bride's first name
+                      example: "Jane"
+                    lastName:
+                      type: string
+                      description: Bride's last name
+                      example: "Smith"
+                    contactNumber:
+                      type: number
+                      description: Bride's contact number
+                      example: 9876543211
+                    city:
+                      type: string
+                      description: Bride's city of residence
+                      example: "San Francisco"
+                budget:
+                  type: string
+                  description: Optional event budget
+                  example: "$50000"
+              required:
+                - companyId
+                - code
+                - eventName
+                - finalEventDate
+                - groomDetails
+                - brideDetails
+      responses:
+        200:
+          description: Event successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Event created successfully"
+        404:
+          $ref: '#/components/responses/404'
+          
+        409:
+          $ref: '#/components/responses/409'
+          
+        500:
+          $ref: '#/components/responses/500'
+          
+      tags:
+        - Events
+        
+  #Functions api
+  
+  /function/create:
+    post:
+      summary: Create a new function for an event
+      tags:
+        - Functions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: 
+                - name
+                - eventId
+              properties:
+                name:
+                  type: string
+                  example: "Stage Setup"
+                eventId:
+                  type: string
+                  format: ObjectId
+                  example: "650b3b5d4f3a2a00123abc45"
+      responses:
+        '200':
+          description: Function successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Function successfully created."
+        '404':
+          $ref: '#/components/responses/404'
+          
+        '409':
+          $ref: '#/components/responses/409'
+          
+        '500':
+          $ref: '#/components/responses/500'
+          
+  /functions/{functionId}:
+    delete:
+      summary: Delete a function by its ID
+      tags:
+        - Functions
+      parameters:
+        - in: path
+          name: functionId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: The ID of the function to be deleted
+          example: "650b3b5d4f3a2a00123abc45"
+      responses:
+        '200':
+          description: Function successfully deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Function successfully deleted."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+        
+  
     
 servers:
   - url: http://localhost:3000
