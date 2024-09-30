@@ -265,25 +265,36 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /guest-list/delete:
-    post:
+          /guest-list/{guestId}:
+    delete:
       summary: Delete guests based on provided IDs
-      description: >-
-        Removes specified guests from the guest list. If the guest being deleted
-        is a primary guest and a `newPrimaryGuestId` is provided, that ID will
-        be set as the new primary guest. Additionally, if a `subGuestToKeep` is
-        specified, only that particular sub-guest will remain, while all other
-        sub-guests will be deleted.
+      description: Removes specified guests from the guest list. If the guest being deleted is a primary guest and a `newPrimaryGuestId` is provided, that ID will be set as the new primary guest. Additionally, if a `subGuestToKeep` is specified, only that particular sub-guest will remain, while all other sub-guests will be deleted.
       tags:
         - Guest List
       security:
         - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IDeleteGuestsPayload'
+      parameters:
+        - in: path
+          name: guestId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: ID of the guest to delete
+        - in: query
+          name: newPrimaryGuestId
+          schema:
+            type: string
+            format: ObjectId
+          description: New primary guest ID if reassigning sub-guests
+        - in: query
+          name: subGuestToKeep
+          schema:
+            type: array
+            items:
+              type: string
+              format: objectId
+          description: List of sub-guest IDs to keep after deletion
       responses:
         '200':
           description: Guests successfully deleted
@@ -294,7 +305,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Guest successfully deleted.
+                    example: 'Guest successfully deleted.'
         '404':
           $ref: '#/components/responses/404'
         '409':
@@ -1667,7 +1678,7 @@ paths:
               required:
                 - eventId
                 - guestIds
-                - companyProfileId
+                - companyId
                 - roomId
                 - hotelId
                 - bookingDetails
@@ -1685,7 +1696,7 @@ paths:
                   description: Array of guest IDs to be added to the accommodation.
                   example:
                     - 66e3f1c27679a1a4f0076ce2
-                companyProfileId:
+                companyId:
                   type: string
                   format: objectId
                   description: The company profile ID associated with the booking.
@@ -3162,7 +3173,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Company Profile
-  /company-profiles/{profileId}/verify-contact:
+  /company-profiles/{companyId}/verify-contact:
     post:
       summary: Verify company contact using OTP
       description: >-
@@ -3172,7 +3183,7 @@ paths:
         - Company Profile
       parameters:
         - in: path
-          name: profileId
+          name: companyId
           schema:
             type: string
           required: true
@@ -3212,11 +3223,11 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /company-profile/{profileId}:
+  /company-profile/{companyId}:
     get:
       summary: Fetch a company profile by id
       parameters:
-        - name: profileId
+        - name: companyId
           in: path
           required: true
           schema:
