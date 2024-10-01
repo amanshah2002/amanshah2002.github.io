@@ -114,204 +114,6 @@ paths:
           $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
-  /guest-list/edit:
-    patch:
-      summary: Update a primary guest and their associated sub-guests
-      description: >-
-        Modifies the details of a specified primary guest, including any
-        associated sub-guests, ensuring all related information is synchronized.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IPatchGuestPayload'
-      responses:
-        '200':
-          description: Success response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Guest updated successfully.
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/edit-guests:
-    patch:
-      summary: Update multiple primary guests and their associated sub-guests
-      description: >-
-        Modifies the details of an array of primary guests, including their
-        related sub-guests, ensuring all information is accurately synchronized
-        for each guest.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IPatchGuestPayloadArray'
-      responses:
-        '200':
-          description: Success response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Guests updated successfully.
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/edit-cell:
-    patch:
-      summary: Update a single guest's details
-      description: >-
-        Modifies the information of a specific guest object, allowing updates to
-        various attributes while ensuring data integrity.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IPatchGuestCellPayload'
-      responses:
-        '200':
-          description: Success response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Guest updated successfully.
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/get:
-    get:
-      summary: Retrieve all guests for a specific event
-      description: >-
-        Fetches the complete list of guests associated with the specified event,
-        providing details about each guest.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: query
-          name: eventId
-          schema:
-            type: string
-          required: true
-          description: Unique identifier for the event whose guests are to be retrieved.
-      responses:
-        '200':
-          description: Successfully retrieved the list of guests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GuestsResponse'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/{guestId}:
-    get:
-      summary: Retrieve details of a specific guest
-      description: >-
-        Fetches detailed information about a particular guest. If the guest is a
-        primary guest, the response will also include the details of any
-        associated sub-guests.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: guestId
-          schema:
-            type: string
-          required: true
-          description: Unique identifier for the guest whose details are to be retrieved.
-      responses:
-        '200':
-          description: Successfully retrieved guest details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Guest'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-          /guest-list/{guestId}:
-    delete:
-      summary: Delete guests based on provided IDs
-      description: Removes specified guests from the guest list. If the guest being deleted is a primary guest and a `newPrimaryGuestId` is provided, that ID will be set as the new primary guest. Additionally, if a `subGuestToKeep` is specified, only that particular sub-guest will remain, while all other sub-guests will be deleted.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: guestId
-          schema:
-            type: string
-            format: ObjectId
-          required: true
-          description: ID of the guest to delete
-        - in: query
-          name: newPrimaryGuestId
-          schema:
-            type: string
-            format: ObjectId
-          description: New primary guest ID if reassigning sub-guests
-        - in: query
-          name: subGuestToKeep
-          schema:
-            type: array
-            items:
-              type: string
-              format: objectId
-          description: List of sub-guest IDs to keep after deletion
-      responses:
-        '200':
-          description: Guests successfully deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Guest successfully deleted.'
-        '404':
-          $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409'
-        '500':
-          $ref: '#/components/responses/500'
   /guest-list/send-invite:
     post:
       summary: Send invitations to all guests of a specified event
@@ -471,6 +273,295 @@ paths:
                     example: guestList_1727343502829.csv
         '500':
           $ref: '#/components/responses/500'
+  /guest-list/edit-guests:
+    patch:
+      summary: Update multiple primary guests and their associated sub-guests
+      description: >-
+        Modifies the details of an array of primary guests, including their
+        related sub-guests, ensuring all information is accurately synchronized
+        for each guest.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchGuestPayloadArray'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guests updated successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/edit-cell:
+    patch:
+      summary: Update a single guest's details
+      description: >-
+        Modifies the information of a specific guest object, allowing updates to
+        various attributes while ensuring data integrity.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchGuestCellPayload'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guest updated successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/edit:
+    patch:
+      summary: Update a primary guest and their associated sub-guests
+      description: >-
+        Modifies the details of a specified primary guest, including any
+        associated sub-guests, ensuring all related information is synchronized.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchGuestPayload'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guest updated successfully.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/rsvp:
+    patch:
+      summary: Update RSVP status for guests
+      description: Update the RSVP status for one or more guests.
+      tags:
+        - Guest List
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  functionRef:
+                    type: string
+                    description: The unique identifier for the function in which the guest RSVP is being updated.
+                  rsvp:
+                    type: string
+                    description: The new RSVP status for the function.
+              example:
+                - functionRef: "66ebdad07cd2bf56d488449c"
+                  rsvp: "Yes"
+                - functionRef: "66ebdad07cd2bf56d488449d"
+                  rsvp: "No"
+      responses:
+        '200':
+          description: RSVP status successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: RSVP status successfully updated.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/get:
+    get:
+      summary: Retrieve all guests for a specific event
+      description: >-
+        Fetches the complete list of guests associated with the specified event,
+        providing details about each guest.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: eventId
+          schema:
+            type: string
+          required: true
+          description: Unique identifier for the event whose guests are to be retrieved.
+      responses:
+        '200':
+          description: Successfully retrieved the list of guests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestsResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/{guestId}/rsvp:
+    get:
+      summary: Get RSVP status of a guest
+      description: Retrieve the RSVP status of a guest for different functions.
+      tags:
+        - Guest List
+      parameters:
+        - name: guestId
+          in: path
+          required: true
+          description: The unique identifier of the guest
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved RSVP status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rsvpDetails:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          description: Unique identifier for the RSVP record
+                        function:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              description: Unique identifier for the function
+                            name:
+                              type: string
+                              description: Name of the function
+                            event:
+                              type: string
+                              description: Associated event ID for the function
+                        rsvp:
+                          type: string
+                          description: The RSVP status of the guest for the function
+                          example: Yes
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'     
+  /guest-list/{guestId}:
+    get:
+      summary: Retrieve details of a specific guest
+      description: >-
+        Fetches detailed information about a particular guest. If the guest is a
+        primary guest, the response will also include the details of any
+        associated sub-guests.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: guestId
+          schema:
+            type: string
+          required: true
+          description: Unique identifier for the guest whose details are to be retrieved.
+      responses:
+        '200':
+          description: Successfully retrieved guest details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guest'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+          /guest-list/{guestId}:
+    delete:
+      summary: Delete guests based on provided IDs
+      description: Removes specified guests from the guest list. If the guest being deleted is a primary guest and a `newPrimaryGuestId` is provided, that ID will be set as the new primary guest. Additionally, if a `subGuestToKeep` is specified, only that particular sub-guest will remain, while all other sub-guests will be deleted.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: guestId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: ID of the guest to delete
+        - in: query
+          name: newPrimaryGuestId
+          schema:
+            type: string
+            format: ObjectId
+          description: New primary guest ID if reassigning sub-guests
+        - in: query
+          name: subGuestToKeep
+          schema:
+            type: array
+            items:
+              type: string
+              format: objectId
+          description: List of sub-guest IDs to keep after deletion
+      responses:
+        '200':
+          description: Guests successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Guest successfully deleted.'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+          
   /hotel/add:
     post:
       summary: Add a hotel at the company level
@@ -4177,31 +4268,6 @@ components:
           format: objectId
           description: ID of the guest cell to patch
           example: 64a51e6a4f1a2d63f7d25c9b
-    IDeleteGuestsPayload:
-      type: array
-      items:
-        type: object
-        required:
-          - guestId
-        properties:
-          guestId:
-            type: string
-            format: objectId
-            description: ID of the guest to delete
-            example: 64a51e6a4f1a2d63f7d25c9b
-          newPrimaryGuestId:
-            type: string
-            format: objectId
-            description: New primary guest ID if reassigning sub-guests
-            example: 64a51e6a4f1a2d63f7d25c9b
-          subGuestToKeep:
-            type: array
-            items:
-              type: string
-              format: objectId
-            description: List of sub-guest IDs to keep after deletion
-            example:
-              - 64a51e6a4f1a2d63f7d25c9b
     IMoveSubGuestPayload:
       type: object
       required:
