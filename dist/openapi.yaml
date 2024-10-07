@@ -4133,6 +4133,119 @@ paths:
           $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
+  /functions/{functionId}/venue:
+    post:
+      summary: Add or replace a venue for a function
+      description: This API allows the user to add or replace the venue for a specific function. If a venue already exists, the user can choose whether to replace it or not.
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The ID of the function.
+        - in: query
+          name: replaceVenue
+          required: false
+          schema:
+            type: string
+            enum: [YES, NO]
+          description: Determines if the existing venue should be replaced.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Venue'
+      responses:
+        '200':
+          description: Venue successfully added or a conflict message if venue already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Venue successfully added to the function.'
+                  conflict:
+                    type: boolean
+                    example: false
+        '400':
+          $ref: '#/components/responses/400'
+          
+        '404':
+          $ref: '#/components/responses/404'
+          
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Functions
+    put:
+      summary: Edit venue details for a function
+      description: This API allows the user to update the venue details for a specific function. If the venue exists, it will be replaced with the new details.
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The ID of the function.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Venue'
+      responses:
+        '200':
+          description: Venue details updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Venue details updated successfully.'
+                  conflict:
+                    type: boolean
+                    example: false
+        '400':
+          $ref: "#/components/responses/400"
+        '404':
+          $ref: "#/components/responses/400"
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Functions
+    delete:
+      summary: Remove venue from a function
+      description: This API allows the user to remove the venue details from a specific function.
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The ID of the function.
+      responses:
+        '200':
+          description: Venue successfully removed from the function.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Venue successfully removed from the function.'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Functions
   /functions/{functionId}:
     delete:
       summary: Delete a function by its ID
@@ -4169,6 +4282,69 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    Venue:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        availability:
+          type: object
+          properties:
+            from:
+              type: string
+              format: date-time
+              example: '2024-10-07T08:00:00Z'
+            to:
+              type: string
+              format: date-time
+              example: '2024-10-07T12:00:00Z'
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+          example: '123 Main St'
+        city:
+          type: string
+          example: 'San Francisco'
+        state:
+          type: string
+          example: 'CA'
+        zipCode:
+          type: string
+          example: '94105'
+        country:
+          type: string
+          example: 'USA'
+        coordinates:
+          type: object
+          properties:
+            lat:
+              type: number
+              example: 37.7749
+            lng:
+              type: number
+              example: -122.4194
+    ContactDetails:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: 'John'
+        lastName:
+          type: string
+          example: 'Doe'
+        primaryContactNumber:
+          type: number
+          example: 1234567890
+        secondaryContactNumber:
+          type: number
+          example: 9876543210
+        email:
+          type: string
+          example: 'john.doe@example.com'
     IBaseGuestPayload:
       type: object
       properties:
