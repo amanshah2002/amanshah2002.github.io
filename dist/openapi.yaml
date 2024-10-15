@@ -1318,7 +1318,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /tag/create:
+  /tag:
     post:
       summary: Create a new tag
       description: >-
@@ -1414,7 +1414,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /task-list/create:
+  /task-list:
     post:
       summary: Create a new task for a specific event
       description: >-
@@ -1446,7 +1446,49 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /task-list/edit-checkList:
+    get:
+      summary: Retrieve tasks for a specific event
+      description: >-
+        This endpoint fetches all tasks associated with a particular event.
+        Users can filter tasks by providing the function ID to narrow down the
+        results.
+      tags:
+        - Task List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: eventId
+          schema:
+            type: string
+            format: ObjectId
+          description: >-
+            The unique identifier of the event for which tasks are to be
+            retrieved
+          required: true
+        - in: query
+          name: functionId
+          schema:
+            type: string
+            format: ObjectId
+          description: (Optional) The unique identifier of the function to filter the tasks
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tasks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /task-list/checkList:
     patch:
       summary: Update the status of a checklist item
       description: >-
@@ -1585,50 +1627,7 @@ paths:
         '404':
           $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'
-  /task-list/get-tasks:
-    get:
-      summary: Retrieve tasks for a specific event
-      description: >-
-        This endpoint fetches all tasks associated with a particular event.
-        Users can filter tasks by providing the function ID to narrow down the
-        results.
-      tags:
-        - Task List
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: query
-          name: eventId
-          schema:
-            type: string
-            format: ObjectId
-          description: >-
-            The unique identifier of the event for which tasks are to be
-            retrieved
-          required: true
-        - in: query
-          name: functionId
-          schema:
-            type: string
-            format: ObjectId
-          description: (Optional) The unique identifier of the function to filter the tasks
-      responses:
-        '200':
-          description: Tasks retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  tasks:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Task'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: '#/components/responses/500'  
   /accommodation/move-guests:
     post:
       summary: Move guest from one accommodation to another
@@ -1698,7 +1697,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
-  /accommodation/add-guest:
+  /accommodation:
     post:
       summary: Add guest to accommodation from guest list
       requestBody:
@@ -1787,6 +1786,108 @@ paths:
                     example: Guests accommodated successfully.
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Accommodation
+    get:
+      summary: Get accommodations
+      parameters:
+        - name: eventId
+          in: query
+          required: true
+          description: The id of the event from which accommodations are to be fetched
+          schema:
+            type: string
+            format: objectId
+            example: 60b8d8a7f1a2b40f30b5b60e
+        - name: guestId
+          in: query
+          required: false
+          description: (Optional) The id of the guest whose accommodation is to be fetched
+          schema:
+            type: string
+            format: objectId
+            example: 60b8d8a7f1a2b40f30b5b62e
+      responses:
+        '200':
+          description: Successfully retrieved accommodation details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accommodations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          format: objectId
+                          description: The unique ID of the accommodation.
+                          example: 66ed44851f6853179b4d90f4
+                        guests:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              type: string
+                              format: objectId
+                              description: >-
+                                Array of guest IDs associated with the
+                                accommodation.
+                              example: 66e3f1c27679a1a4f0076cdb
+                        checkInTime:
+                          type: string
+                          description: The time when the guest can check in.
+                          example: 12 PM
+                        checkOutTime:
+                          type: string
+                          description: The time when the guest must check out.
+                          example: 1 PM
+                        checkInDate:
+                          type: string
+                          format: date-time
+                          description: The date when the guest checks in.
+                          example: '2024-09-19T18:04:55+05:30'
+                        checkOutDate:
+                          type: string
+                          format: date-time
+                          description: The date when the guest checks out.
+                          example: '2024-09-24T12:04:55+05:30'
+                        totalNights:
+                          type: integer
+                          description: Total number of nights booked.
+                          example: 5
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: Timestamp when the accommodation record was created.
+                          example: '2024-09-20T09:46:45.887Z'
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: >-
+                            Timestamp when the accommodation record was last
+                            updated.
+                          example: '2024-09-23T07:47:02.434Z'
+                        __v:
+                          type: integer
+                          description: Version key for the accommodation document.
+                          example: 6
+                        event:
+                          type: string
+                          format: objectId
+                          description: The ID of the associated event.
+                          example: 66e189a48dacf4f20d7e51d2
+                        id:
+                          type: string
+                          format: objectId
+                          description: Legacy ID of the accommodation.
+                          example: 66ed44851f6853179b4d90f4
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -1939,109 +2040,6 @@ paths:
                     example: The guest's accommodation has been successfully updated.
         '400':
           $ref: '#/components/responses/400'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-      tags:
-        - Accommodation
-  /accommodation/get:
-    get:
-      summary: Get accommodations
-      parameters:
-        - name: eventId
-          in: query
-          required: true
-          description: The id of the event from which accommodations are to be fetched
-          schema:
-            type: string
-            format: objectId
-            example: 60b8d8a7f1a2b40f30b5b60e
-        - name: guestId
-          in: query
-          required: false
-          description: (Optional) The id of the guest whose accommodation is to be fetched
-          schema:
-            type: string
-            format: objectId
-            example: 60b8d8a7f1a2b40f30b5b62e
-      responses:
-        '200':
-          description: Successfully retrieved accommodation details.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  accommodations:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        _id:
-                          type: string
-                          format: objectId
-                          description: The unique ID of the accommodation.
-                          example: 66ed44851f6853179b4d90f4
-                        guests:
-                          type: array
-                          items:
-                            type: array
-                            items:
-                              type: string
-                              format: objectId
-                              description: >-
-                                Array of guest IDs associated with the
-                                accommodation.
-                              example: 66e3f1c27679a1a4f0076cdb
-                        checkInTime:
-                          type: string
-                          description: The time when the guest can check in.
-                          example: 12 PM
-                        checkOutTime:
-                          type: string
-                          description: The time when the guest must check out.
-                          example: 1 PM
-                        checkInDate:
-                          type: string
-                          format: date-time
-                          description: The date when the guest checks in.
-                          example: '2024-09-19T18:04:55+05:30'
-                        checkOutDate:
-                          type: string
-                          format: date-time
-                          description: The date when the guest checks out.
-                          example: '2024-09-24T12:04:55+05:30'
-                        totalNights:
-                          type: integer
-                          description: Total number of nights booked.
-                          example: 5
-                        createdAt:
-                          type: string
-                          format: date-time
-                          description: Timestamp when the accommodation record was created.
-                          example: '2024-09-20T09:46:45.887Z'
-                        updatedAt:
-                          type: string
-                          format: date-time
-                          description: >-
-                            Timestamp when the accommodation record was last
-                            updated.
-                          example: '2024-09-23T07:47:02.434Z'
-                        __v:
-                          type: integer
-                          description: Version key for the accommodation document.
-                          example: 6
-                        event:
-                          type: string
-                          format: objectId
-                          description: The ID of the associated event.
-                          example: 66e189a48dacf4f20d7e51d2
-                        id:
-                          type: string
-                          format: objectId
-                          description: Legacy ID of the accommodation.
-                          example: 66ed44851f6853179b4d90f4
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -2770,7 +2768,7 @@ paths:
       tags:
         - Auth
         
-  /category/add:
+  /category:
     post:
       summary: Add category
       requestBody:
@@ -2803,7 +2801,6 @@ paths:
                     example: New category successfully created.
       tags:
         - Category
-  /category/get:
     get:
       summary: Get categories
       parameters:
@@ -3116,7 +3113,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /company-profile/create:
+  /company-profile:
     post:
       summary: Create a company profile
       requestBody:
@@ -3919,7 +3916,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Documents
-  /event/create:
+  /event:
     post:
       summary: Create a new event
       description: >-
@@ -4024,8 +4021,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Events
-  
-  /function/create:
+  /function:
     post:
       summary: Create a new function for an event
       tags:
@@ -4091,7 +4087,6 @@ paths:
           $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
-  /function/edit:
     patch:
       summary: Update an existing function by its ID
       tags:
@@ -4152,7 +4147,6 @@ paths:
           $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'  
-  /function/get:
     get:
       summary: Retrieve functions associated with a specific event by its ID
       tags:
