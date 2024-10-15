@@ -3481,21 +3481,21 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: "Create a vendor"
+      summary: "Update a vendor"
       tags:
         - Company Profile
-      description: "Creates a vendor of a specified type for the given company"
+      description: "Updates a vendor of a specified type for the given company"
       parameters:
         - name: companyId
           in: path
           required: true
-          description: "ID of the company for which the vendor is being created"
+          description: "ID of the company for which the vendor is being updated"
           schema:
             type: string
         - name: vendorType
           in: query
           required: true
-          description: "Type of the vendor being created"
+          description: "Type of the vendor being updated"
           schema:
             type: string
             enum: 
