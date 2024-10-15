@@ -5518,11 +5518,16 @@ components:
         - startsFrom
         - contactDetails
         - menu
+        - company
       properties:
         caterer:
           type: string
           description: ObjectId of the caterer.
           example: '605c72efb5a1c33e4a8a92b7'
+        company:
+          type: string
+          description: ObjectId of the company.
+          example: '605c72efb5a1c33e4a8a92w7'
         estimatedGuests:
           type: number
           example: 200
