@@ -1770,8 +1770,8 @@ paths:
                 - eventId
                 - guestIds
                 - companyId
-                - roomId
-                - hotelId
+                - roomRef
+                - hotelRef
                 - bookingDetails
               properties:
                 eventId:
@@ -1792,12 +1792,12 @@ paths:
                   format: objectId
                   description: The company profile ID associated with the booking.
                   example: 66e1839f04bcf8e6974a4bdf
-                roomId:
+                roomRef:
                   type: string
                   format: objectId
                   description: The ID of the room where guests will be accommodated.
                   example: 66e1839f04bcq8e6974a8hjf
-                hotelId:
+                hotelRef:
                   type: string
                   format: objectId
                   description: The ID of the hotel where guests will be accommodated.
@@ -4133,6 +4133,128 @@ paths:
           $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
+  /functions/{functionId}/caterer:
+    post:
+      summary: Add caterer to a function
+      description: Adds a new caterer to a specific function.
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The ID of the function.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CateringDetails'
+      responses:
+        '200':
+          description: Caterer added successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Caterer has been successfully added to the function.'
+        '404':
+          $ref: '#/components/responses/404'
+          
+        '500':
+          $ref: '#/components/responses/500'
+          
+      tags:
+        - Functions
+    put:
+      summary: Update caterer details in a function
+      description: Updates the existing caterer details for a specific function.
+      tags:
+        - Functions
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The ID of the function.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CateringDetails'
+      responses:
+        '200':
+          description: Caterer updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Caterer has been updated successfully.'
+        '404':
+          $ref: '#/components/responses/404'
+    get:
+      summary: Get caterer details for a function
+      description: Retrieves the caterer details associated with a specific function.
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The ID of the function.
+      responses:
+        '200':
+          description: Successfully retrieved caterer details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    $ref: '#/components/schemas/CateringDetails'
+        '404':
+          $ref: '#/components/responses/404'
+          
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Functions
+    delete:
+      summary: Remove caterer details from a function
+      description: Removes the caterer details associated with a specific function.
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The ID of the function.
+      responses:
+        '200':
+          description: Caterer details removed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Caterer successfully removed from the function.'
+        '404':
+          $ref: '#/components/responses/404'
+          
+        '500':
+          $ref: '#/components/responses/500'
+      tags: 
+        - Functions
   /functions/{functionId}/venue:
     post:
       summary: Add or replace a venue for a function
@@ -4275,6 +4397,223 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+          
+  /functions/caterer:
+    post:
+      summary: Create a new caterer
+      description: This endpoint creates a new caterer by providing caterer details.
+      tags:
+        - Functions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ICaterer'
+      responses:
+        '200':
+          description: New caterer added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: New caterer added successfully
+        '400':
+          $ref: '#/components/responses/400'
+          
+        '404':
+          $ref: '#/components/responses/404'
+          
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Get all caterers for a specific company
+      description: Retrieve all caterers for a specific company by providing the company ID as a query parameter.
+      tags:
+        - Functions
+      parameters:
+        - name: companyId
+          in: query
+          required: true
+          description: The ID of the company to get all associated caterers
+          schema:
+            type: string
+            example: "60d21b4667d0d8992e610c85"
+      responses:
+        '200':
+          description: Caterers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  caterer:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ICaterer'
+                example:
+                    caterer:
+                    - address:
+                      coordinates:
+                        lat: 22
+                        lng: 70
+                      add1: "Add 1"
+                      add2: "Add 2"
+                      city: "Himmatnagar"
+                      state: "Gujarat"
+                      country: "India"
+                      pinCode: 300009
+                    contactDetails:
+                      firstName: "Ramesh"
+                      lastName: "Lakhi"
+                      primaryContactNumber: 9825606703
+                      secondaryContactNumber: 9999999999
+                      email: "a@b.com"
+                    _id: "6703e12ab3a80f0ac5bfad63"
+                    company:
+                      _id: "66e1839f04bcf8e6974a4bdf"
+                      companyName: "test"
+                      gstNumber: "123456789012346"
+                      primaryContact:
+                        user: "66e1839f04bcf8e6974a4bea"
+                        otpVerified: true
+                        otp: 116580
+                        _id: "66e1839f04bcf8e6974a4bec"
+                      secondaryContact:
+                        user: "66e1839f04bcf8e6974a4be4"
+                        otpVerified: true
+                        otp: 503379
+                        _id: "66e1839f04bcf8e6974a4be6"
+                      address: "address"
+                      website: "test.com"
+                      email: "aman.shah02@gmail.com"
+                      purchaseCodes:
+                        - "66e188a2ca7f8e1974ed240c"
+                        - "66f3f3c2a5bc57373bd12e47"
+                      createdAt: "2024-09-11T11:48:47.557Z"
+                      updatedAt: "2024-09-25T11:28:02.221Z"
+                      __v: 2
+                    catererName: "test caterer"
+                    createdAt: "2024-10-07T13:24:58.986Z"
+                    updatedAt: "2024-10-07T13:24:58.986Z"
+                    __v: 0
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  /functions/caterer/{catererId}:
+    put:
+      summary: Edit an existing caterer
+      description: This endpoint updates an existing caterer with new details.
+      tags:
+        - Functions
+      parameters:
+        - name: catererId
+          in: path
+          required: true
+          description: The ID of the caterer to edit
+          schema:
+            type: string
+            example: "60d21b4667d0d8992e610c85"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ICaterer'
+      responses:
+        '200':
+          description: Caterer updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Caterer updated successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'        
+    get:
+      summary: Get a specific caterer by ID
+      description: Retrieve a specific caterer by providing the caterer ID. If the caterer is found, detailed information is returned.
+      tags:
+        - Functions
+      parameters:
+        - name: catererId
+          in: path
+          required: true
+          description: The ID of the caterer to retrieve
+          schema:
+            type: string
+            example: "60d21b4667d0d8992e610c85"
+      responses:
+        '200':
+          description: Caterer retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  caterer:
+                    $ref: '#/components/schemas/ICaterer'
+                example:
+                    caterer:
+                      address:
+                        coordinates:
+                          lat: 22
+                          lng: 70
+                        add1: "Add 1"
+                        add2: "Add 2"
+                        city: "Himmatnagar"
+                        state: "Gujarat"
+                        country: "India"
+                        pinCode: 300009
+                    contactDetails:
+                      firstName: "Ramesh"
+                      lastName: "Lakhi"
+                      primaryContactNumber: 9825606703
+                      secondaryContactNumber: 9999999999
+                      email: "a@b.com"
+                    _id: "6703e12ab3a80f0ac5bfad63"
+                    company:
+                      _id: "66e1839f04bcf8e6974a4bdf"
+                      companyName: "test"
+                      gstNumber: "123456789012346"
+                      primaryContact:
+                        user: "66e1839f04bcf8e6974a4bea"
+                        otpVerified: true
+                        otp: 116580
+                        _id: "66e1839f04bcf8e6974a4bec"
+                      secondaryContact:
+                        user: "66e1839f04bcf8e6974a4be4"
+                        otpVerified: true
+                        otp: 503379
+                        _id: "66e1839f04bcf8e6974a4be6"
+                      address: "address"
+                      website: "test.com"
+                      email: "aman.shah02@gmail.com"
+                      purchaseCodes:
+                        - "66e188a2ca7f8e1974ed240c"
+                        - "66f3f3c2a5bc57373bd12e47"
+                      createdAt: "2024-09-11T11:48:47.557Z"
+                      updatedAt: "2024-09-25T11:28:02.221Z"
+                      __v: 2
+                    catererName: "test caterer"
+                    createdAt: "2024-10-07T13:24:58.986Z"
+                    updatedAt: "2024-10-07T13:24:58.986Z"
+                    __v: 0
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
 components:
   securitySchemes:
     bearerAuth:
@@ -4282,6 +4621,129 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    ICaterer:
+      type: object
+      required: 
+        - catererName
+        - address
+        - contactDetails
+        - company
+      properties:
+        catererName:
+          type: string
+          example: "Delicious Catering"
+        address:
+          $ref: '#/components/schemas/Address'
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        company:
+          type: string
+          description: "ObjectId of the company"
+          example: "60d21b4667d0d8992e610c85"
+    CateringDetails:
+      type: object
+      required: 
+        - caterer
+        - estimatedGuests
+        - startsFrom
+        - contactDetails
+        - menu
+      properties:
+        caterer:
+          type: string
+          description: ObjectId of the caterer.
+          example: '605c72efb5a1c33e4a8a92b7'
+        estimatedGuests:
+          type: number
+          example: 200
+        startsFrom:
+          type: string
+          format: date-time
+          example: '2024-10-07T12:00:00Z'
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        menu:
+          $ref: '#/components/schemas/Menu'
+    ContactDetails:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: 'John'
+        lastName:
+          type: string
+          example: 'Doe'
+        primaryContactNumber:
+          type: number
+          example: 1234567890
+        secondaryContactNumber:
+          type: number
+          example: 9876543210
+        email:
+          type: string
+          example: 'john.doe@example.com'
+    Menu:
+      type: object
+      properties:
+        beverages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+        starters:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+        mainCourse:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+        dessert:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+    MenuItem:
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'Paneer Tikka'
+        subTitle:
+          type: string
+          example: 'Grilled cottage cheese cubes marinated with spices'
+        cuisine:
+          type: string
+          example: 'Indian'
+        mealPreference:
+          type: string
+          example: 'Vegetarian'
+        isVegan:
+          type: boolean
+          example: false
+        isJain:
+          type: boolean
+          example: true
+        isSwaminarayan:
+          type: boolean
+          example: false
+        isRecommendedByChef:
+          type: boolean
+          example: true
+        description:
+          type: string
+          example: 'A spicy starter made from paneer.'
+        ingredients:
+          type: array
+          items:
+            type: string
+          example: ['Paneer', 'Spices', 'Yogurt']
+        allergicIngredients:
+          type: array
+          items:
+            type: string
+          example: ['Dairy']
+        servingType:
+          type: string
+          example: 'Buffet'
     Venue:
       type: object
       properties:
@@ -4327,24 +4789,6 @@ components:
             lng:
               type: number
               example: -122.4194
-    ContactDetails:
-      type: object
-      properties:
-        firstName:
-          type: string
-          example: 'John'
-        lastName:
-          type: string
-          example: 'Doe'
-        primaryContactNumber:
-          type: number
-          example: 1234567890
-        secondaryContactNumber:
-          type: number
-          example: 9876543210
-        email:
-          type: string
-          example: 'john.doe@example.com'
     IBaseGuestPayload:
       type: object
       properties:
