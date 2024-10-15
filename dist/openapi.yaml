@@ -8,13 +8,8 @@ security:
 paths:
   /guest-list/add:
     post:
-      summary: >-
-        Add a new primary guest along with optional sub-guests to a specified
-        event
-      description: >-
-        This endpoint allows the addition of a new primary guest to the event,
-        with the option to include multiple sub-guests. Ensure that all required
-        guest details are provided in the request payload.
+      summary: Add a new primary guest along with optional sub-guests to a specified event
+      description: This endpoint allows the addition of a new primary guest to the event, with the option to include multiple sub-guests. Ensure that all required guest details are provided in the request payload.
       tags:
         - Guest List
       security:
@@ -35,7 +30,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: New guest added successfully.
+                    example: "New guest added successfully."
         '404':
           $ref: '#/components/responses/404'
         '409':
@@ -44,13 +39,8 @@ paths:
           $ref: '#/components/responses/500'
   /guest-list/move-sub-guests:
     post:
-      summary: >-
-        Transfer sub-guests from one primary guest to another designated primary
-        guest
-      description: >-
-        This endpoint allows the transfer of sub-guests from one primary guest
-        to another. The request should specify the source primary guest and the
-        target primary guest to ensure correct grouping of sub-guests.
+      summary: Transfer sub-guests from one primary guest to another designated primary guest
+      description: This endpoint allows the transfer of sub-guests from one primary guest to another. The request should specify the source primary guest and the target primary guest to ensure correct grouping of sub-guests.
       tags:
         - Guest List
       security:
@@ -63,9 +53,7 @@ paths:
               $ref: '#/components/schemas/IMoveSubGuestPayload'
       responses:
         '200':
-          description: >-
-            Success response indicating that the sub-guests were moved
-            successfully
+          description: Success response indicating that the sub-guests were moved successfully
           content:
             application/json:
               schema:
@@ -73,7 +61,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Guest successfully moved to another group
+                    example: 'Guest successfully moved to another group'
         '404':
           $ref: '#/components/responses/404'
         '409':
@@ -83,10 +71,7 @@ paths:
   /guest-list/move-primary-guest:
     post:
       summary: Relocate a primary guest to a different group
-      description: >-
-        This endpoint allows the relocation of a primary guest from their
-        current group to another specified group. The request must include the
-        details of the new group to which the guest will be moved.
+      description: This endpoint allows the relocation of a primary guest from their current group to another specified group. The request must include the details of the new group to which the guest will be moved.
       tags:
         - Guest List
       security:
@@ -107,241 +92,22 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Primary guest successfully moved.
+                    example: 'Primary guest successfully moved.'
+                  independentPrimaryGuests:
+                    type: array
+                    items:
+                      type: string
+                      format: ObjectId
         '404':
           $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
-  /guest-list/send-invite:
-    post:
-      summary: Send invitations to all guests of a specified event
-      description: >-
-        Triggers the sending of invitations to all guests associated with the
-        provided event ID. This ensures that all attendees receive their
-        invitations in a timely manner.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                eventId:
-                  type: string
-                  example: 64a51e6a4f1a2d63f7d25c9b
-      responses:
-        '200':
-          description: Invitations successfully sent
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invitations successfully sent.
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/import-contacts:
-    post:
-      summary: Import guests from a contacts file
-      description: >-
-        Allows users to upload a VCF (.vcf) file containing contact information
-        to create guest entries for an event. The system processes the file and
-        imports the contacts as guests.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                contacts:
-                  type: string
-                  format: binary
-                  description: VCF file containing contacts to be imported
-      responses:
-        '200':
-          description: Contacts imported successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Contacts imported successfully.
-                  contactsCount:
-                    type: number
-                    example: 10
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/import-guest-list:
-    post:
-      summary: Import guests from a CSV file
-      description: >-
-        Allows users to upload a CSV file to import guests into the event. This
-        operation will overwrite the current guest list with the entries from
-        the uploaded file.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              required:
-                - guestList
-              properties:
-                guestList:
-                  type: string
-                  format: binary
-      responses:
-        '200':
-          description: Guests imported successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: CSV imported successfully
-                  independentSubGuests:
-                    type: array
-                    items:
-                      type: string
-                      example: 64a51e6a4f1a2d63f7d25c9b
-        '400':
-          $ref: '#/components/responses/400'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/export-guest-list:
-    post:
-      summary: Export the guest list in CSV format
-      description: >-
-        This endpoint allows users to export the guest list for a specified
-        event in CSV format. Users must provide an array of guest IDs to
-        generate the export.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: string
-              example:
-                - 66f27de4eb8b262925cff11b
-                - 66f27de4eb8b262925cff11c
-      responses:
-        '200':
-          description: Export successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Export successful
-                  fileName:
-                    type: string
-                    example: guestList_1727343502829.csv
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/edit-guests:
-    patch:
-      summary: Update multiple primary guests and their associated sub-guests
-      description: >-
-        Modifies the details of an array of primary guests, including their
-        related sub-guests, ensuring all information is accurately synchronized
-        for each guest.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IPatchGuestPayloadArray'
-      responses:
-        '200':
-          description: Success response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Guests updated successfully.
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/edit-cell:
-    patch:
-      summary: Update a single guest's details
-      description: >-
-        Modifies the information of a specific guest object, allowing updates to
-        various attributes while ensuring data integrity.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IPatchGuestCellPayload'
-      responses:
-        '200':
-          description: Success response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Guest updated successfully.
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
   /guest-list/edit:
     patch:
       summary: Update a primary guest and their associated sub-guests
-      description: >-
-        Modifies the details of a specified primary guest, including any
-        associated sub-guests, ensuring all related information is synchronized.
+      description: Modifies the details of a specified primary guest, including any associated sub-guests, ensuring all related information is synchronized.
       tags:
         - Guest List
       security:
@@ -362,40 +128,28 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Guest updated successfully.
+                    example: 'Guest updated successfully.'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /guest-list/rsvp:
+  /guest-list/edit-guests:
     patch:
-      summary: Update RSVP status for guests
-      description: Update the RSVP status for one or more guests.
+      summary: Update multiple primary guests and their associated sub-guests
+      description: Modifies the details of an array of primary guests, including their related sub-guests, ensuring all information is accurately synchronized for each guest.
       tags:
         - Guest List
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  functionRef:
-                    type: string
-                    description: The unique identifier for the function in which the guest RSVP is being updated.
-                  rsvp:
-                    type: string
-                    description: The new RSVP status for the function.
-              example:
-                - functionRef: "66ebdad07cd2bf56d488449c"
-                  rsvp: "Yes"
-                - functionRef: "66ebdad07cd2bf56d488449d"
-                  rsvp: "No"
+              $ref: '#/components/schemas/IPatchGuestPayloadArray'
       responses:
         '200':
-          description: RSVP status successfully updated
+          description: Success response
           content:
             application/json:
               schema:
@@ -403,7 +157,36 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: RSVP status successfully updated.
+                    example: 'Guests updated successfully.'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/edit-cell:
+    patch:
+      summary: Update a single guest's details
+      description: Modifies the information of a specific guest object, allowing updates to various attributes while ensuring data integrity.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchGuestCellPayload'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Guest updated successfully.'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -411,9 +194,7 @@ paths:
   /guest-list/get:
     get:
       summary: Retrieve all guests for a specific event
-      description: >-
-        Fetches the complete list of guests associated with the specified event,
-        providing details about each guest.
+      description: Fetches the complete list of guests associated with the specified event, providing details about each guest.
       tags:
         - Guest List
       security:
@@ -436,62 +217,10 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /guest-list/{guestId}/rsvp:
-    get:
-      summary: Get RSVP status of a guest
-      description: Retrieve the RSVP status of a guest for different functions.
-      tags:
-        - Guest List
-      parameters:
-        - name: guestId
-          in: path
-          required: true
-          description: The unique identifier of the guest
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successfully retrieved RSVP status
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  rsvpDetails:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        _id:
-                          type: string
-                          description: Unique identifier for the RSVP record
-                        function:
-                          type: object
-                          properties:
-                            _id:
-                              type: string
-                              description: Unique identifier for the function
-                            name:
-                              type: string
-                              description: Name of the function
-                            event:
-                              type: string
-                              description: Associated event ID for the function
-                        rsvp:
-                          type: string
-                          description: The RSVP status of the guest for the function
-                          example: Yes
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'     
   /guest-list/{guestId}:
     get:
       summary: Retrieve details of a specific guest
-      description: >-
-        Fetches detailed information about a particular guest. If the guest is a
-        primary guest, the response will also include the details of any
-        associated sub-guests.
+      description: Fetches detailed information about a particular guest. If the guest is a primary guest, the response will also include the details of any associated sub-guests.
       tags:
         - Guest List
       security:
@@ -514,7 +243,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-          /guest-list/{guestId}:
+  /guest-list/delete/{guestId}:
     delete:
       summary: Delete guests based on provided IDs
       description: Removes specified guests from the guest list. If the guest being deleted is a primary guest and a `newPrimaryGuestId` is provided, that ID will be set as the new primary guest. Additionally, if a `subGuestToKeep` is specified, only that particular sub-guest will remain, while all other sub-guests will be deleted.
@@ -559,6 +288,228 @@ paths:
           $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/send-invite:
+    post:
+      summary: Send invitations to all guests of a specified event
+      description: Triggers the sending of invitations to all guests associated with the provided event ID. This ensures that all attendees receive their invitations in a timely manner.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  type: string
+                  example: "64a51e6a4f1a2d63f7d25c9b"
+      responses:
+        '200':
+          description: Invitations successfully sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Invitations successfully sent.'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/import-contacts:
+    post:
+      summary: Import guests from a contacts file
+      description: Allows users to upload a VCF (.vcf) file containing contact information to create guest entries for an event. The system processes the file and imports the contacts as guests.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                contacts:
+                  type: string
+                  format: binary
+                  description: VCF file containing contacts to be imported
+      responses:
+        '200':
+          description: Contacts imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Contacts imported successfully.'
+                  contactsCount:
+                    type: number
+                    example: 10
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/import-guest-list:
+    post:
+      summary: Import guests from a CSV file
+      description: Allows users to upload a CSV file to import guests into the event. This operation will overwrite the current guest list with the entries from the uploaded file.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          text/csv:
+            schema:
+              type: string
+              format: binary 
+      responses:
+        '200':
+          description: Guests imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'CSV imported successfully'
+                  independentSubGuests:
+                    type: array
+                    items:
+                      type: string
+                      example: "64a51e6a4f1a2d63f7d25c9b"
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/export-guest-list:
+    post:
+      summary: Export the guest list in CSV format
+      description: This endpoint allows users to export the guest list for a specified event in CSV format. Users must provide an array of guest IDs to generate the export.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              example:
+                - "66f27de4eb8b262925cff11b"
+                - "66f27de4eb8b262925cff11c"
+      responses:
+        '200':
+          description: Export successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Export successful'
+                  fileName:
+                    type: string
+                    example: "guestList_1727343502829.csv"
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/{guestId}/rsvp:
+    get:
+      summary: Get RSVP status of a guest
+      description: Retrieve the RSVP status of a guest for different functions.
+      tags:
+        - Guest List
+      parameters:
+        - name: guestId
+          in: path
+          required: true
+          description: The unique identifier of the guest
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved RSVP status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rsvpDetails:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          description: Unique identifier for the RSVP record
+                        function:
+                          $ref: '#/components/schemas/Function'
+                        rsvp:
+                          type: string
+                          description: The RSVP status of the guest for the function
+                          example: Yes
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/rsvp:
+    patch:
+      summary: Update RSVP status for guests
+      description: Update the RSVP status for one or more guests.
+      tags:
+        - Guest List
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  functionRef:
+                    type: string
+                    description: The unique identifier for the function in which the guest RSVP is being updated.
+                  rsvp:
+                    type: string
+                    description: The new RSVP status for the function.
+              example:
+                - functionRef: "66ebdad07cd2bf56d488449c"
+                  rsvp: "Yes"
+                - functionRef: "66ebdad07cd2bf56d488449d"
+                  rsvp: "No"
+      responses:
+        '200':
+          description: RSVP status successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: RSVP status successfully updated.
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
           
@@ -3874,17 +3825,6 @@ paths:
       description: >-
         Get the list of documents associated with a user by their user ID. Only
         documents with a status other than "rejected" are returned.
-      parameters:
-        - in: query
-          name: userId
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: >-
-            The unique identifier of the user whose documents are being
-            retrieved.
-          example: 66e1839f04bcf8e6974a4be4
       responses:
         '200':
           description: Documents successfully retrieved
@@ -4094,11 +4034,14 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Events
+  
   /function/create:
     post:
       summary: Create a new function for an event
       tags:
         - Functions
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -4106,19 +4049,44 @@ paths:
             schema:
               type: object
               required:
-                - name
                 - eventId
+                - name
+                - functionType
+                - date
+                - startTime
+                - endTime
               properties:
-                name:
-                  type: string
-                  example: Stage Setup
                 eventId:
                   type: string
                   format: ObjectId
                   example: 650b3b5d4f3a2a00123abc45
+                  description: The unique identifier for the event to which the function belongs.
+                name:
+                  type: string
+                  example: Stage Setup
+                  description: The descriptive name of the function to be created.
+                functionType:
+                  type: string
+                  enum:
+                    - Wedding
+                    - Reception
+                  description: The type of function being created, indicating its purpose (e.g., Wedding, Reception).
+                date:
+                  type: string
+                  format: date-time
+                  example: "2024-10-04T11:01:13.156Z"
+                  description: The date when the function is scheduled to take place, in ISO 8601 format.
+                startTime:
+                  type: string
+                  example: "13:00:00"
+                  description: The starting time of the function, formatted as HH:mm:ss.
+                endTime:
+                  type: string
+                  example: "16:00:00"
+                  description: The ending time of the function, formatted as HH:mm:ss.
       responses:
         '200':
-          description: Function successfully created.
+          description: Indicates that the function was created successfully.
           content:
             application/json:
               schema:
@@ -4131,6 +4099,94 @@ paths:
           $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /function/edit:
+    patch:
+      summary: Update an existing function by its ID
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - functionId
+              properties:
+                functionId:
+                  type: string
+                  format: ObjectId
+                  example: 650b3b5d4f3a2a00123abc45
+                  description: The unique identifier for the function that needs to be updated.
+                name:
+                  type: string
+                  example: Stage Setup
+                  description: The updated name for the function.
+                functionType:
+                  type: string
+                  enum:
+                    - Wedding
+                    - Reception
+                  description: The updated type of function being created, indicating its purpose.
+                date:
+                  type: string
+                  format: date-time
+                  example: "2024-10-04T11:01:13.156Z"
+                  description: The updated date for when the function is scheduled, in ISO 8601 format.
+                startTime:
+                  type: string
+                  example: "13:00:00"
+                  description: The updated starting time of the function, formatted as HH:mm:ss.
+                endTime:
+                  type: string
+                  example: "16:00:00"
+                  description: The updated ending time of the function, formatted as HH:mm:ss.
+      responses:
+        '200':
+          description: Indicates that the function was updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Function successfully updated.
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'  
+  /function/get:
+    get:
+      summary: Retrieve functions associated with a specific event by its ID
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: eventId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: The unique identifier of the event for which functions are being fetched.
+          example: 650b3b5d4f3a2a00123abc45
+      responses:
+        '200':
+          description: A list of functions associated with the specified event was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionsResponse'
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /functions/{functionId}/caterer:
@@ -4369,6 +4425,32 @@ paths:
       tags:
         - Functions
   /functions/{functionId}:
+    get:
+      summary: Retrieve a specific function by its unique identifier
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          schema:
+            type: string
+            format: ObjectId
+          required: true
+          description: The unique identifier of the function to be fetched.
+          example: 650b3b5d4f3a2a00123abc45
+      responses:
+        '200':
+          description: The details of the specified function were retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
     delete:
       summary: Delete a function by its ID
       tags:
@@ -4396,8 +4478,7 @@ paths:
         '404':
           $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'
-          
+          $ref: '#/components/responses/500'        
   /functions/caterer:
     post:
       summary: Create a new caterer
@@ -4614,6 +4695,795 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  /function/{functionId}/menu:
+    post:
+      summary: Add a menu to the catering details of a specific function
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - catererRef
+                - category
+                - Functions
+              properties:
+                catererRef:
+                  type: string
+                  format: ObjectId
+                  example: 650b3b5d4f3a2a00123abc45
+                  description: The unique identifier for the caterer to which the menu will be added.
+                category:
+                  type: string
+                  description: The category in which the menu has to added to.
+                  enum:
+                    - breakfast
+                    - brunch
+                    - lunch
+                    - highTea
+                    - dinner
+                menu:
+                  $ref: '#/components/schemas/IMenu'
+      responses:
+        '200':
+          description: Successful response indicating the menu was created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Menu successfully created."
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve the menu for a specific function
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: The unique identifier for the function whose menu is to be retrieved.
+        - in: query
+          name: catererRef
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+            example: 650b3b5d4f3a2a00123abc45
+          description: The unique identifier for the caterer to which the menu will be added.
+        - in: query
+          name: category
+          schema:
+            type: string
+            description: The category in which the menu has to added to.
+            enum:
+              - breakfast
+              - brunch
+              - lunch
+              - highTea
+              - dinner
+      responses:
+        '200':
+          description: Successful response containing the menu details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  menu:
+                    anyOf:
+                      - type: object
+                        properties:
+                          breakfast:
+                            $ref: '#/components/schemas/MenuCategory'
+                          brunch:
+                            $ref: '#/components/schemas/MenuCategory'
+                          lunch:
+                            $ref: '#/components/schemas/MenuCategory'
+                          highTea:
+                            $ref: '#/components/schemas/MenuCategory'
+                          dinner:
+                            $ref: '#/components/schemas/MenuCategory'
+                      - anyOf:
+                          - type: object
+                            properties:
+                              breakfast:
+                                $ref: '#/components/schemas/MenuCategory'
+                          - type: object
+                            properties:
+                              brunch:
+                                $ref: '#/components/schemas/MenuCategory'
+                          - type: object
+                            properties:
+                              lunch:
+                                $ref: '#/components/schemas/MenuCategory'
+                          - type: object
+                            properties:
+                              highTea:
+                                $ref: '#/components/schemas/MenuCategory'
+                          - type: object
+                            properties:
+                              dinner:
+                                $ref: '#/components/schemas/MenuCategory'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete the menu for a specific function
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: The unique identifier for the function whose menu is to be deleted.
+        - in: query
+          name: catererRef
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+            example: 650b3b5d4f3a2a00123abc45
+          description: The unique identifier for the caterer to which the menu will be added.
+        - in: query
+          name: category
+          schema:
+            type: string
+            description: The category in which the menu has to added to.
+            enum:
+              - breakfast
+              - brunch
+              - lunch
+              - highTea
+              - dinner
+      responses:
+        '200':
+          description: Successful response indicating that the menu was deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Menu successfully deleted."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /function/{functionId}/menu-item:
+    post:
+      summary: Add a menu item to a specific course in the menu
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - FunctionsItem
+                - course
+                - catererRef
+                - category
+              properties:
+                menuItem:
+                  $ref: '#/components/schemas/IMenuItems'
+                course:
+                  type: string
+                  description: The course (e.g., starters, main course, dessert) to which the menu item will be added.
+                catererRef:
+                  type: string
+                  format: ObjectId
+                  example: 650b3b5d4f3a2a00123abc45
+                  description: The unique identifier for the caterer to which the menu will be added.
+                category:
+                  type: string
+                  description: The category in which the menu has to added to.
+                  enum:
+                    - breakfast
+                    - brunch
+                    - lunch
+                    - highTea
+                    - dinner                
+  
+      responses:
+        '200':
+          description: Successful response indicating that the menu item was added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Menu item added successfully."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve a specific menu item by its ID from a specific course
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          description: The unique identifier for the function from which to retrieve the menu item.
+          schema:
+            type: string
+            format: ObjectId
+        - name: menuItemId
+          in: query
+          required: true
+          description: The unique identifier for the menu item to retrieve.
+          schema:
+            type: string
+            format: ObjectId
+        - name: course
+          in: query
+          required: true
+          description: The course (e.g., beverages, starters, main course, dessert) from which to retrieve the menu item.
+          schema:
+            type: string
+        - in: query
+          name: catererRef
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+            example: 650b3b5d4f3a2a00123abc45
+          description: The unique identifier for the caterer to which the menu will be added.
+        - in: query
+          name: category
+          schema:
+            type: string
+            description: The category in which the menu has to added to.
+            enum:
+              - breakfast
+              - brunch
+              - lunch
+              - highTea
+              - dinner
+      responses:
+        '200':
+          description: Successful response containing the requested menu item
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  menuItem:
+                    $ref: '#/components/schemas/MenuItem'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      summary: Update a specific menu item in a specific course
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - FunctionsItemId
+                - course
+                - updatedMenuItem
+                - catererRef
+                - category
+              properties:
+                menuItemId:
+                  type: string
+                  format: ObjectId
+                  description: The unique identifier for the menu item to update.
+                course:
+                  type: string
+                  description: The course (e.g., beverages, starters, main course, dessert) to which the menu item belongs.
+                  enum: 
+                    - beverages
+                    - starters
+                    - mainCourse
+                    - dessert
+                updatedMenuItem:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    subTitle:
+                      type: string
+                    cuisine:
+                      type: string
+                    mealPreference:
+                      type: string
+                    isVegan:
+                      type: boolean
+                    isJain:
+                      type: boolean
+                    isSwaminarayan:
+                      type: boolean
+                    isRecommendedByChef:
+                      type: boolean
+                    description:
+                      type: string
+                    ingredients:
+                      type: array
+                      items:
+                        type: string
+                    allergicIngredients:
+                      type: array
+                      items:
+                        type: string
+                    servingType:
+                      type: string
+                catererRef:
+                  type: string
+                  format: ObjectId
+                  example: 650b3b5d4f3a2a00123abc45
+                  description: The unique identifier for the caterer to which the menu will be added.
+                category:
+                  type: string
+                  description: The category in which the menu has to added to.
+                  enum:
+                    - breakfast
+                    - brunch
+                    - lunch
+                    - highTea
+                    - dinner                
+      responses:
+        '200':
+          description: Successful response indicating the menu item was updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Menu item updated successfully"
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete a specific menu item from a specific course
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: The unique identifier for the function.
+        - in: query
+          name: menuItemId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: The unique identifier for the menu item to delete.
+        - in: query
+          name: course
+          required: true
+          schema:
+            type: string
+          description: The course (e.g., beverages, starters, main course, dessert) from which the menu item should be deleted.
+        - in: query
+          name: catererRef
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+            example: 650b3b5d4f3a2a00123abc45
+          description: The unique identifier for the caterer to which the menu will be added.
+        - in: query
+          name: category
+          schema:
+            type: string
+            description: The category in which the menu has to added to.
+            enum:
+              - breakfast
+              - brunch
+              - lunch
+              - highTea
+              - dinner
+      responses:
+        '200':
+          description: Successful response indicating the menu item was deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Menu item deleted successfully"
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /function/{functionId}/dress-code:
+    post:
+      summary: Add a dress code to a specific function
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - backgroundImage
+                - description
+                - men
+                - women
+              properties:
+                backgroundImage:
+                  type: string
+                  example: "https://example.com/background.jpg"
+                  description: URL of the background image for the dress code.
+                description:
+                  type: string
+                  example: "Formal attire required."
+                  description: A brief description of the dress code.
+                men:
+                  type: object
+                  required:
+                    - theme
+                    - referenceImages
+                    - title
+                    - subTitle
+                  properties:
+                    theme:
+                      type: string
+                      example: "Classic"
+                      description: The theme for men's dress code.
+                    referenceImages:
+                      type: array
+                      items:
+                        type: string
+                        format: ObjectId
+                      example: [ "650b3b5d4f3a2a00123abc45", "650b3b5d4f3a2a00123abc46" ]
+                      description: An array of ObjectIds representing reference images for men's attire.
+                    title:
+                      type: string
+                      example: "Men's Attire"
+                      description: Title for men's dress code section.
+                    subTitle:
+                      type: string
+                      example: "Smart Casual"
+                      description: Subtitle providing additional details for men's dress code.
+                women:
+                  type: object
+                  required:
+                    - theme
+                    - referenceImages
+                    - title
+                    - subTitle
+                  properties:
+                    theme:
+                      type: string
+                      example: "Elegant"
+                      description: The theme for women's dress code.
+                    referenceImages:
+                      type: array
+                      items:
+                        type: string
+                        format: ObjectId
+                      example: [ "650b3b5d4f3a2a00123abc47", "650b3b5d4f3a2a00123abc48" ]
+                      description: An array of ObjectIds representing reference images for women's attire.
+                    title:
+                      type: string
+                      example: "Women's Attire"
+                      description: Title for women's dress code section.
+                    subTitle:
+                      type: string
+                      example: "Cocktail Dress"
+                      description: Subtitle providing additional details for women's dress code.
+      responses:
+        '200':
+          description: Dress code successfully added to the function.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Dress code successfully added to the function."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Edit the dress code for a specific function
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                backgroundImage:
+                  type: string
+                  example: "https://example.com/new_background.jpg"
+                  description: (Optional) URL of the new background image for the dress code.
+                description:
+                  type: string
+                  example: "Formal attire required with a casual touch."
+                  description: (Optional) A brief description of the updated dress code.
+                men:
+                  type: object
+                  properties:
+                    theme:
+                      type: string
+                      example: "Smart Casual"
+                      description: (Optional) The updated theme for men's dress code.
+                    title:
+                      type: string
+                      example: "Men's Updated Attire"
+                      description: (Optional) Updated title for men's dress code section.
+                    subTitle:
+                      type: string
+                      example: "Business Casual"
+                      description: (Optional) Updated subtitle for men's dress code section.
+                women:
+                  type: object
+                  properties:
+                    theme:
+                      type: string
+                      example: "Elegant Evening"
+                      description: (Optional) The updated theme for women's dress code.
+                    title:
+                      type: string
+                      example: "Women's Updated Attire"
+                      description: (Optional) Updated title for women's dress code section.
+                    subTitle:
+                      type: string
+                      example: "Evening Gown"
+                      description: (Optional) Updated subtitle for women's dress code section.
+      responses:
+        '200':
+          description: Dress code successfully edited for the function.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Dress code successfully edited."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve the dress code for a specific function
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: The unique identifier for the function whose dress code is being fetched.
+          example: 650b3b5d4f3a2a00123abc45
+      responses:
+        '200':
+          description: Successful response containing the dress code details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dressCode:
+                    type: object
+                    properties:
+                      men:
+                        type: object
+                        properties:
+                          theme:
+                            type: string
+                            example: "Formal Attire"
+                          referenceImages:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                _id:
+                                  type: string
+                                  format: ObjectId
+                                  example: "66ffc8df24589a57d7594fb3"
+                                path:
+                                  type: string
+                                  example: "src/uploads/dressCode/2024-10-04T10-52-15.148Z - test.jpg"
+                                name:
+                                  type: string
+                                  example: "test.jpg"
+                                referenceType:
+                                  type: string
+                                  example: "DressCodeAttachment"
+                                function:
+                                  type: string
+                                  format: ObjectId
+                                  example: "66fbd5db1d5dd5f5282a3adc"
+                          title:
+                            type: string
+                            example: "Men's Formal Wear"
+                          subTitle:
+                            type: string
+                            example: "Smart Casual"
+                      women:
+                        type: object
+                        properties:
+                          theme:
+                            type: string
+                            example: "Elegant Evening"
+                          referenceImages:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                _id:
+                                  type: string
+                                  format: ObjectId
+                                  example: "66ffc8f224589a57d7594fb5"
+                                path:
+                                  type: string
+                                  example: "src/uploads/dressCode/2024-10-04T10-52-34.828Z - test.jpg"
+                                name:
+                                  type: string
+                                  example: "test.jpg"
+                                referenceType:
+                                  type: string
+                                  example: "DressCodeAttachment"
+                                function:
+                                  type: string
+                                  format: ObjectId
+                                  example: "66fbd5db1d5dd5f5282a3adc"
+                          title:
+                            type: string
+                            example: "Women's Evening Gown"
+                          subTitle:
+                            type: string
+                            example: "Glamorous"
+                      backgroundImage:
+                        type: string
+                        example: "https://example.com/background.jpg"
+                      description:
+                        type: string
+                        example: "Dress code for the formal event."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete the dress code for a specific function
+      tags:
+        - Functions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: The unique identifier for the function whose dress code is being deleted.
+          example: 650b3b5d4f3a2a00123abc45
+      responses:
+        '200':
+          description: Successful response indicating the dress code was deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Dress code successfully deleted."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -4725,6 +5595,9 @@ components:
         isSwaminarayan:
           type: boolean
           example: false
+        containsAlcohol:
+          type: boolean
+          example: false
         isRecommendedByChef:
           type: boolean
           example: true
@@ -4795,59 +5668,58 @@ components:
         firstName:
           type: string
           description: First name of the guest
-          example: John
+          example: "John"
         lastName:
           type: string
           description: Last name of the guest
-          example: Doe
+          example: "Doe"
         gender:
           type: string
           enum:
             - Male
             - Female
           description: Gender of the guest
-          example: Male
+          example: "Male"
         avatar:
           type: string
           description: URL to the guest's avatar
-          example: https://example.com/avatar.jpg
+          example: "https://example.com/avatar.jpg"
         eventId:
           type: string
           format: objectId
           description: ID of the event the guest is attending
-          example: 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
         meal:
           type: string
           format: objectId
           description: Meal preference ID for the guest
-          example: 64a51e6a4f1a2d63f7d25c9b
-        tags:
-          type: array
-          items:
-            type: string
-            format: objectId
-          description: List of tag IDs for the guest
-          example:
-            - 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
         functions:
           type: array
           items:
             type: string
             format: objectId
           description: List of function IDs assigned to the guest
-          example:
-            - 64a51e6a4f1a2d63f7d25c9b
+          example: ["64a51e6a4f1a2d63f7d25c9b"]
     IAddGuestPayload:
       required:
         - contactNumber
-        - firstName
+        - firstName 
         - lastName
         - gender
         - avatar
         - eventId
+        - invitedBy
+        - tags
       allOf:
         - $ref: '#/components/schemas/IBaseGuestPayload'
       properties:
+        invitedBy:
+          type: string
+          enum:
+            - Bride
+            - Groom
+            - Common
         contactNumber:
           type: number
           description: Contact number of the guest
@@ -4855,8 +5727,15 @@ components:
         subGuests:
           type: array
           items:
-            $ref: '#/components/schemas/IAddGuestPayload'
+            $ref: '#/components/schemas/IBaseGuestPayload'
           description: List of sub-guests under this guest
+        tags:
+          type: array
+          items:
+            type: string
+            format: objectId
+          description: List of tag IDs for the guest
+          example: ["64a51e6a4f1a2d63f7d25c9b"]
     IPatchGuestPayload:
       allOf:
         - $ref: '#/components/schemas/IAddGuestPayload'
@@ -4865,7 +5744,7 @@ components:
           type: string
           format: objectId
           description: ID of the guest to be patched
-          example: 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
     IPatchGuestPayloadArray:
       type: array
       items:
@@ -4876,18 +5755,24 @@ components:
             type: string
             format: objectId
             description: ID of the guest to be patched
-            example: 64a51e6a4f1a2d63f7d25c9b
+            example: "64a51e6a4f1a2d63f7d25c9b"
     IPatchGuestCellPayload:
       required:
         - guestId
       anyOf:
         - $ref: '#/components/schemas/IBaseGuestPayload'
       properties:
+        invitedBy:
+          type: string
+          enum:
+            - Bride
+            - Groom
+            - Common
         guestId:
           type: string
           format: objectId
           description: ID of the guest cell to patch
-          example: 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
     IMoveSubGuestPayload:
       type: object
       required:
@@ -4901,18 +5786,17 @@ components:
             type: string
             format: objectId
           description: List of sub-guest IDs to move
-          example:
-            - 64a51e6a4f1a2d63f7d25c9b
+          example: ["64a51e6a4f1a2d63f7d25c9b"]
         newPrimaryGuestId:
           type: string
           format: objectId
           description: ID of the new primary guest for the sub-guests
-          example: 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
         currentPrimaryGuestId:
           type: string
           format: objectId
           description: ID of the current primary guest
-          example: 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
     IMovePrimaryGuestPayload:
       type: object
       required:
@@ -4923,17 +5807,17 @@ components:
           type: string
           format: objectId
           description: ID of the current primary guest
-          example: 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
         newGroupPrimaryGuestId:
           type: string
           format: objectId
           description: ID of the new group primary guest
-          example: 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
         currentGroupNewPrimaryGuestId:
           type: string
           format: objectId
           description: ID of the current group for the new primary guest (optional)
-          example: 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
     IAddHotelPayload:
       type: object
       required:
@@ -4946,12 +5830,12 @@ components:
         name:
           type: string
           description: Name of the hotel
-          example: Sunrise Hotel
+          example: "Sunrise Hotel"
         companyId:
           type: string
           format: ObjectId
           description: The ID of the associated company
-          example: 64a51e6a4f1a2d63f7d25c9b
+          example: "64a51e6a4f1a2d63f7d25c9b"
         address:
           type: object
           description: Address details of the hotel
@@ -4966,23 +5850,23 @@ components:
             add1:
               type: string
               description: First line of the address
-              example: 123 Main St
+              example: "123 Main St"
             add2:
               type: string
               description: Second line of the address (optional)
-              example: Suite 101
+              example: "Suite 101"
             city:
               type: string
               description: City of the hotel
-              example: New York
+              example: "New York"
             state:
               type: string
               description: State of the hotel
-              example: NY
+              example: "NY"
             country:
               type: string
               description: Country of the hotel
-              example: USA
+              example: "USA"
             pinCode:
               type: number
               description: Postal code of the hotel
@@ -5001,7 +5885,7 @@ components:
                 lng:
                   type: number
                   description: Longitude of the hotel
-                  example: -74.006
+                  example: -74.0060
         contactNumber:
           type: number
           description: Contact number of the hotel
@@ -5013,11 +5897,11 @@ components:
             checkInTime:
               type: string
               description: Check-in time
-              example: '14:00'
+              example: "14:00"
             checkOutTime:
               type: string
               description: Check-out time
-              example: '11:00'
+              example: "11:00"
     IPatchHotelPayload:
       type: object
       required:
@@ -5027,11 +5911,11 @@ components:
           type: string
           format: ObjectId
           description: The ID of the hotel
-          example: 64a51e6a4f1a2d63f7d25c9x
+          example: "64a51e6a4f1a2d63f7d25c9x" 
         name:
           type: string
           description: Name of the hotel
-          example: Sunrise Hotel
+          example: "Sunrise Hotel"
         address:
           type: object
           description: Address details of the hotel
@@ -5039,23 +5923,23 @@ components:
             add1:
               type: string
               description: First line of the address
-              example: 123 Main St
+              example: "123 Main St"
             add2:
               type: string
               description: Second line of the address (optional)
-              example: Suite 101
+              example: "Suite 101"
             city:
               type: string
               description: City of the hotel
-              example: New York
+              example: "New York"
             state:
               type: string
               description: State of the hotel
-              example: NY
+              example: "NY"
             country:
               type: string
               description: Country of the hotel
-              example: USA
+              example: "USA"
             pinCode:
               type: number
               description: Postal code of the hotel
@@ -5074,7 +5958,7 @@ components:
                 lng:
                   type: number
                   description: Longitude of the hotel
-                  example: -74.006
+                  example: -74.0060
         contactNumber:
           type: number
           description: Contact number of the hotel
@@ -5086,11 +5970,11 @@ components:
             checkInTime:
               type: string
               description: Check-in time
-              example: '14:00'
+              example: "14:00"
             checkOutTime:
               type: string
               description: Check-out time
-              example: '11:00'
+              example: "11:00"
     IAddHotelToEventPayload:
       type: object
       required:
@@ -5103,12 +5987,12 @@ components:
           type: string
           format: ObjectId
           description: ID of the event
-          example: 66e189a48dacf4f20d7e51d2
+          example: "66e189a48dacf4f20d7e51d2"
         hotelId:
           type: string
           format: ObjectId
           description: ID of the hotel
-          example: 66ea88b197a39eefb4f2eac3
+          example: "66ea88b197a39eefb4f2eac3"
         contactDetails:
           $ref: '#/components/schemas/IContactDetails'
         tagIds:
@@ -5117,9 +6001,9 @@ components:
             type: string
             format: ObjectId
             description: IDs of associated tags
-          example:
-            - 66e18b9a07c4906c47181669
-            - 66e18cdbf2d43d6993cd7b42
+          example: 
+            - "66e18b9a07c4906c47181669"
+            - "66e18cdbf2d43d6993cd7b42"
     IContactDetails:
       type: object
       required:
@@ -5131,11 +6015,11 @@ components:
         firstName:
           type: string
           description: First name of the contact person
-          example: John
+          example: "John"
         lastName:
           type: string
           description: Last name of the contact person
-          example: Doe
+          example: "Doe"
         primaryContactNumber:
           type: number
           description: Primary contact number
@@ -5147,7 +6031,7 @@ components:
         email:
           type: string
           description: Contact email address
-          example: john.doe@example.com
+          example: "john.doe@example.com"
     Price:
       type: object
       required:
@@ -5157,11 +6041,11 @@ components:
         amount:
           type: number
           example: 1000
-          description: The cost of the plan.
+          description: "The cost of the plan."
         currency:
           type: string
-          example: USD
-          description: The currency of the price.
+          example: "USD"
+          description: "The currency of the price."
     IPlanType:
       type: object
       required:
@@ -5173,20 +6057,20 @@ components:
       properties:
         planName:
           type: string
-          example: Gold Plan
-          description: The name of the plan.
+          example: "Gold Plan"
+          description: "The name of the plan."
         numberOfGuests:
           type: integer
           example: 200
-          description: The number of guests included in the plan.
+          description: "The number of guests included in the plan."
         numberOfFunctions:
           type: integer
           example: 5
-          description: The number of functions allowed under the plan.
+          description: "The number of functions allowed under the plan."
         storageCapacity:
           type: string
-          example: 50GB
-          description: The storage capacity provided by the plan.
+          example: "50GB"
+          description: "The storage capacity provided by the plan."
         price:
           $ref: '#/components/schemas/Price'
     BedType:
@@ -5196,8 +6080,8 @@ components:
         - Double
         - Queen
         - King
-      example: Queen
-      description: Type of bed available in the room.
+      example: "Queen"
+      description: "Type of bed available in the room."
     View:
       type: string
       enum:
@@ -5205,8 +6089,8 @@ components:
         - Mountain
         - City
         - Garden
-      example: Sea
-      description: View type from the room.
+      example: "Sea"
+      description: "View type from the room."
     IBaseRoom:
       type: object
       required:
@@ -5222,23 +6106,23 @@ components:
         maxGuests:
           type: integer
           example: 3
-          description: Maximum number of guests allowed in the room.
+          description: "Maximum number of guests allowed in the room."
         extraBedAllowed:
           type: integer
           example: 1
-          description: Number of extra beds allowed in the room.
+          description: "Number of extra beds allowed in the room."
         swimmingPool:
           type: boolean
           example: true
-          description: Indicates if the room has access to a swimming pool.
+          description: "Indicates if the room has access to a swimming pool."
         smokingAllowed:
           type: boolean
           example: false
-          description: Indicates if smoking is allowed in the room.
+          description: "Indicates if smoking is allowed in the room."
         gallery:
           type: boolean
           example: true
-          description: Indicates if the room has a gallery/balcony.
+          description: "Indicates if the room has a gallery/balcony."
     IRoom:
       type: object
       required:
@@ -5249,8 +6133,8 @@ components:
           properties:
             name:
               type: string
-              example: Deluxe Room
-              description: The name of the room.
+              example: "Deluxe Room"
+              description: "The name of the room."
             view:
               $ref: '#/components/schemas/View'
         - $ref: '#/components/schemas/IBaseRoom'
@@ -5262,12 +6146,12 @@ components:
         roomId:
           type: string
           format: ObjectId
-          description: The Id of the room that needs to be modified
-          example: 66f16453170329c8ff274872
+          description: "The Id of the room that needs to be modified"
+          example: "66f16453170329c8ff274872"
         name:
           type: string
-          example: Deluxe Room
-          description: The name of the room.
+          example: "Deluxe Room"
+          description: "The name of the room."
         bedType:
           $ref: '#/components/schemas/BedType'
         view:
@@ -5275,23 +6159,23 @@ components:
         maxGuests:
           type: integer
           example: 3
-          description: Maximum number of guests allowed in the room.
+          description: "Maximum number of guests allowed in the room."
         extraBedAllowed:
           type: integer
           example: 1
-          description: Number of extra beds allowed in the room.
+          description: "Number of extra beds allowed in the room."
         swimmingPool:
           type: boolean
           example: true
-          description: Indicates if the room has access to a swimming pool.
+          description: "Indicates if the room has access to a swimming pool."
         smokingAllowed:
           type: boolean
           example: false
-          description: Indicates if smoking is allowed in the room.
+          description: "Indicates if smoking is allowed in the room."
         gallery:
           type: boolean
           example: true
-          description: Indicates if the room has a gallery/balcony.
+          description: "Indicates if the room has a gallery/balcony."
     IAddRoomToEventPayload:
       type: object
       required:
@@ -5304,28 +6188,22 @@ components:
             roomId:
               type: string
               format: ObjectId
-              example: 66ea8a1c98d445d68e3f1759
-              description: >-
-                The unique identifier of the room being added to the event. This
-                ID references the specific room in the hotel.
+              example: "66ea8a1c98d445d68e3f1759"
+              description: "The unique identifier of the room being added to the event. This ID references the specific room in the hotel."
             eventId:
               type: string
               format: ObjectId
-              example: 66ea8a1c98d445d68e3f175
-              description: >-
-                The unique identifier of the event to which the room is being
-                associated. This ID corresponds to the event in the system.
+              example: "66ea8a1c98d445d68e3f175"
+              description: "The unique identifier of the event to which the room is being associated. This ID corresponds to the event in the system."
             hotelId:
               type: string
               format: ObjectId
-              example: 66ea8a1c98d445d68e3f1757
-              description: >-
-                The unique identifier of the hotel that contains the room being
-                added to the event. This ID references the hotel entity.
+              example: "66ea8a1c98d445d68e3f1757"
+              description: "The unique identifier of the hotel that contains the room being added to the event. This ID references the hotel entity."
             quantity:
               type: integer
               example: 10
-              description: Quantity of rooms to be booked for the event
+              description: "Quantity of rooms to be booked for the event"
         - $ref: '#/components/schemas/IBaseRoom'
     IPatchEventRoomTypePayload:
       type: object
@@ -5337,7 +6215,7 @@ components:
             eventRoomRef:
               type: string
               format: ObjectId
-              example: 66ea8a1c98d445d68e3f1759
+              example: "66ea8a1c98d445d68e3f1759"
         - $ref: '#/components/schemas/IBaseRoom'
     ITag:
       type: object
@@ -5355,11 +6233,11 @@ components:
           description: Color of the tag
         eventId:
           type: string
-          example: 66f119beb026c0eb71d5b5e4
+          example: "66f119beb026c0eb71d5b5e4"
           description: Id of the event for an event specific tag
     IBaseTaskPayload:
       type: object
-      description: Payload for creating a new task associated with an event.
+      description: "Payload for creating a new task associated with an event."
       required:
         - name
         - status
@@ -5375,91 +6253,89 @@ components:
       properties:
         name:
           type: string
-          example: Book a DJ
-          description: Name of the task.
+          example: "Book a DJ"
+          description: "Name of the task."
         categoryId:
           type: string
           format: ObjectId
-          example: 66e18b9a07c4906c47181669
-          description: Optional unique identifier for the category the task belongs to.
+          example: "66e18b9a07c4906c47181669"
+          description: "Optional unique identifier for the category the task belongs to."
         functionId:
           type: string
           format: ObjectId
-          example: 66e18aea07c4906c47181652
-          description: >-
-            Optional unique identifier for the function associated with the
-            task.
+          example: "66e18aea07c4906c47181652"
+          description: "Optional unique identifier for the function associated with the task."
         status:
           type: string
-          example: Pending
-          description: Current status of the task (e.g., Pending, Completed, In Progress).
+          example: "Pending"
+          description: "Current status of the task (e.g., Pending, Completed, In Progress)."
         assignee:
           type: array
           items:
             type: string
-            example: John Doe
-          description: List of individuals assigned to the task.
+            example: "John Doe"
+          description: "List of individuals assigned to the task."
         priority:
           type: string
-          example: High
-          description: Priority level of the task (e.g., Low, Medium, High).
+          example: "High"
+          description: "Priority level of the task (e.g., Low, Medium, High)."
         dueDate:
           $ref: '#/components/schemas/IDueDate'
         contactName:
           type: string
-          example: Jane Smith
-          description: Name of the primary contact person for the task.
+          example: "Jane Smith"
+          description: "Name of the primary contact person for the task."
         contactNumber:
           type: integer
           example: 9876543210
-          description: Contact number of the primary contact person for the task.
+          description: "Contact number of the primary contact person for the task."
         description:
           type: string
-          example: Book a DJ for the reception.
-          description: Detailed description of the task.
+          example: "Book a DJ for the reception."
+          description: "Detailed description of the task."
         address:
           $ref: '#/components/schemas/IAddress'
         checkList:
           type: array
           items:
             $ref: '#/components/schemas/ICheckList'
-          description: Checklist items for the task.
+          description: "Checklist items for the task."
     ICreateTaskPayload:
       allOf:
         - $ref: '#/components/schemas/IBaseTaskPayload'
       type: object
-      description: Payload for creating a new task associated with an event.
+      description: "Payload for creating a new task associated with an event."
       properties:
         attachments:
           type: array
           items:
             type: string
             format: ObjectId
-            example: 66e18b9a07c4906c47181669
-          description: Optional list of attachment IDs associated with the task.
+            example: "66e18b9a07c4906c47181669"
+          description: "Optional list of attachment IDs associated with the task."
         eventId:
           type: string
           format: ObjectId
-          example: 66e189a48dacf4f20d7e51d2
-          description: Unique identifier for the event to which the task is associated.
+          example: "66e189a48dacf4f20d7e51d2"
+          description: "Unique identifier for the event to which the task is associated."
     ICheckList:
       type: object
-      description: A checklist item within a task.
+      description: "A checklist item within a task."
       required:
         - label
         - checked
       properties:
         label:
           type: string
-          example: Confirm booking
-          description: Label for the checklist item.
+          example: "Confirm booking"
+          description: "Label for the checklist item."
         checked:
           type: boolean
           example: false
-          description: Indicates whether the checklist item is completed.
+          description: "Indicates whether the checklist item is completed."
     IDueDate:
       type: object
-      description: Due date details for the task.
+      description: "Due date details for the task."
       required:
         - date
         - timezone
@@ -5467,15 +6343,15 @@ components:
         date:
           type: string
           format: date-time
-          example: '2024-10-01T09:00:00Z'
-          description: Due date and time for the task.
+          example: "2024-10-01T09:00:00Z"
+          description: "Due date and time for the task."
         timezone:
           type: string
-          example: UTC
-          description: Timezone for the due date.
+          example: "UTC"
+          description: "Timezone for the due date."
     IAddress:
       type: object
-      description: Address details associated with the task.
+      description: "Address details associated with the task."
       required:
         - street
         - city
@@ -5485,24 +6361,24 @@ components:
       properties:
         street:
           type: string
-          example: 123 Main St
-          description: Street address.
+          example: "123 Main St"
+          description: "Street address."
         city:
           type: string
-          example: New York
-          description: City name.
+          example: "New York"
+          description: "City name."
         state:
           type: string
-          example: NY
-          description: State or province.
+          example: "NY"
+          description: "State or province."
         zipCode:
           type: string
-          example: '10001'
-          description: Postal/Zip code.
+          example: "10001"
+          description: "Postal/Zip code."
         country:
           type: string
-          example: USA
-          description: Country name.
+          example: "USA"
+          description: "Country name."
     IUpdateCheckListStatus:
       type: object
       required:
@@ -5513,278 +6389,388 @@ components:
           type: string
           format: ObjectId
           description: Object Id of the check list item that needs to be changed
-          example: 66e1900966218dc66a806d39
+          example: "66e1900966218dc66a806d39"
         newStatus:
           type: boolean
           description: new status of the check list
           example: true
+    IMenuItems:
+      type: object
+      required:
+        - title
+        - subTitle
+        - cusine
+        - mealPreference
+        - isVegan
+        - isJain
+        - isSwaminarayan
+        - isRecommendedByChef
+        - description
+        - ingredients
+        - allergicIngredients
+        - servingType
+        - containsAlcohol
+      properties:
+        title:
+          type: string
+          example: "Vegetable Soup"
+        subTitle:
+          type: string
+          example: "A healthy vegetable soup."
+        cuisine:
+          type: string
+          enum:
+            - Italian
+            - Indian
+            - Chinese
+            - Mexican
+        mealPreference:
+          type: string
+          enum:
+            - Vegetarian
+            - Non-Vegetarian
+            - Vegan
+        isVegan:
+          type: boolean
+          example: false
+        isJain:
+          type: boolean
+          example: false
+        isSwaminarayan:
+          type: boolean
+          example: false
+        isRecommendedByChef:
+          type: boolean
+          example: true
+        containsAlcohol:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: "A delicious vegetable soup made with fresh ingredients."
+        ingredients:
+          type: array
+          items:
+            type: string
+            example: "Carrots"
+        allergicIngredients:
+          type: array
+          items:
+            type: string
+            example: "Nuts"
+        servingType:
+          type: string
+          enum:
+            - Plated
+            - Buffet
+            - Family Style
+    IMenu:
+      type: object
+      required:
+        - title
+        - description
+        - starts From
+        - endsAt
+      properties:
+        title:
+          type: string
+          description: Title of the menu
+        description:
+          type: string
+          description: Description for the menu
+        startsFrom:
+          type: string
+          description: Time at which the catering starts from
+        endsAt:
+          type: string
+          description: Time at which the catering ends at
+        beverages:
+          type: array
+          items:
+            $ref: '#/components/schemas/IMenuItems'
+        starters:
+          type: array
+          items:
+            $ref: '#/components/schemas/IMenuItems'
+        mainCourse:
+          type: array
+          items:
+            $ref: '#/components/schemas/IMenuItems'
+        dessert:
+          type: array
+          items:
+            $ref: '#/components/schemas/IMenuItems'
     Meal:
       type: object
-      description: Details of the meal option chosen by the guest.
+      description: "Details of the meal option chosen by the guest."
       properties:
         _id:
           type: string
-          example: 66cdd0cdacd65a7ab834b030
-          description: Unique identifier for the meal.
+          example: "66cdd0cdacd65a7ab834b030"
+          description: "Unique identifier for the meal."
         name:
           type: string
-          example: Veg
-          description: Name of the meal option.
+          example: "Veg"
+          description: "Name of the meal option."
         color:
           type: string
-          example: '#00FF00'
-          description: Color code representing the meal type.
+          example: "#00FF00"
+          description: "Color code representing the meal type."
     FunctionDetails:
       type: object
-      description: Information about the function the guest is attending.
+      description: "Information about the function the guest is attending."
       properties:
         _id:
           type: string
-          example: 66e3f3647679a1a4f0076cfd
-          description: Unique identifier for the function details.
+          example: "66e3f3647679a1a4f0076cfd"
+          description: "Unique identifier for the function details."
         rsvp:
           type: string
-          example: Not Sure
-          description: RSVP status of the guest for the function.
+          example: "Not Sure"
+          description: "RSVP status of the guest for the function."
         function:
           type: object
-          description: Details of the specific function the guest is attending.
+          description: "Details of the specific function the guest is attending."
           properties:
             _id:
               type: string
-              example: 66e18aea07c4906c47181652
-              description: Unique identifier for the function.
+              example: "66e18aea07c4906c47181652"
+              description: "Unique identifier for the function."
             name:
               type: string
-              example: Haldi
-              description: Name of the function.
+              example: "Haldi"
+              description: "Name of the function."
             event:
               type: string
-              example: 66e189a48dacf4f20d7e51d2
-              description: Identifier for the event associated with the function.
+              example: "66e189a48dacf4f20d7e51d2"
+              description: "Identifier for the event associated with the function."
     Tag:
       type: object
-      description: A tag assigned to a guest for categorization or filtering.
+      description: "A tag assigned to a guest for categorization or filtering."
       properties:
         _id:
           type: string
-          example: 66e18b9a07c4906c47181669
-          description: Unique identifier for the tag.
+          example: "66e18b9a07c4906c47181669"
+          description: "Unique identifier for the tag."
         name:
           type: string
-          example: test
-          description: Name of the tag.
+          example: "test"
+          description: "Name of the tag."
         color:
           type: string
-          example: red
-          description: Color associated with the tag.
+          example: "red"
+          description: "Color associated with the tag."
     AcceptedDocument:
       type: object
-      description: Details of an accepted document submitted by a guest.
+      description: "Details of an accepted document submitted by a guest."
       properties:
         _id:
           type: string
-          example: 66f27de4eb8b262925cff0e3
-          description: Unique identifier for the accepted document.
+          example: "66f27de4eb8b262925cff0e3"
+          description: "Unique identifier for the accepted document."
         type:
           type: string
-          example: passport
-          description: Type of the accepted document.
+          example: "passport"
+          description: "Type of the accepted document."
         country:
           type: string
-          example: India
-          description: Country associated with the document.
+          example: "India"
+          description: "Country associated with the document."
         path:
           type: array
           items:
             type: string
-          example:
-            - front
-            - back
-          description: Array containing paths to document images (e.g., front, back).
+          example: ["front", "back"]
+          description: "Array containing paths to document images (e.g., front, back)."
         status:
           type: string
-          example: pending
-          description: Current status of the document (e.g., pending, approved).
+          example: "pending"
+          description: "Current status of the document (e.g., pending, approved)."
     Document:
       type: object
-      description: Details of a document submitted by a guest.
+      description: "Details of a document submitted by a guest."
       properties:
         _id:
           type: string
-          example: 66f27de4eb8b262925cff0e3
-          description: Unique identifier for the document.
+          example: "66f27de4eb8b262925cff0e3"
+          description: "Unique identifier for the document."
         type:
           type: string
-          example: passport
-          description: Type of the document.
+          example: "passport"
+          description: "Type of the document."
         country:
           type: string
-          example: India
-          description: Country associated with the document.
+          example: "India"
+          description: "Country associated with the document."
     EventDetail:
       type: object
-      description: Details related to an event, including document status.
+      description: "Details related to an event, including document status."
       properties:
         event:
           type: string
           format: ObjectId
-          example: 66e189a48dacf4f20d7e51d2
-          description: Unique identifier for the event.
+          example: "66e189a48dacf4f20d7e51d2"
+          description: "Unique identifier for the event."
         role:
           type: string
           format: ObjectId
-          example: 66ba2809799d0fb7db4fd5c0
-          description: Role identifier for the assignee within the event.
+          example: "66ba2809799d0fb7db4fd5c0"
+          description: "Role identifier for the assignee within the event."
         acceptedDocuments:
           type: array
           items:
             $ref: '#/components/schemas/AcceptedDocument'
-          description: List of documents that have been accepted.
+          description: "List of documents that have been accepted."
         rejectedDocuments:
           type: array
           items:
             $ref: '#/components/schemas/Document'
-          description: List of documents that have been rejected.
+          description: "List of documents that have been rejected."
         pendingDocuments:
           type: array
           items:
             $ref: '#/components/schemas/Document'
-          description: List of documents that are pending approval.
+          description: "List of documents that are pending approval."
         _id:
           type: string
           format: ObjectId
-          example: 66e189a58dacf4f20d7e51d7
-          description: Unique identifier for the event detail.
+          example: "66e189a58dacf4f20d7e51d7"
+          description: "Unique identifier for the event detail."
     User:
       type: object
-      description: User information, including associated event details.
+      description: "User information, including associated event details."
       properties:
         _id:
           type: string
-          example: 66e1a313698a44e7d290b718
-          description: Unique identifier for the user.
+          example: "66e1a313698a44e7d290b718"
+          description: "Unique identifier for the user."
         eventDetails:
           type: array
           items:
             $ref: '#/components/schemas/EventDetail'
-          description: List of event details associated with the user.
+          description: "List of event details associated with the user."
     Guest:
       type: object
-      description: Details of the guest attending the event.
+      description: "Details of the guest attending the event."
       properties:
         _id:
           type: string
-          example: 66e3f1c27679a1a4f0076cdb
-          description: Unique identifier for the guest.
+          example: "66e3f1c27679a1a4f0076cdb"
+          description: "Unique identifier for the guest."
         firstName:
           type: string
-          example: Marcelina
-          description: First name of the guest.
+          example: "Marcelina"
+          description: "First name of the guest."
         lastName:
           type: string
-          example: Quigley
-          description: Last name of the guest.
+          example: "Quigley"
+          description: "Last name of the guest."
         contactNumber:
           type: integer
           example: 1234567890
-          description: Contact number of the guest.
+          description: "Contact number of the guest."
         gender:
           type: string
-          example: Male
-          description: Gender of the guest.
+          example: "Male"
+          description: "Gender of the guest."
         avatar:
           type: string
-          example: string
-          description: Avatar or profile image URL of the guest.
+          example: "string"
+          description: "Avatar or profile image URL of the guest."
         functionDetails:
           type: array
           items:
             $ref: '#/components/schemas/FunctionDetails'
-          description: List of functions the guest is attending.
+          description: "List of functions the guest is attending."
+        invitedBy:
+          type: string
+          enum:
+            - Bride
+            - Groom
+            - Common
         tags:
           type: array
           items:
             $ref: '#/components/schemas/Tag'
-          description: Tags associated with the guest.
+          description: "Tags associated with the guest."
         subGuests:
           type: array
           items:
             type: object
-            description: Details of sub-guests accompanying the main guest.
+            description: "Details of sub-guests accompanying the main guest."
             properties:
               _id:
                 type: string
-                example: 66e3f1c27679a1a4f0076cdb
-                description: Unique identifier for the sub-guest.
+                example: "66e3f1c27679a1a4f0076cdb"
+                description: "Unique identifier for the sub-guest."
               firstName:
                 type: string
-                example: Marcelina
-                description: First name of the sub-guest.
+                example: "Marcelina"
+                description: "First name of the sub-guest."
               lastName:
                 type: string
-                example: Quigley
-                description: Last name of the sub-guest.
+                example: "Quigley"
+                description: "Last name of the sub-guest."
               contactNumber:
                 type: integer
                 example: 1234567891
-                description: Contact number of the sub-guest.
+                description: "Contact number of the sub-guest."
               gender:
                 type: string
-                example: Male
-                description: Gender of the sub-guest.
+                example: "Male"
+                description: "Gender of the sub-guest."
               avatar:
                 type: string
-                example: string
-                description: Avatar or profile image URL of the sub-guest.
+                example: "string"
+                description: "Avatar or profile image URL of the sub-guest."
               functionDetails:
                 type: array
                 items:
                   $ref: '#/components/schemas/FunctionDetails'
-                description: List of functions the sub-guest is attending.
+                description: "List of functions the sub-guest is attending."
               user:
                 $ref: '#/components/schemas/User'
-                description: User information related to the sub-guest.
+                description: "User information related to the sub-guest."
               event:
                 type: string
-                example: 66e189a48dacf4f20d7e51d2
-                description: Event associated with the sub-guest.
+                example: "66e189a48dacf4f20d7e51d2"
+                description: "Event associated with the sub-guest."
               meal:
                 $ref: '#/components/schemas/Meal'
-                description: Meal preferences for the sub-guest.
+                description: "Meal preferences for the sub-guest."
         user:
           $ref: '#/components/schemas/User'
-          description: User information related to the guest.
+          description: "User information related to the guest."
         event:
           type: string
-          example: 66e189a48dacf4f20d7e51d2
-          description: Event associated with the guest.
+          example: "66e189a48dacf4f20d7e51d2"
+          description: "Event associated with the guest."
         meal:
           $ref: '#/components/schemas/Meal'
-          description: Meal preferences for the guest.
+          description: "Meal preferences for the guest."
     GuestsResponse:
       type: object
-      description: Response schema for listing guests.
+      description: "Response schema for listing guests."
       properties:
         guests:
           type: array
           items:
             $ref: '#/components/schemas/Guest'
-          description: Array of guest objects.
+          description: "Array of guest objects."
     Hotel:
       type: object
       properties:
         _id:
           type: string
-          example: 66ea88b197a39eefb4f2eac3
+          example: "66ea88b197a39eefb4f2eac3"
           description: Unique identifier for the hotel.
         name:
           type: string
-          example: Test Hotel
+          example: "Test Hotel"
           description: Name of the hotel.
         company:
           type: string
-          example: 66e1839f04bcf8e6974a4bdf
+          example: "66e1839f04bcf8e6974a4bdf"
           description: ID of the company that owns the hotel.
         address:
           type: object
@@ -5802,19 +6788,19 @@ components:
                   description: Longitude of the hotel's location.
             add1:
               type: string
-              example: 7752 Maude Junction
+              example: "7752 Maude Junction"
               description: Primary address line of the hotel.
             city:
               type: string
-              example: Ernsermouth
+              example: "Ernsermouth"
               description: City where the hotel is located.
             state:
               type: string
-              example: test
+              example: "test"
               description: State where the hotel is located.
             country:
               type: string
-              example: Guyana
+              example: "Guyana"
               description: Country where the hotel is located.
             pinCode:
               type: integer
@@ -5829,11 +6815,11 @@ components:
           properties:
             checkInTime:
               type: string
-              example: 12 Pm
+              example: "12 Pm"
               description: Check-in time for the hotel.
             checkOutTime:
               type: string
-              example: 1 Pm
+              example: "1 Pm"
               description: Check-out time for the hotel.
         isDeleted:
           type: boolean
@@ -5865,7 +6851,7 @@ components:
                   isDeleted:
                     type: boolean
                     example: false
-                    description: Indicates if the room is marked as deleted.
+                    description: "Indicates if the room is marked as deleted."
     UniqueGuestsByEvent:
       type: object
       properties:
@@ -5881,15 +6867,15 @@ components:
                 properties:
                   _id:
                     type: string
-                    example: 66e3f1c27679a1a4f0076ce2
+                    example: "66e3f1c27679a1a4f0076ce2"
                     description: Unique identifier for the guest.
                   firstName:
                     type: string
-                    example: Hanna
+                    example: "Hanna"
                     description: First name of the guest.
                   lastName:
                     type: string
-                    example: Goldner
+                    example: "Goldner"
                     description: Last name of the guest.
                   contactNumber:
                     type: integer
@@ -5897,11 +6883,11 @@ components:
                     description: Contact number of the guest.
                   gender:
                     type: string
-                    example: Female
+                    example: "Female"
                     description: Gender of the guest.
                   avatar:
                     type: string
-                    example: string
+                    example: "string"
                     description: Avatar URL of the guest.
                   functionDetails:
                     type: array
@@ -5911,45 +6897,45 @@ components:
                       properties:
                         function:
                           type: string
-                          example: 66e18aea07c4906c47181652
+                          example: "66e18aea07c4906c47181652"
                           description: Function identifier.
                         rsvp:
                           type: string
-                          example: Not Sure
+                          example: "Not Sure"
                           description: RSVP status of the guest.
                         _id:
                           type: string
-                          example: 66e3f3647679a1a4f0076d02
+                          example: "66e3f3647679a1a4f0076d02"
                           description: Unique identifier for the function detail.
                   tags:
                     type: array
                     description: Tags associated with the guest.
                     items:
                       type: string
-                      example: 66e18b9a07c4906c47181669
+                      example: "66e18b9a07c4906c47181669"
                       description: Tag identifier.
                   subGuests:
                     type: array
                     description: Sub-guests associated with the guest.
                     items:
                       type: string
-                      example: 66e3f1c27679a1a4f0076ce2
+                      example: "66e3f1c27679a1a4f0076ce2"
                       description: Identifier for the sub-guest.
                   user:
                     type: string
-                    example: 66e1a313698a44e7d290b721
+                    example: "66e1a313698a44e7d290b721"
                     description: Unique identifier for the user.
                   event:
                     type: string
-                    example: 66e189a48dacf4f20d7e51d2
+                    example: "66e189a48dacf4f20d7e51d2"
                     description: Unique identifier for the event.
                   primaryGuest:
                     type: string
-                    example: 66e3f1c27679a1a4f0076cdb
+                    example: "66e3f1c27679a1a4f0076cdb"
                     description: Identifier for the primary guest.
                   meal:
                     type: string
-                    example: 66cdd0cdacd65a7ab834b030
+                    example: "66cdd0cdacd65a7ab834b030"
                     description: Meal identifier.
     UniqueGuestsByEvents:
       type: object
@@ -5964,15 +6950,15 @@ components:
               properties:
                 _id:
                   type: string
-                  example: 66e3f1c27679a1a4f0076cdb
+                  example: "66e3f1c27679a1a4f0076cdb"
                   description: Unique identifier for the guest.
                 firstName:
                   type: string
-                  example: Marcelina
+                  example: "Marcelina"
                   description: First name of the guest.
                 lastName:
                   type: string
-                  example: Quigley
+                  example: "Quigley"
                   description: Last name of the guest.
                 contactNumber:
                   type: integer
@@ -5980,11 +6966,11 @@ components:
                   description: Contact number of the guest.
                 gender:
                   type: string
-                  example: Male
+                  example: "Male"
                   description: Gender of the guest.
                 avatar:
                   type: string
-                  example: string
+                  example: "string"
                   description: Avatar URL of the guest.
                 functionDetails:
                   type: array
@@ -5993,54 +6979,54 @@ components:
                     properties:
                       function:
                         type: string
-                        example: 66e18aea07c4906c47181652
+                        example: "66e18aea07c4906c47181652"
                       rsvp:
                         type: string
-                        example: Not Sure
+                        example: "Not Sure"
                       _id:
                         type: string
-                        example: 66e3f3647679a1a4f0076cfd
+                        example: "66e3f3647679a1a4f0076cfd"
                 tags:
                   type: array
                   items:
                     type: string
-                    example: 66e18b9a07c4906c47181669
+                    example: "66e18b9a07c4906c47181669"
                 subGuests:
                   type: array
                   items:
                     type: string
-                    example: 66e3f1c27679a1a4f0076ce2
+                    example: "66e3f1c27679a1a4f0076ce2"
                 user:
                   type: string
-                  example: 66e1a313698a44e7d290b718
+                  example: "66e1a313698a44e7d290b718"
                 event:
                   type: string
-                  example: 66e189a48dacf4f20d7e51d2
+                  example: "66e189a48dacf4f20d7e51d2"
                 meal:
                   type: string
-                  example: 66cdd0cdacd65a7ab834b030
+                  example: "66cdd0cdacd65a7ab834b030"
     Task:
       type: object
       properties:
         _id:
           type: string
           format: ObjectId
-          example: 66e197a7c85bb9fa2f910f11
-          description: Unique identifier for the task.
+          example: "66e197a7c85bb9fa2f910f11"
+          description: "Unique identifier for the task."
         category:
           $ref: '#/components/schemas/Category'
-          description: Category associated with the task.
+          description: "Category associated with the task."
         function:
           $ref: '#/components/schemas/Function'
-          description: Function associated with the task.
+          description: "Function associated with the task."
         assignee:
           type: array
-          description: List of assignees assigned to the task.
+          description: "List of assignees assigned to the task."
           items:
             $ref: '#/components/schemas/Assignee'
         attachments:
           type: array
-          description: List of attachments related to the task.
+          description: "List of attachments related to the task."
           items:
             $ref: '#/components/schemas/Attachment'
     Category:
@@ -6049,64 +7035,184 @@ components:
         _id:
           type: string
           format: ObjectId
-          example: 66e18a158dacf4f20d7e51e6
-          description: Unique identifier for the category.
+          example: "66e18a158dacf4f20d7e51e6"
+          description: "Unique identifier for the category."
         name:
           type: string
-          example: Test
-          description: Name of the category associated with the task.
+          example: "Test"
+          description: "Name of the category associated with the task."
     Function:
       type: object
       properties:
         _id:
           type: string
           format: ObjectId
-          example: 66e18aea07c4906c47181652
-          description: Unique identifier for the function.
+          example: "66fbd5db1d5dd5f5282a3adc"
+          description: The unique identifier for the function.
+        event:
+          type: string
+          format: ObjectId
+          example: "66e189a48dacf4f20d7e51d2"
+          description: The unique identifier for the associated event.
         name:
           type: string
-          example: Haldi
-          description: Name of the function associated with the task.
+          example: "Test Reception"
+          description: The name of the function.
+        functionType:
+          type: string
+          example: "Wedding"
+          description: The type of the function.
+        date:
+          type: string
+          example: "Thu Jul 03 2025 03:02:24 GMT+0530 (India Standard Time)"
+          description: The scheduled date for the function.
+        startTime:
+          type: string
+          example: "1pm"
+          description: The start time of the function.
+        endTime:
+          type: string
+          example: "5pm"
+          description: The end time of the function.
+        dressCode:
+          type: object
+          properties:
+            men:
+              type: object
+              properties:
+                theme:
+                  type: string
+                  example: "Test"
+                referenceImages:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        format: ObjectId
+                        example: "66ffc8df24589a57d7594fb3"
+                      path:
+                        type: string
+                        example: "src/uploads/dressCode/2024-10-04T10-52-15.148Z - test.jpg"
+                      name:
+                        type: string
+                        example: "test.jpg"
+                      referenceType:
+                        type: string
+                        example: "DressCodeAttachment"
+                      function:
+                        type: string
+                        format: ObjectId
+                        example: "66fbd5db1d5dd5f5282a3adc"
+                title:
+                  type: string
+                  example: "Test"
+                subTitle:
+                  type: string
+                  example: "Test"
+            women:
+              type: object
+              properties:
+                theme:
+                  type: string
+                  example: "Test"
+                referenceImages:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        format: ObjectId
+                        example: "66ffc8f224589a57d7594fb5"
+                      path:
+                        type: string
+                        example: "src/uploads/dressCode/2024-10-04T10-52-34.828Z - test.jpg"
+                      name:
+                        type: string
+                        example: "test.jpg"
+                      referenceType:
+                        type: string
+                        example: "DressCodeAttachment"
+                title:
+                  type: string
+                  example: "Test"
+                subTitle:
+                  type: string
+                  example: "Test"
+            backgroundImage:
+              type: string
+              example: "Test"
+            description:
+              type: string
+              example: "Test"
+        cateringDetails:
+          type: object
+          properties:
+            menu:
+              type: object
+              properties:
+                beverages:
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: '#/components/schemas/MenuItem'
+                starters:
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: '#/components/schemas/MenuItem'
+                mainCourse:
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: '#/components/schemas/MenuItem'
+                dessert:
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: '#/components/schemas/MenuItem'
     Assignee:
       type: object
       properties:
         _id:
           type: string
           format: ObjectId
-          example: 66e1839f04bcf8e6974a4be4
-          description: Unique identifier for the assignee.
+          example: "66e1839f04bcf8e6974a4be4"
+          description: "Unique identifier for the assignee."
         contactNumber:
           type: integer
           example: 9725008500
-          description: Contact number of the assignee.
+          description: "Contact number of the assignee."
         firstName:
           type: string
-          example: Nirmay
-          description: First name of the assignee.
+          example: "Nirmay"
+          description: "First name of the assignee."
         lastName:
           type: string
-          example: Choksi
-          description: Last name of the assignee.
+          example: "Choksi"
+          description: "Last name of the assignee."
         isOtpVerified:
           type: boolean
           example: false
-          description: Indicates if the assignee has verified their OTP.
+          description: "Indicates if the assignee has verified their OTP."
         documents:
           type: array
-          description: List of documents associated with the assignee.
+          description: "List of documents associated with the assignee."
           items:
             type: string
             format: ObjectId
-            example: 66e197a7c85bb9fa2f910f11
-            description: Document identifier.
+            example: "66e197a7c85bb9fa2f910f11"
+            description: "Document identifier."
         eventDetails:
           type: array
-          description: List of event details associated with the assignee.
+          description: "List of event details associated with the assignee."
           items:
             $ref: '#/components/schemas/EventDetail'
         partOf:
           type: array
-          description: Details of the assignee's role and company associations.
+          description: "Details of the assignee's role and company associations."
           items:
             $ref: '#/components/schemas/PartOf'
     PartOf:
@@ -6118,57 +7224,104 @@ components:
             role:
               type: string
               format: ObjectId
-              example: 66ba2667799d0fb7db4fd5b4
-              description: Role identifier for the assignee.
+              example: "66ba2667799d0fb7db4fd5b4"
+              description: "Role identifier for the assignee."
             permissions:
               type: array
-              description: List of permissions associated with the role.
+              description: "List of permissions associated with the role."
               items:
                 type: string
-                example: READ
+                example: "READ"
         company:
           type: string
           format: ObjectId
-          example: 66e1839f04bcf8e6974a4bdf
-          description: Identifier of the company the assignee is part of.
+          example: "66e1839f04bcf8e6974a4bdf"
+          description: "Identifier of the company the assignee is part of."
         accepted:
           type: boolean
           example: true
-          description: Indicates if the assignee has accepted the invitation.
+          description: "Indicates if the assignee has accepted the invitation."
         inviteMethod:
           type: string
-          example: whatsapp
-          description: Method used to invite the assignee.
+          example: "whatsapp"
+          description: "Method used to invite the assignee."
         _id:
           type: string
           format: ObjectId
-          example: 66e1839f04bcf8e6974a4be5
-          description: Unique identifier for the role assignment.
+          example: "66e1839f04bcf8e6974a4be5"
+          description: "Unique identifier for the role assignment."
     Attachment:
       type: object
       properties:
         _id:
           type: string
           format: ObjectId
-          example: 66e1972d6c7757ac71fa6189
-          description: Unique identifier for the attachment.
+          example: "66e1972d6c7757ac71fa6189"
+          description: "Unique identifier for the attachment."
         path:
           type: string
-          example: src\uploads\taskList\2024-09-11T13-12-13.876Z - Untitled1.jpg
-          description: Path to the attachment file.
+          example: "src\\uploads\\taskList\\2024-09-11T13-12-13.876Z - Untitled1.jpg"
+          description: "Path to the attachment file."
         name:
           type: string
-          example: Untitled1.jpg
-          description: Name of the attachment file.
+          example: "Untitled1.jpg"
+          description: "Name of the attachment file."
         referenceType:
           type: string
-          example: TaskAttachment
-          description: Type of reference for the attachment.
+          example: "TaskAttachment"
+          description: "Type of reference for the attachment."
         taskId:
           type: string
           format: ObjectId
-          example: 66e197a7c85bb9fa2f910f11
-          description: Identifier for the task associated with the attachment.
+          example: "66e197a7c85bb9fa2f910f11"
+          description: "Identifier for the task associated with the attachment."
+    MenuCategory:
+      type: object
+      properties:
+        title:
+          type: string
+          example: string
+        description:
+          type: string
+          example: string
+        startsFrom:
+          type: string
+          example: string
+        endsAt:
+          type: string
+          example: string
+        beverages:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/MenuItem'
+        starters:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/MenuItem'
+        mainCourse:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/MenuItem'
+        dessert:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/MenuItem'
+    FunctionResponse:
+      type: object
+      properties:
+        function:
+          $ref: '#/components/schemas/Function'
+    FunctionsResponse:
+      type: object
+      properties:
+        functions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Function'
   responses:
     '400':
       description: Bad request - invalid input or missing parameters
