@@ -6,7 +6,7 @@ info:
 security:
   - bearerAuth: []
 paths:
-  /guest-list/add:
+  /guest-list:
     post:
       summary: Add a new primary guest along with optional sub-guests to a specified event
       description: This endpoint allows the addition of a new primary guest to the event, with the option to include multiple sub-guests. Ensure that all required guest details are provided in the request payload.
@@ -35,6 +35,59 @@ paths:
           $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Update a primary guest and their associated sub-guests
+      description: Modifies the details of a specified primary guest, including any associated sub-guests, ensuring all related information is synchronized.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPatchGuestPayload'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Guest updated successfully.'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve all guests for a specific event
+      description: Fetches the complete list of guests associated with the specified event, providing details about each guest.
+      tags:
+        - Guest List
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: eventId
+          schema:
+            type: string
+          required: true
+          description: Unique identifier for the event whose guests are to be retrieved.
+      responses:
+        '200':
+          description: Successfully retrieved the list of guests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestsResponse'
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /guest-list/move-sub-guests:
@@ -104,36 +157,7 @@ paths:
           $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
-  /guest-list/edit:
-    patch:
-      summary: Update a primary guest and their associated sub-guests
-      description: Modifies the details of a specified primary guest, including any associated sub-guests, ensuring all related information is synchronized.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IPatchGuestPayload'
-      responses:
-        '200':
-          description: Success response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Guest updated successfully.'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  /guest-list/edit-guests:
+  /guest-list/guests:
     patch:
       summary: Update multiple primary guests and their associated sub-guests
       description: Modifies the details of an array of primary guests, including their related sub-guests, ensuring all information is accurately synchronized for each guest.
@@ -191,32 +215,6 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /guest-list/get:
-    get:
-      summary: Retrieve all guests for a specific event
-      description: Fetches the complete list of guests associated with the specified event, providing details about each guest.
-      tags:
-        - Guest List
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: query
-          name: eventId
-          schema:
-            type: string
-          required: true
-          description: Unique identifier for the event whose guests are to be retrieved.
-      responses:
-        '200':
-          description: Successfully retrieved the list of guests
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GuestsResponse'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
   /guest-list/{guestId}:
     get:
       summary: Retrieve details of a specific guest
@@ -243,7 +241,6 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /guest-list/delete/{guestId}:
     delete:
       summary: Delete guests based on provided IDs
       description: Removes specified guests from the guest list. If the guest being deleted is a primary guest and a `newPrimaryGuestId` is provided, that ID will be set as the new primary guest. Additionally, if a `subGuestToKeep` is specified, only that particular sub-guest will remain, while all other sub-guests will be deleted.
@@ -513,7 +510,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
           
-  /hotel/add:
+  /hotel:
     post:
       summary: Add a hotel at the company level
       description: >-
@@ -546,7 +543,6 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /hotel/edit:
     patch:
       summary: Edit a hotel at the company level
       description: >-
@@ -580,7 +576,6 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /hotel/get:
     get:
       summary: Retrieve a list of hotels associated with a specific company
       description: >-
@@ -684,7 +679,34 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /hotel/add-to-event:
+  /hotel/event:
+    patch:
+      summary: Update hotel details associated with a specific event
+      tags:
+        - Hotel
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IAddHotelToEventPayload'
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hotel details successfully updated.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
     post:
       summary: Add a hotel to an event
       description: >-
@@ -715,35 +737,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /hotel/edit-event-hotel:
-    patch:
-      summary: Update hotel details associated with a specific event
-      tags:
-        - Hotel
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/IAddHotelToEventPayload'
-      responses:
-        '200':
-          description: Success Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Hotel details successfully updated.
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  /hotel/delete-from-event/{hotelId}:
+  /hotel/{hotelId}/event:
     delete:
       summary: Remove a hotel from an event
       description: >
@@ -800,7 +794,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /meal/create:
+  /meal:
     post:
       summary: Add a new meal type
       description: |
@@ -875,7 +869,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /plan/create:
+  /plan:
     post:
       summary: Create a new subscription plan
       description: >-
@@ -969,7 +963,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /role/create:
+  /role:
     post:
       summary: Create a new role with specific permissions
       description: >-
@@ -1022,7 +1016,7 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-  /room/add:
+  /room:
     post:
       summary: Create a new global room type
       description: >-
@@ -1057,7 +1051,6 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-  /room/edit:
     patch:
       summary: Update a global room type
       description: >-
@@ -1091,7 +1084,6 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /room/types:
     get:
       summary: Retrieve all available room types
       description: >-
@@ -1204,7 +1196,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /room/add-to-event:
+  /room/event:
     post:
       summary: Add a room type to an event
       description: >-
@@ -1238,7 +1230,6 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /room/edit-event-room:
     patch:
       summary: Edit a room type in an event
       description: >-
@@ -1283,7 +1274,6 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /room/delete-from-event:
     delete:
       summary: Delete a room type from an event
       description: >-
