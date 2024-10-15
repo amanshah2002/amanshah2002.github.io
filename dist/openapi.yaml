@@ -3429,6 +3429,224 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Company Profile
+  /company-profile/{companyId}/vendor-directory:
+    post:
+      summary: "Create a vendor"
+      tags:
+        - Company Profile
+      description: "Creates a vendor of a specified type for the given company"
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          description: "ID of the company for which the vendor is being created"
+          schema:
+            type: string
+        - name: vendorType
+          in: query
+          required: true
+          description: "Type of the vendor being created"
+          schema:
+            type: string
+            enum: 
+              - musicVendor
+              - catererVendor
+              - mehendiVendor
+              - decoratorVendor
+              - travelVendor
+              - hotelVendor
+              - venueVendor
+              - panditVendor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorDirectoryPayload'
+                      
+      responses:
+        '200':
+          description: "Vendor created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Vendor added successfully"
+        '400':
+          $ref: '#/components/responses/400'
+          
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      summary: "Create a vendor"
+      tags:
+        - Company Profile
+      description: "Creates a vendor of a specified type for the given company"
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          description: "ID of the company for which the vendor is being created"
+          schema:
+            type: string
+        - name: vendorType
+          in: query
+          required: true
+          description: "Type of the vendor being created"
+          schema:
+            type: string
+            enum: 
+              - musicVendor
+              - catererVendor
+              - mehendiVendor
+              - decoratorVendor
+              - travelVendor
+              - hotelVendor
+              - venueVendor
+              - panditVendor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/VendorDirectoryPayload'
+                - type: object
+                  required: 
+                    - vendorId
+                  properties: 
+                    vendorId:
+                      type: string
+                      format: objectId
+                      description: 'Id of the vendor'
+                      
+      responses:
+        '200':
+          description: "Vendor updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Vendor updated successfully"
+        '400':
+          $ref: '#/components/responses/400'
+          
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Fetch a company profile by id
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectId
+            example: 66e1839f04bcf8e6974a4bdf
+      responses:
+        '200':
+          description: Company profile successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    format: uuid
+                    example: 66e1839f04bcf8e6974a4bdf
+                    description: Unique identifier of the company profile
+                  companyName:
+                    type: string
+                    example: test
+                    description: The name of the company
+                  gstNumber:
+                    type: string
+                    example: '123456789012346'
+                    description: GST number of the company
+                  primaryContact:
+                    type: object
+                    properties:
+                      user:
+                        type: string
+                        format: uuid
+                        example: 66e1839f04bcf8e6974a4bea
+                        description: >-
+                          Unique identifier of the user associated with the
+                          primary contact
+                      otpVerified:
+                        type: boolean
+                        example: true
+                        description: >-
+                          Whether the OTP for the primary contact has been
+                          verified
+                      otp:
+                        type: number
+                        example: 116580
+                        description: OTP sent to the primary contact
+                      _id:
+                        type: string
+                        format: uuid
+                        example: 66e1839f04bcf8e6974a4bec
+                        description: Unique identifier of the primary contact
+                  secondaryContact:
+                    type: object
+                    nullable: true
+                    properties:
+                      user:
+                        type: string
+                        format: uuid
+                        example: 66e1839f04bcf8e6974a4be4
+                        description: >-
+                          Unique identifier of the user associated with the
+                          secondary contact
+                      otpVerified:
+                        type: boolean
+                        example: true
+                        description: >-
+                          Whether the OTP for the secondary contact has been
+                          verified
+                      otp:
+                        type: number
+                        example: 503379
+                        description: OTP sent to the secondary contact
+                      _id:
+                        type: string
+                        format: uuid
+                        example: 66e1839f04bcf8e6974a4be6
+                        description: Unique identifier of the secondary contact
+                  address:
+                    type: string
+                    example: address
+                    description: The physical address of the company
+                  website:
+                    type: string
+                    example: test.com
+                    description: The company's website URL
+                  email:
+                    type: string
+                    format: email
+                    example: aman.shah02@gmail.com
+                    description: Email address of the company
+                  purchaseCodes:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                      example: 66e188a2ca7f8e1974ed240c
+                      description: Unique identifier of the associated purchase codes
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Company Profile
   /document/upload:
     post:
       summary: Upload a user document
@@ -5475,6 +5693,491 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    VendorDirectoryPayload:
+      oneOf:
+                - type: object
+                  description: "Music Vendor payload"
+                  required:
+                    - businessName
+                    - contactDetails
+                    - address
+                    - description
+                    - events
+                    - company
+                    - price
+                  properties:
+                    businessName:
+                      type: string
+                    contactDetails:
+                      type: object
+                      properties:
+                        phone:
+                          type: string
+                        email:
+                          type: string
+                    address:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                        city:
+                          type: string
+                        zip:
+                          type: string
+                    price:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        currency:
+                          type: string
+                    description:
+                      type: string
+                    events:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                    company:
+                      type: string
+                    musicEquipment:
+                      type: boolean
+                      description: "Whether the music vendor provides music equipment"
+                - type: object
+                  description: "Caterer Vendor payload"
+                  required:
+                    - businessName
+                    - contactDetails
+                    - address
+                    - description
+                    - events
+                    - company
+                    - price
+                    - cuisine
+                    - orderQuantity
+                  properties:
+                    businessName:
+                      type: string
+                    contactDetails:
+                      type: object
+                      properties:
+                        phone:
+                          type: string
+                        email:
+                          type: string
+                    address:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                        city:
+                          type: string
+                        zip:
+                          type: string
+                    price:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        currency:
+                          type: string
+                    description:
+                      type: string
+                    events:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                    company:
+                      type: string
+                    cuisine:
+                      type: array
+                      description: "Cuisines offered by the caterer"
+                      items:
+                        type: string
+                    orderQuantity:
+                      type: object
+                      properties:
+                        minimum:
+                          type: integer
+                        maximum:
+                          type: integer
+                - type: object
+                  description: "Mehendi Vendor payload"
+                  required:
+                    - businessName
+                    - contactDetails
+                    - address
+                    - description
+                    - events
+                    - company
+                    - price
+                    - cuisine
+                    - orderQuantity
+                    - numberOfArtists
+                  properties:
+                    businessName:
+                      type: string
+                    contactDetails:
+                      type: object
+                      properties:
+                        phone:
+                          type: string
+                        email:
+                          type: string
+                    address:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                        city:
+                          type: string
+                        zip:
+                          type: string
+                    price:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        currency:
+                          type: string
+                    description:
+                      type: string
+                    events:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                    company:
+                      type: string
+                    numberOfArtists:
+                      type: integer
+                      description: "Number of mehendi artists available"
+                    orderQuantity:
+                      type: object
+                      properties:
+                        minimum:
+                          type: integer
+                        maximum:
+                          type: integer
+                - type: object
+                  description: "Decorator Vendor payload"
+                  required:
+                    - businessName
+                    - contactDetails
+                    - address
+                    - description
+                    - events
+                    - company
+                    - price
+                    - cuisine
+                    - orderQuantity
+                    - props
+                  properties:
+                    businessName:
+                      type: string
+                    contactDetails:
+                      type: object
+                      properties:
+                        phone:
+                          type: string
+                        email:
+                          type: string
+                    address:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                        city:
+                          type: string
+                        zip:
+                          type: string
+                    price:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        currency:
+                          type: string
+                    description:
+                      type: string
+                    events:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                    company:
+                      type: string
+                    props:
+                      type: array
+                      description: "Props provided by the decorator"
+                      items:
+                        type: string
+                    orderQuantity:
+                      type: object
+                      properties:
+                        minimum:
+                          type: integer
+                        maximum:
+                          type: integer
+                - type: object
+                  description: "Travel Vendor payload"
+                  required:
+                    - businessName
+                    - contactDetails
+                    - address
+                    - description
+                    - events
+                    - company
+                    - price
+                    - cuisine
+                    - orderQuantity
+                    - fleet
+                    - passengers
+                  properties:
+                    businessName:
+                      type: string
+                    contactDetails:
+                      type: object
+                      properties:
+                        phone:
+                          type: string
+                        email:
+                          type: string
+                    address:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                        city:
+                          type: string
+                        zip:
+                          type: string
+                    price:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        currency:
+                          type: string
+                    description:
+                      type: string
+                    events:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                    company:
+                      type: string
+                    fleet:
+                      type: array
+                      description: "Available car fleet for travel"
+                      items:
+                        type: string
+                    passengers:
+                      type: object
+                      properties:
+                        minimum:
+                          type: integer
+                        maximum:
+                          type: integer
+                - type: object
+                  description: "Hotel Vendor payload"
+                  required:
+                    - businessName
+                    - contactDetails
+                    - address
+                    - description
+                    - events
+                    - company
+                    - price
+                    - cuisine
+                    - orderQuantity
+                    - roomType
+                    - guests
+                    - airportTransfer
+                  properties:
+                    businessName:
+                      type: string
+                    contactDetails:
+                      type: object
+                      properties:
+                        phone:
+                          type: string
+                        email:
+                          type: string
+                    address:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                        city:
+                          type: string
+                        zip:
+                          type: string
+                    price:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        currency:
+                          type: string
+                    description:
+                      type: string
+                    events:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                    company:
+                      type: string
+                    roomType:
+                      type: array
+                      description: "Available room types"
+                      items:
+                        type: string
+                    guests:
+                      type: object
+                      properties:
+                        minimum:
+                          type: integer
+                        maximum:
+                          type: integer
+                    airportTransfer:
+                      type: boolean
+                      description: "Whether airport transfer is provided"
+                - type: object
+                  description: "Venue Vendor payload"
+                  required:
+                    - businessName
+                    - contactDetails
+                    - address
+                    - description
+                    - events
+                    - company
+                    - price
+                    - cuisine
+                    - orderQuantity
+                    - services
+                    - capacity
+                    - parkingSpots
+                  properties:
+                    businessName:
+                      type: string
+                    contactDetails:
+                      type: object
+                      properties:
+                        phone:
+                          type: string
+                        email:
+                          type: string
+                    address:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                        city:
+                          type: string
+                        zip:
+                          type: string
+                    price:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        currency:
+                          type: string
+                    description:
+                      type: string
+                    events:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                    company:
+                      type: string
+                    services:
+                      type: array
+                      description: "Venue services offered"
+                      items:
+                        type: string
+                    capacity:
+                      type: object
+                      properties:
+                        minimum:
+                          type: integer
+                        maximum:
+                          type: integer
+                    parkingSpots:
+                      type: integer
+                      description: "Number of parking spots available"
+                - type: object
+                  description: "Pandit Vendor payload"
+                  required:
+                    - businessName
+                    - contactDetails
+                    - address
+                    - description
+                    - events
+                    - company
+                    - price
+                    - cuisine
+                    - orderQuantity
+                    - ritualItems
+                  properties:
+                    businessName:
+                      type: string
+                    contactDetails:
+                      type: object
+                      properties:
+                        phone:
+                          type: string
+                        email:
+                          type: string
+                    address:
+                      type: object
+                      properties:
+                        street:
+                          type: string
+                        city:
+                          type: string
+                        zip:
+                          type: string
+                    price:
+                      type: object
+                      properties:
+                        amount:
+                          type: number
+                        currency:
+                          type: string
+                    description:
+                      type: string
+                    events:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                    company:
+                      type: string
+                    ritualItems:
+                      type: boolean
+                      description: "Whether ritual items are provided"
     ICaterer:
       type: object
       required: 
