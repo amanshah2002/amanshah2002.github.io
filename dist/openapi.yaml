@@ -3481,21 +3481,21 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: "Update a vendor"
+      summary: "Create a vendor"
       tags:
         - Company Profile
-      description: "Updates a vendor of a specified type for the given company"
+      description: "Creates a vendor of a specified type for the given company"
       parameters:
         - name: companyId
           in: path
           required: true
-          description: "ID of the company for which the vendor is being updated"
+          description: "ID of the company for which the vendor is being created"
           schema:
             type: string
         - name: vendorType
           in: query
           required: true
-          description: "Type of the vendor being updated"
+          description: "Type of the vendor being created"
           schema:
             type: string
             enum: 
@@ -3539,6 +3539,173 @@ paths:
           
         '500':
           $ref: '#/components/responses/500'
+    get:
+      summary: Fetch vendors by company ID or find a specific vendor by its ID.
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectId
+            example: 66e1839f04bcf8e6974a4bdf
+        - name: vendorId
+          in: query
+          schema:
+            type: string
+            format: objectId
+            example: 66e1839f04bcf8e6974a4bdf
+      responses:
+        '200':
+          description: Company profile successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    oneOf:
+                      - type: array
+                        items:
+                          type: object
+                          oneOf:
+                            - $ref: '#/components/schemas/MusicVendor'
+                            - $ref: '#/components/schemas/CatererVendor'
+                            - $ref: '#/components/schemas/MehendiVendor'
+                            - $ref: '#/components/schemas/DecoratorVendor'
+                            - $ref: '#/components/schemas/TravelVendor'
+                            - $ref: '#/components/schemas/HotelVendor'
+                            - $ref: '#/components/schemas/VenueVendor'
+                            - $ref: '#/components/schemas/PanditVendor'
+                            - $ref: '#/components/schemas/PhotographerVendor'
+                      - type: object
+                        oneOf:
+                          - $ref: '#/components/schemas/MusicVendor'
+                          - $ref: '#/components/schemas/CatererVendor'
+                          - $ref: '#/components/schemas/MehendiVendor'
+                          - $ref: '#/components/schemas/DecoratorVendor'
+                          - $ref: '#/components/schemas/TravelVendor'
+                          - $ref: '#/components/schemas/HotelVendor'
+                          - $ref: '#/components/schemas/VenueVendor'
+                          - $ref: '#/components/schemas/PanditVendor'
+                          - $ref: '#/components/schemas/PhotographerVendor'
+              examples:
+                resultArray:
+                  value: |-
+                    {
+                        "result": [
+                            {
+                                "contactDetails": {
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "primaryContactNumber": 6454684465,
+                                    "secondaryContactNumber": 9876543210,
+                                    "email": "john.doe@example.com"
+                                },
+                                "address": {
+                                    "add1": "802 Simonis Highway",
+                                    "add2": "Suite 100",
+                                    "city": "Prosaccoburgh",
+                                    "state": "Gujarat",
+                                    "country": "Namibia",
+                                    "pinCode": 380007
+                                },
+                                "price": {
+                                    "min": 500,
+                                    "max": 2000,
+                                    "currency": "INR",
+                                    "unit": "Per Hour"
+                                },
+                                "events": [],
+                                "_id": "670e1433e4e26fca7cd3f4d2",
+                                "type": "DJ",
+                                "musicEquipment": true,
+                                "businessName": "Test 1",
+                                "description": "We provide top-notch DJ services for events.",
+                                "company": "66e1839f04bcf8e6974a4bdf",
+                                "vendorType": "musicVendor",
+                                "createdAt": "2024-10-15T07:05:23.983Z",
+                                "updatedAt": "2024-10-15T07:10:28.302Z",
+                                "__v": 0
+                            }
+                        ]
+                    }
+                result:
+                  value: |-
+                    {
+                        "result": {
+                            "contactDetails": {
+                                "firstName": "John",
+                                "lastName": "Doe",
+                                "primaryContactNumber": 6454684465,
+                                "secondaryContactNumber": 9876543210,
+                                "email": "john.doe@example.com"
+                            },
+                            "address": {
+                                "add1": "802 Simonis Highway",
+                                "add2": "Suite 100",
+                                "city": "Prosaccoburgh",
+                                "state": "Gujarat",
+                                "country": "Namibia",
+                                "pinCode": 380007
+                            },
+                            "price": {
+                                "min": 500,
+                                "max": 2000,
+                                "currency": "INR",
+                                "unit": "Per Hour"
+                            },
+                            "events": [],
+                            "_id": "670e1433e4e26fca7cd3f4d2",
+                            "type": "DJ",
+                            "musicEquipment": true,
+                            "businessName": "Test 1",
+                            "description": "We provide top-notch DJ services for events.",
+                            "company": "66e1839f04bcf8e6974a4bdf",
+                            "vendorType": "musicVendor",
+                            "createdAt": "2024-10-15T07:05:23.983Z",
+                            "updatedAt": "2024-10-15T07:10:28.302Z",
+                            "__v": 0
+                        }
+                    }
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+      tags:
+        - Company Profile
+    delete:
+      summary: Delete vendor by company id and vendor id.
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectId
+            example: 66e1839f04bcf8e6974a4bdf
+        - name: vendorId
+          in: query
+          schema:
+            type: string
+            format: objectId
+            example: 66e1839f04bcf8e6974a4bdf
+      responses:
+        '200':
+          description: Company profile successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Vendor deleted successfully.'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
   /document/upload:
     post:
       summary: Upload a user document
@@ -7906,6 +8073,279 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Function'
+    OrderQuantity:
+      type: object
+      properties:
+        min:
+          type: number
+          example: 11
+        max:
+          type: number
+          example: 50
+    BaseVendor:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: ObjectId
+          example: 66e197a7c85bb9fa2f910f11
+        businessName:
+          type: string
+          example: Test Name
+        contactDetails:
+          type: object
+          properties:
+            firstName:
+              type: string
+              example: John
+            lastName:
+              type: string
+              example: Doe
+            primaryContactNumber:
+              type: number
+              example: 1234567890
+            secondaryContactNumber:
+              type: number
+              example: 9876543210
+            email:
+              type: string
+              example: john.doe@example.com
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+              example: 123 Main St
+            city:
+              type: string
+              example: San Francisco
+            state:
+              type: string
+              example: CA
+            zipCode:
+              type: string
+              example: '94105'
+            country:
+              type: string
+              example: USA
+            coordinates:
+              type: object
+              properties:
+                lat:
+                  type: number
+                  example: 37.7749
+                lng:
+                  type: number
+                  example: -122.4194
+        price:
+          type: object
+          properties:
+            min:
+              type: number
+              example: 1000
+            max:
+              type: number
+              example: 10000
+            currency:
+              type: string
+              example: INR
+            unit:
+              type: string
+              enum:
+                - Per Hour
+                - Per Day
+                - Per Function
+                - Per Thali
+        description:
+          type: string
+          example: Amazing Description
+        events:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                format: ObjectId
+                example: 66e197a7c85bb9fa2f910f11
+              event:
+                type: string
+                format: ObjectId
+                example: 66e197a7c85bb9fa2f910f11
+              functions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      format: ObjectId
+                      example: 66e197a7c85bb9fa2f910f11
+                    function:
+                      type: string
+                      format: ObjectId
+                      example: 66e197a7c85bb9fa2f910f11
+                    quotations:
+                      type: number
+                      example: 10000
+        company:
+          type: string
+          format: ObjectId
+          example: 66e197a7c85bb9fa2f910f11
+        vendorType:
+          type: string
+          enum:
+            - musicVendor
+            - catererVendor
+            - mehendiVendor
+            - decoratorVendor
+            - travelVendor
+            - hotelVendor
+            - venueVendor
+            - panditVendor
+    MusicVendor:
+      allOf:
+        - $ref: '#/components/schemas/BaseVendor'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum:
+                - Band Without Singer
+                - Band With Singer
+                - DJ
+                - Dholi
+            musicEquipment:
+              type: boolean
+              example: false
+    CatererVendor:
+      allOf:
+        - $ref: '#/components/schemas/BaseVendor'
+        - type: object
+          properties:
+            cuisine:
+              type: string
+              enum:
+                - Asian
+                - Italian
+                - Mexican
+                - Indian
+                - French
+                - American
+                - Japanese
+                - Mediterranean
+                - Thai
+                - Spanish
+                - Middle Eastern
+                - Greek
+                - Korean
+                - Caribbean
+            orderQuantity:
+              $ref: '#/components/schemas/OrderQuantity'
+    MehendiVendor:
+      allOf:
+        - $ref: '#/components/schemas/BaseVendor'
+        - type: object
+          properties:
+            numberOfArtists:
+              type: number
+              example: 10
+            orderQuantity:
+              $ref: '#/components/schemas/OrderQuantity'
+    DecoratorVendor:
+      allOf:
+        - $ref: '#/components/schemas/BaseVendor'
+        - type: object
+          properties:
+            props:
+              type: string
+              enum:
+                - Lights
+                - Tables
+                - Chairs
+                - Flowers
+                - Sofas
+                - Speakers
+            orderQuantity:
+              $ref: '#/components/schemas/OrderQuantity'
+    TravelVendor:
+      allOf:
+        - $ref: '#/components/schemas/BaseVendor'
+        - type: object
+          properties:
+            fleet:
+              type: string
+              enum:
+                - Sedan
+                - Sedan Premium
+                - SUV
+                - Convertible
+                - Family Car
+                - Mini Bus
+                - Bus
+                - Luxury
+            passenger:
+              $ref: '#/components/schemas/OrderQuantity'
+    HotelVendor:
+      allOf:
+        - $ref: '#/components/schemas/BaseVendor'
+        - type: object
+          properties:
+            roomType:
+              type: string
+              enum:
+                - Deluxe
+                - Suite
+                - Standard
+                - Presidential Suite
+                - Villa
+                - Joint Room
+            guests:
+              $ref: '#/components/schemas/OrderQuantity'
+            airportTransfer:
+              type: boolean
+              example: false
+    VenueVendor:
+      allOf:
+        - $ref: '#/components/schemas/BaseVendor'
+        - type: object
+          properties:
+            services:
+              type: string
+              enum:
+                - Decoration
+                - Catering
+                - Lighting
+                - Music
+                - Valet
+            capacity:
+              $ref: '#/components/schemas/OrderQuantity'
+            parkingSpots:
+              type: number
+              example: 100
+    PanditVendor:
+      allOf:
+        - $ref: '#/components/schemas/BaseVendor'
+        - type: object
+          properties:
+            ritualItems:
+              type: boolean
+              example: false
+    PhotographerVendor:
+      allOf:
+        - $ref: '#/components/schemas/BaseVendor'
+        - type: object
+          properties:
+            numberOfPhotographers:
+              type: number
+              example: 10
+            numberOfVideographers:
+              type: number
+              example: 10
+            droneAvailable:
+              type: boolean
+              example: false
+
   responses:
     '400':
       description: Bad request - invalid input or missing parameters
