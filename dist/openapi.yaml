@@ -3676,6 +3676,8 @@ paths:
         - Company Profile
     delete:
       summary: Delete vendor by company id and vendor id.
+      tags:
+        - Company Profile
       parameters:
         - name: companyId
           in: path
@@ -4272,6 +4274,9 @@ paths:
                   type: string
                   description: Optional event budget
                   example: $50000
+                isDestination: 
+                  type: boolean
+                  description: If the event is a desctination event or not
               required:
                 - companyId
                 - code
@@ -4279,6 +4284,7 @@ paths:
                 - finalEventDate
                 - groomDetails
                 - brideDetails
+                - isDestination
       responses:
         '200':
           description: Event successfully created
@@ -6445,6 +6451,14 @@ components:
           format: objectId
           description: Meal preference ID for the guest
           example: "64a51e6a4f1a2d63f7d25c9b"
+        travelRequired: 
+            type: boolean
+            description: Whether or not travel arrangements are required for the guest
+            example: false
+        accommodationRequired: 
+            type: boolean
+            description: Whether or not accommodation arrangements are required for the guest
+            example: false
         functions:
           type: array
           items:
