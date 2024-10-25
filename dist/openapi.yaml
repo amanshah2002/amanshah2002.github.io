@@ -509,7 +509,168 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  
+  /guest-list/flights:
+    post:
+      summary: Add a flight to guests
+      description: Adds a flight to the guest list for a specific event.
+      tags:
+        - Guest List
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IFlight'
+      responses:
+        200:
+          description: Flight successfully added to the guest list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Flight added to guest successfully."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve flights for an event
+      description: Gets a list of flights for a specific event by `eventId`.
+      tags:
+        - Guest List
+      parameters:
+        - in: query
+          name: eventId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the event to retrieve flights for.
+      responses:
+        200:
+          description: A list of flights for the specified event.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flights:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Flight'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/{guestId}/flights:
+    put:
+      summary: Edit a guest's flight details
+      description: Updates the flight details for a specific guest.
+      tags:
+        - Guest List
+      parameters:
+        - in: path
+          name: guestId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the guest whose flight is being edited.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IEditFlight'
+      responses:
+        200:
+          description: Flight successfully updated for the guest.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Guest flight updated successfully."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve flights for a specific guest filtered by event
+      description: Gets a list of flights for a specific guest that are associated with a given event.
+      tags:
+        - Guest List
+      parameters:
+        - in: path
+          name: guestId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the guest to retrieve flights for.
+        - in: query
+          name: eventId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the event to filter the flights.
+      responses:
+        200:
+          description: A list of flights for the specified guest filtered by event.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  flights:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Flight'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /guest-list/flights/{flightId}:
+    delete:
+      summary: Delete a flight
+      description: Deletes a flight by its ID and removes references to it from associated guests.
+      tags:
+        - Guest List
+      parameters:
+        - in: path
+          name: flightId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the flight to delete.
+      responses:
+        200:
+          description: Flight deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Flight deleted successfully."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   /hotel:
     post:
       summary: Add a hotel at the company level
@@ -1633,6 +1794,184 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'  
+
+  /travel/car:
+    post:
+      summary: Create a new car
+      description: Adds a new car to the vendor's fleet.
+      tags:
+        - Travel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ICar'
+      responses:
+        200:
+          description: Car added successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Car added successfully"
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Get details of all cars
+      description: Retrieves a list of all cars.
+      tags:
+        - Travel
+      responses:
+        200:
+          description: Successful response with car details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /trave/car/{carId}:
+    put:
+      summary: Update details of a specific car
+      description: Updates the details of a car with the given `carId`.
+      tags:
+        - Travel
+      parameters:
+        - in: path
+          name: carId
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: The unique identifier of the car to be updated.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ICar'
+      responses:
+        200:
+          description: Car updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Car updated successfully"
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Get details of a specific car or all cars
+      description: Fetches a specific car's details if `carId` is provided, otherwise retrieves a list of all cars.
+      tags:
+        - Travel
+      parameters:
+        - in: path
+          required: true
+          name: carId
+          schema:
+            type: string
+            format: objectId
+          description: The unique identifier of the car to retrieve.
+      responses:
+        200:
+          description: Successful response with car details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        format: objectId
+                        description: Unique identifier of the car.
+                        example: "671b828b272f97fe0c7c01fa"
+                      name:
+                        type: string
+                        description: Name of the car.
+                        example: "Wagon R"
+                      vendor:
+                        type: string
+                        format: objectId
+                        description: The unique identifier of the vendor associated with the car.
+                        example: "67176c1ef8bacc48e0854942"
+                      brand:
+                        type: string
+                        description: Brand of the car.
+                        example: "AC"
+                      maxCapacity:
+                        type: integer
+                        description: Maximum number of passengers the car can accommodate.
+                        example: 10
+                      childSeat:
+                        type: integer
+                        description: Number of child seats available in the car.
+                        example: 2
+                      carType:
+                        type: string
+                        description: Type of car (e.g., Sedan, SUV, Bus).
+                        example: "Bus"
+                      smoking:
+                        type: boolean
+                        description: Indicates if smoking is allowed in the car.
+                        example: false
+                      electric:
+                        type: boolean
+                        description: Indicates if the car is electric.
+                        example: false
+                      luggageCapacity:
+                        type: integer
+                        description: Maximum luggage capacity in liters.
+                        example: 10
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete a specific car
+      description: Deletes a car with the given `carId`.
+      tags:
+        - Travel
+      parameters:
+        - in: path
+          name: carId
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: The unique identifier of the car to be deleted.
+      responses:
+        200:
+          description: Car deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Car deleted successfully"
+
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
 
   /accommodation/move-guests:
     post:
@@ -5189,6 +5528,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+
   /function:
     post:
       summary: Create a new function for an event
@@ -9946,6 +10286,308 @@ components:
             carRef:
               type: string
               description: The reference ID of the car.
+    ICar:
+      type: object
+      required:
+        - name
+        - vendor
+        - brand
+        - maxCapacity
+        - carType
+        - childSeat
+        - smoking
+        - electric
+        - luggageCapacity
+      properties:
+        name:
+          type: string
+          example: "Luxury Sedan"
+        vendor:
+          type: string
+          format: objectId
+          description: The unique identifier of the vendor.
+          example: "5f7e1bb70c9e2c3f6a0193f5"
+        brand:
+          type: string
+          description: Brand of the car.
+          enum:
+            - Audi
+            - BMW
+            - Mercedes
+            - Tesla
+          example: "Tesla"
+        maxCapacity:
+          type: integer
+          description: Maximum number of passengers the car can accommodate.
+          example: 5
+        childSeat:
+          type: integer
+          description: Number of child seats available in the car.
+          example: 2
+        carType:
+          type: string
+          description: Type of car in the vendor's fleet.
+          enum:
+            - Sedan
+            - SUV
+            - Minivan
+            - Electric
+          example: "Electric"
+        smoking:
+          type: boolean
+          description: Indicates if smoking is allowed in the car.
+          example: false
+        electric:
+          type: boolean
+          description: Indicates if the car is electric.
+          example: true
+        luggageCapacity:
+          type: integer
+          description: Maximum luggage capacity Number.
+          example: 4
+    CarResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                format: objectId
+                description: Unique identifier of the car.
+                example: "671b828b272f97fe0c7c01fa"
+              name:
+                type: string
+                description: Name of the car.
+                example: "Wagon R"
+              vendor:
+                type: string
+                format: objectId
+                description: The unique identifier of the vendor associated with the car.
+                example: "67176c1ef8bacc48e0854942"
+              brand:
+                type: string
+                description: Brand of the car.
+                example: "AC"
+              maxCapacity:
+                type: integer
+                description: Maximum number of passengers the car can accommodate.
+                example: 10
+              childSeat:
+                type: integer
+                description: Number of child seats available in the car.
+                example: 2
+              carType:
+                type: string
+                description: Type of car (e.g., Sedan, SUV, Bus).
+                example: "Bus"
+              smoking:
+                type: boolean
+                description: Indicates if smoking is allowed in the car.
+                example: false
+              electric:
+                type: boolean
+                description: Indicates if the car is electric.
+                example: false
+              luggageCapacity:
+                type: integer
+                description: Maximum luggage capacity in liters.
+                example: 10
+    IAirportDetails:
+      type: object
+      required:
+        - airport
+        - date
+        - timezone
+        - terminal
+        - landingTime
+        - isArrival
+      properties:
+        airport:
+          type: string
+          example: "Los Angeles International Airport"
+        date:
+          type: string
+          format: date
+          example: "2024-12-15"
+        timezone:
+          type: string
+          example: "PST"
+        terminal:
+          type: string
+          example: "T2"
+        landingTime:
+          type: string
+          format: time
+          example: "18:30"
+        isArrival:
+          type: boolean
+          example: true
+    IFlight:
+      type: object
+      required:
+        - number
+        - airportDetails
+        - guests
+        - event
+      properties:
+        number:
+          type: string
+          example: "AA1234"
+        airportDetails:
+          allOf:
+            - $ref: '#/components/schemas/IAirportDetails'
+        guests:
+          type: array
+          items:
+            type: string
+            format: objectId
+          example: ["671a58c7c41dd51fa7be0e61", "671a58c7c41dd51fa7be0e62"]
+        event:
+          type: string
+          format: objectId
+          example: "671a58c7c41dd51fa7be0e60"
+    IEditFlight:
+      type: object
+      required:
+        - number
+        - airportDetails
+        - flight
+        - event
+      properties:
+        number:
+          type: string
+          example: "AA1234"
+        airportDetails:
+          allOf:
+            - $ref: '#/components/schemas/IAirportDetails'
+        flight:
+          type: string
+          format: objectId
+          example: "671a58c7c41dd51fa7be0e61"
+        event:
+          type: string
+          format: objectId
+          example: "671a58c7c41dd51fa7be0e60"
+    AirportDetails:
+      type: object
+      properties:
+        airport:
+          type: string
+          example: "Sardar Gandhi"
+        date:
+          type: string
+          format: date-time
+          example: "2024-12-15T14:30:00Z"
+        timezone:
+          type: string
+          example: "IST"
+        terminal:
+          type: string
+          example: "1"
+        landingTime:
+          type: string
+          example: "12 am"
+        isArrival:
+          type: boolean
+          example: false
+    FlightGuest:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: objectId
+          example: "67177575028e949ccad67e7a"
+        firstName:
+          type: string
+          example: "Cecile"
+        lastName:
+          type: string
+          example: "Daugherty"
+        contactNumber:
+          type: integer
+          example: 1234567891
+        gender:
+          type: string
+          example: "Female"
+        functions:
+          type: array
+          items:
+            type: object
+            properties:
+              function:
+                type: string
+                format: objectId
+                example: "66fbd5db1d5dd5f5282a3adc"
+              rsvp:
+                type: string
+                example: "Not Sure"
+        tags:
+          type: array
+          items:
+            type: string
+        subGuests:
+          type: array
+          items:
+            type: string
+        meal:
+          type: string
+          format: objectId
+          example: "66cdd0dfacd65a7ab834b033"
+        user:
+          type: string
+          format: objectId
+          example: "67177575028e949ccad67e79"
+        event:
+          type: string
+          format: objectId
+          example: "66e189a48dacf4f20d7e51d2"
+        accommodationRequired:
+          type: boolean
+          example: false
+        travelRequired:
+          type: boolean
+          example: false
+        primaryGuest:
+          type: string
+          format: objectId
+          example: "67177575028e949ccad67e73"
+        flight:
+          type: array
+          items:
+            type: string
+            format: objectId
+            example: "671b8f62272f97fe0c7c0211"
+    Flight:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: objectId
+          example: "671b8f62272f97fe0c7c0211"
+        number:
+          type: string
+          example: "AC057"
+        airportDetails:
+          $ref: '#/components/schemas/AirportDetails'
+        guests:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlightGuest'
+        event:
+          type: string
+          format: objectId
+          example: "66e189a48dacf4f20d7e51d2"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-10-25T12:30:26.942Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-10-25T12:30:26.942Z"
   responses:
     '400':
       description: Bad request - invalid input or missing parameters
