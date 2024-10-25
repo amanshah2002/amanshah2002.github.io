@@ -509,7 +509,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-          
+  
   /hotel:
     post:
       summary: Add a hotel at the company level
@@ -2767,7 +2767,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Auth
-        
+
   /category:
     post:
       summary: Add category
@@ -5750,7 +5750,454 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-
+  /function/{functionId}/mehendiArtist:
+    post:
+      summary: Add a Mehendi Artist to a Function
+      description: Adds a new Mehendi artist to a specific function using the function ID.
+      tags:
+        - Functions
+      parameters:
+        - name: functionId
+          in: path
+          required: true
+          description: The ID of the function to which the Mehendi artist will be added.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IMehendiArtistDetails'
+      responses:
+        200:
+          description: Mehendi artist successfully added to the function.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Mehendi artist successfully added to the function."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      summary: Update a Mehendi Artist for a Function
+      description: Updates an existing Mehendi artist for a specific function using the function ID.
+      tags:
+        - Functions
+      parameters:
+        - name: functionId
+          in: path
+          required: true
+          description: The ID of the function to update the Mehendi artist details.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IMehendiArtistDetails'
+      responses:
+        200:
+          description: Mehendi artist updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Mehendi artist updated successfully."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve Mehendi Artist details for a specific function
+      description: Fetch details about the Mehendi Artist associated with the given function.
+      tags: 
+        - Functions
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the function
+      responses:
+        '200':
+          description: Successful response containing Mehendi Artist details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mehendiArtistDetails:
+                    type: object
+                    properties:
+                      address:
+                        type: object
+                        properties:
+                          coordinates:
+                            type: object
+                            additionalProperties:
+                              type: number
+                            description: GPS coordinates of the address
+                          add1:
+                            type: string
+                            description: Primary address line
+                          city:
+                            type: string
+                            description: City of the address
+                          state:
+                            type: string
+                            description: State of the address
+                          country:
+                            type: string
+                            description: Country of the address
+                          pinCode:
+                            type: integer
+                            description: Postal code
+                      contactDetails:
+                        type: object
+                        properties:
+                          firstName:
+                            type: string
+                            description: First name of the primary contact
+                          lastName:
+                            type: string
+                            description: Last name of the primary contact
+                          primaryContactNumber:
+                            type: integer
+                            description: Primary contact number
+                          secondaryContactNumber:
+                            type: integer
+                            description: Secondary contact number
+                          email:
+                            type: string
+                            format: email
+                            description: Email address of the primary contact
+                          gender:
+                            type: string
+                            enum:
+                              - Male
+                              - Female
+                            description: Gender of the primary contact
+                      businessName:
+                        type: string
+                        description: Name of the Mehendi artist's business
+                      additionalVendors:
+                        type: array
+                        description: List of additional vendors
+                        items:
+                          type: object
+                          properties:
+                            firstName:
+                              type: string
+                              description: First name of the additional vendor
+                            lastName:
+                              type: string
+                              description: Last name of the additional vendor
+                            contactNumber:
+                              type: string
+                              description: Contact number of the additional vendor
+                            gender:
+                              type: string
+                              enum:
+                                - Male
+                                - Female
+                              description: Gender of the additional vendor
+                            _id:
+                              type: string
+                              description: Unique identifier of the additional vendor
+                      guests:
+                        type: array
+                        description: List of guests associated with the Mehendi event
+                        items:
+                          type: object
+                      travelRequired:
+                        type: boolean
+                        description: Indicates if travel is required for the Mehendi artist
+                      accommodationRequired:
+                        type: boolean
+                        description: Indicates if accommodation is required for the Mehendi artist
+                      expectedGuestCount:
+                        type: integer
+                        description: Expected number of guests for the Mehendi event
+                      mehendiConeCount:
+                        type: integer
+                        description: Number of mehendi cones required for the event
+                      mehendiStartTime:
+                        type: string
+                        format: date-time
+                        description: Start time of the Mehendi event
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Remove Mehendi Artist details from a specific function
+      description: Delete the Mehendi Artist details associated with the given function. Optionally, force delete related accommodations and guest data if necessary.
+      tags:
+        - Functions
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the function.
+        - in: query
+          name: forceDelete
+          required: false
+          schema:
+            type: string
+          description: A flag to forcefully delete associated guest and accommodation data if `yes`.
+      responses:
+        '200':
+          description: Mehendi Artist successfully removed from the function.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Mehendi artist successfully removed from function.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /function/{functionId}/pandit:
+    post:
+      summary: Add a pandit to a Function
+      description: Adds a new pandit to a specific function using the function ID.
+      tags:
+        - Functions
+      parameters:
+        - name: functionId
+          in: path
+          required: true
+          description: The ID of the function to which the Mehendi artist will be added.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPanditDetails'
+      responses:
+        200:
+          description: Pandit successfully added to the function.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Pandit successfully added to the function."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      summary: Update a Pandit for a Function
+      description: Updates an existing Pandit for a specific function using the function ID.
+      tags:
+        - Functions
+      parameters:
+        - name: functionId
+          in: path
+          required: true
+          description: The ID of the function to update the Mehendi artist details.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPanditDetails'
+      responses:
+        200:
+          description: Pandit updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Pandit updated successfully."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve Pandit details for a specific function
+      description: Fetch details about the Pandit associated with the given function.
+      tags: 
+        - Functions
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the function
+      responses:
+        '200':
+          description: Successful response containing Pandit details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  panditDetails:
+                    type: object
+                    properties:
+                      address:
+                        type: object
+                        properties:
+                          add1:
+                            type: string
+                            description: Primary address line
+                          city:
+                            type: string
+                            description: City of the address
+                          state:
+                            type: string
+                            description: State of the address
+                          country:
+                            type: string
+                            description: Country of the address
+                          pinCode:
+                            type: integer
+                            description: Postal code
+                      contactDetails:
+                        type: object
+                        properties:
+                          firstName:
+                            type: string
+                            description: First name of the primary contact
+                          lastName:
+                            type: string
+                            description: Last name of the primary contact
+                          primaryContactNumber:
+                            type: integer
+                            description: Primary contact number
+                          secondaryContactNumber:
+                            type: integer
+                            description: Secondary contact number
+                          email:
+                            type: string
+                            format: email
+                            description: Email address of the primary contact
+                          gender:
+                            type: string
+                            enum:
+                              - Male
+                              - Female
+                            description: Gender of the primary contact
+                      businessName:
+                        type: string
+                        description: Name of the Pandits business
+                      additionalVendors:
+                        type: array
+                        description: List of additional vendors
+                        items:
+                          type: object
+                          properties:
+                            firstName:
+                              type: string
+                              description: First name of the additional vendor
+                            lastName:
+                              type: string
+                              description: Last name of the additional vendor
+                            contactNumber:
+                              type: string
+                              description: Contact number of the additional vendor
+                            gender:
+                              type: string
+                              enum:
+                                - Male
+                                - Female
+                              description: Gender of the additional vendor
+                            _id:
+                              type: string
+                              description: Unique identifier of the additional vendor
+                      travelRequired:
+                        type: boolean
+                        description: Indicates if travel is required for the Mehendi artist
+                      accommodationRequired:
+                        type: boolean
+                        description: Indicates if accommodation is required for the Mehendi artist
+                      providedRitualItems:
+                        type: array
+                        items:
+                          type: string
+                        description: Ritual Items to be provided
+                      arrangedRitualItems:
+                        type: array
+                        items:
+                          type: string
+                        description: Ritual Items to be arranged
+                      setupDeadline:
+                        type: string
+                        format: date-time
+                        description: Time before the things are to be arranged.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Remove Pandit details from a specific function
+      description: Delete the Pandit details associated with the given function. Optionally, force delete related accommodations and guest data if necessary.
+      tags:
+        - Functions
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the function.
+        - in: query
+          name: forceDelete
+          required: false
+          schema:
+            type: string
+          description: A flag to forcefully delete associated guest and accommodation data if `yes`.
+      responses:
+        '200':
+          description: Pandit successfully removed from the function.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Pandit successfully removed from function.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
 components:
   securitySchemes:
     bearerAuth:
@@ -8360,6 +8807,117 @@ components:
               type: boolean
               example: false
 
+    IFunctionVendorDetails:
+      type: object
+      required:
+        - businessName
+        - address
+        - additionalVendors
+        - contactDetails
+        - travelRequired
+        - accommodationRequired
+      properties:
+        businessName:
+          type: string
+          example: Incouds Technologies
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+              example: 123 Main St
+            city:
+              type: string
+              example: San Francisco
+            state:
+              type: string
+              example: CA
+            zipCode:
+              type: string
+              example: '94105'
+            country:
+              type: string
+              example: USA
+        additionalVendors:
+          type: array
+          items:
+            type: object
+            properties:
+              firstName:
+                type: string
+                example: John
+              lastName:
+                type: string
+                example: Doe
+              contactNumber:
+                type: number
+                example: 1234567890
+              gender:
+                type: string
+                enum:
+                  - Male
+                  - Female
+        contactDetails:
+          allOf:
+            - $ref: '#/components/schemas/IContactDetails'
+        travelRequired:
+          type: boolean
+          example: false
+        accommodationRequired:
+          type: boolean
+          example: false
+    
+    IPanditDetails:
+      allOf:
+        - $ref: '#/components/schemas/IFunctionVendorDetails'
+        - type: object
+          required:
+            - providedRitualItems
+            - arrangedRitualItems
+            - setupDeadline
+          properties:
+            providedRitualItems:
+              type: array
+              items:
+                type: string
+              example: Varmala
+            arrangeRitualItems:
+              type: array
+              items:
+                type: string
+              example: Varmala
+            setupDeadline:
+              type: string
+              example: "2024-12-08T14:31:00Z"
+
+    IMehendiArtistDetails:
+      allOf:
+        - $ref: '#/components/schemas/IFunctionVendorDetails'
+        - type: object
+          required:
+            - expectedGuestCount
+            - mehendiConeCount
+            - mehendiStartTime
+          properties:
+            guests:
+              type: array
+              items:
+                type: string
+                format: objectId
+              example: 66e189a48dacf4f20d7e51d2
+            expectedGuestCount:
+              type: integer
+              example: 100
+              description: The expected number of guests for the event.
+            mehendiConeCount:
+              type: integer
+              example: 50
+              description: The number of Mehendi cones to be used.
+            mehendiStartTime:
+              type: string
+              format: date-time
+              example: "2024-10-25T15:30:00Z"
+              description: The start time for the Mehendi session.
   responses:
     '400':
       description: Bad request - invalid input or missing parameters
