@@ -794,6 +794,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+
   /meal:
     post:
       summary: Add a new meal type
@@ -869,6 +870,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+
   /plan:
     post:
       summary: Create a new subscription plan
@@ -963,6 +965,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+
   /role:
     post:
       summary: Create a new role with specific permissions
@@ -1318,6 +1321,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+
   /tag:
     post:
       summary: Create a new tag
@@ -1414,6 +1418,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+
   /task-list:
     post:
       summary: Create a new task for a specific event
@@ -1628,6 +1633,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'  
+
   /accommodation/move-guests:
     post:
       summary: Move guest from one accommodation to another
@@ -2200,6 +2206,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Accommodation
+
   /attachments/upload-image:
     post:
       summary: Upload attachments to a task.
@@ -2273,6 +2280,7 @@ paths:
                     example: An unexpected error occurred.
       tags:
         - Attachments
+
   /auth/create-user-details:
     post:
       summary: Create details of a existing user
@@ -2869,6 +2877,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Category
+
   /codes/purchase:
     post:
       summary: Purchase a code
@@ -3113,6 +3122,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+
   /company-profile:
     post:
       summary: Create a company profile
@@ -4195,6 +4205,7 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Documents
+
   /event:
     post:
       summary: Create a new event
@@ -4304,6 +4315,880 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Events
+  /event/{eventId}/travel:
+    post:
+      summary: Add a Travel Agency to a specific event
+      description: Adds a new Travel Agency to the specified event. Ensures that the Travel Agency does not already exist based on the business name and coordinates.
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/IAddTravelAgencyToEventPayload'
+      responses:
+        '200':
+          description: Travel Agency successfully added to the event.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Travel Agency successfully added to event.
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      summary: Update a Travel Agency for a specific event
+      description: Updates the details of an existing Travel Agency for the specified event.
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/IAddTravelAgencyToEventPayload'
+                - type: object
+                  required:
+                    - agencyRef
+                  properties:
+                    agencyRef:
+                      type: string
+                      format: ObjectId
+                      example: 671a58c7c41dd51fa7be0e61
+      responses:
+        '200':
+          description: Travel Agency successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Travel Agency successfully updated.
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve a specific Travel Agency for a specific event
+      description: Fetches the details of a Travel Agency from an event using the agency reference ID.
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the event.
+        - in: query
+          name: agencyRef
+          required: true
+          schema:
+            type: string
+          description: The unique reference ID of the Travel Agency to retrieve.
+      responses:
+        '200':
+          description: Travel Agency details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agency:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        description: The unique identifier of the Travel Agency.
+                        example: "67176cef1ab130a3ba0c9ae8"
+                      businessName:
+                        type: string
+                        description: Name of the Travel Agency.
+                        example: "Test Travel Agency"
+                      address:
+                        allOf:
+                          - $ref: '#/components/schemas/Address'
+                      contactDetails:
+                        allOf:
+                          - $ref: '#/components/schemas/ContactDetails'
+                      pointOfContact:
+                        type: string
+                        description: The unique identifier of the point of contact.
+                        example: "66e1839f04bcf8e6974a4be4"
+                      carDetails:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            car:
+                              type: string
+                              description: Car ID associated with the agency.
+                              example: "67176cee1ab130a3ba0c9add"
+                            smokingAllowed:
+                              type: boolean
+                              description: Indicates if smoking is allowed in the car.
+                              example: false
+                            trips:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  childSeat:
+                                    type: integer
+                                    description: Number of child seats available.
+                                    example: 0
+                                  pickUp:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        address:
+                                          allOf:
+                                            - $ref: '#/components/schemas/Address'
+                                        pickUpTime:
+                                          type: string
+                                          format: date-time
+                                          description: Pickup time.
+                                          example: "2024-12-08T14:31:00Z"
+                                  dropOff:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        address:
+                                          allOf:
+                                            - $ref: '#/components/schemas/Address'
+                                        dropOffTime:
+                                          type: string
+                                          format: date-time
+                                          description: (Optional)
+                                          example: "2024-12-08T14:31:00Z"
+                      driverDetails:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            coordinates:
+                              type: object
+                              properties:
+                                lat:
+                                  type: number
+                                  description: Latitude of the driver's current location.
+                                  example: 0
+                                lng:
+                                  type: number
+                                  description: Longitude of the driver's current location.
+                                  example: 0
+                            user:
+                              type: string
+                              description: User ID of the driver.
+                              example: "6717382531ccba933de8ce28"
+                            tripDetails:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  carRef:
+                                    type: string
+                                    description: Car reference ID.
+                                    example: "6717717e9407888351103900"
+                                  tripId:
+                                    type: string
+                                    description: Trip ID associated with the driver.
+                                    example: "671904610217f397d7e1e055"
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete a Travel Agency from an event
+      description: Deletes a specific Travel Agency from the event. Optionally, if `forceDelete` is true, associated guest and driver data will also be removed.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the event.
+        - name: agencyRef
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The ID of the Travel Agency to delete.
+        - name: forceDelete
+          in: query
+          required: false
+          schema:
+            type: string
+          description: If set to "true", forces the deletion of related guests and driver data.
+      responses:
+        '200':
+          description: Success response indicating the Travel Agency was deleted or listing associated guest IDs.
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - properties:
+                      message:
+                        type: string
+                        example: "Travel Agency successfully removed from event."
+                  - properties:
+                      uniqueGuestIds:
+                        type: array
+                        items:
+                          type: string
+                        example:
+                          - "67177575028e949ccad67e7a"
+                          - "67177575028e949ccad67e83"
+                          - "67177575028e949ccad67e73"
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /event/{eventId}/travel/car:
+    post:
+      summary: Add a car type to a travel agency
+      description: Adds a specified quantity of a car type to a travel agency for a given event.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IAddCarDetailsPayload'
+      responses:
+        '200':
+          description: Successfully added car type to the travel agency.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Car successfully added to travel agency."
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      summary: Edit a car type for a travel agency
+      description: Updates the details of an existing car type associated with a travel agency for a given event.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IEditCarDetailsPayload'
+      responses:
+        '200':
+          description: Successfully edited the car type for the travel agency.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Car successfully edited."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Get car details from a travel agency
+      description: Retrieves car details for a specific travel agency in an event. If a `carRef` is provided, details of the specified car are returned. If no `carRef` is provided, all cars associated with the travel agency are returned.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the event.
+        - name: agencyRef
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The reference ID of the travel agency.
+        - name: carRef
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The reference ID of the car. If provided, details of the specific car are returned.
+      responses:
+        '200':
+          description: Car details successfully retrieved.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/CarDetailsResponse'
+                  - $ref: '#/components/schemas/CarListResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete a car from a travel agency
+      description: Removes a specified car from a travel agency for a given event. If `forceDelete` is set to yes, it also removes associated drivers from the agency and their trip details.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the event.
+        - name: agencyRef
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The reference ID of the travel agency.
+        - name: carRef
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The reference ID of the car to be deleted.
+        - name: forceDelete
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Indicates whether to forcefully delete the car and associated driver trip details.
+      responses:
+        '200':
+          description: Car successfully removed from the agency.
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - properties:
+                      message:
+                        type: string
+                        example: "Car successfully removed from the agency."
+                  - properties:
+                      uniqueGuestIds:
+                        type: array
+                        items:
+                          type: string
+                        example:
+                          - "67177575028e949ccad67e7a"
+                          - "67177575028e949ccad67e83"
+                          - "67177575028e949ccad67e73"
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /event/{eventId}/travel/car/trip:
+    post:
+      summary: Add a trip to a car in a travel agency
+      description: Adds a new trip to a specified car for a travel agency associated with a given event. Validates trip details and guest availability before adding the trip.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/IAddTripPayload'
+      responses:
+        '200':
+          description: Trip successfully added to the car.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Trip successfully added."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      summary: Edit a trip in a car for a travel agency
+      description: Updates the details of a specified trip for a car in a travel agency associated with a given event. Validates updated trip details, guest availability, and maximum capacity before applying changes.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the event.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/IAddTripPayload'
+                - type: object
+                  properties:
+                    tripId:
+                      type: string
+                      format: ObjectId
+                      description: The ID of the trip to be edited.
+      responses:
+        '200':
+          description: Trip successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Trip successfully updated."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve trip details for a travel agency's car
+      description: Fetches details of trips for a specified car associated with a given event. If a trip ID is provided, it returns the details of that specific trip; otherwise, it returns all trips for the car.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the event.
+        - name: agencyRef
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The reference ID of the travel agency.
+        - name: carRef
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The reference ID of the car.
+        - name: tripId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: (Optional) The ID of the specific trip to retrieve.
+      responses:
+        '200':
+          description: Successfully retrieved trip(s).
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      trips:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/Trip'
+                  - type: object
+                    properties:
+                      trip:
+                        allOf:
+                          - $ref: '#/components/schemas/Trip'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete a trip
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: ID of the event
+        - name: agencyRef
+          in: query
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: Reference of the agency
+        - name: carRef
+          in: query
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: Reference of the car
+        - name: tripId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+          description: ID of the trip to delete
+        - name: forceDelete
+          in: query
+          required: false
+          schema:
+            type: string
+          description: If yes, delete the trip even if guests are associated
+      responses:
+        '200':
+          description: Trip successfully deleted
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Trip successfully deleted.
+                  - type: object
+                    properties:
+                      uniqueGuestIds:
+                        type: array
+                        items:
+                          type: string
+                        example: ["67177575028e949ccad67e7a", "67177575028e949ccad67e83"]
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /event/{eventId}/travel/car/trip/driver:
+    post:
+      summary: Add a driver to a trip
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                driverId:
+                  type: string
+                  format: ObjectId
+                  example: 671904610217f397d7e1e055
+                  description: Driver ID
+                carRef:
+                  type: string
+                  format: ObjectId
+                  example: 671904610217f397d7e1e055
+                  description: Reference of the car
+                tripId:
+                  type: string
+                  format: ObjectId
+                  example: 671904610217f397d7e1e055
+                  description: ID of the trip to which the driver is added
+                agencyRef:
+                  type: string
+                  format: ObjectId
+                  example: 671904610217f397d7e1e055
+                  description: Reference of the agency
+      responses:
+        200:
+          description: Driver successfully added to the trip
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Driver successfully added to the trip.
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      summary: Update a driver for a trip
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                driverId:
+                  type: string
+                  format: ObjectId
+                  example: 671904610217f397d7e1e055
+                  description: Driver ID
+                carRef:
+                  type: string
+                  format: ObjectId
+                  example: 671904610217f397d7e1e055
+                  description: Reference of the car
+                tripId:
+                  type: string
+                  format: ObjectId
+                  example: 671904610217f397d7e1e055
+                  description: ID of the trip to which the driver is added
+                agencyRef:
+                  type: string
+                  format: ObjectId
+                  example: 671904610217f397d7e1e055
+                  description: Reference of the agency
+      responses:
+        200:
+          description: Driver successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Driver successfully updated.
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Get Driver's Trips
+      description: Fetches the trips associated with a specific driver within an event.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          description: The ID of the event.
+          schema:
+            type: string
+        - name: agencyRef
+          in: query
+          required: true
+          description: Reference for the agency.
+          schema:
+            type: string
+        - name: driverId
+          in: query
+          required: true
+          description: Unique identifier for the driver.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Driver's trip details successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - coordinates
+                  - user
+                  - tripDetails
+                  - _id
+                properties:
+                  coordinates:
+                    type: object
+                    required:
+                      - lat
+                      - lng
+                    properties:
+                      lat:
+                        type: number
+                        example: 0
+                        description: Latitude coordinate of the driver.
+                      lng:
+                        type: number
+                        example: 0
+                        description: Longitude coordinate of the driver.
+                  user:
+                    type: string
+                    format: uuid
+                    example: "6717382531ccba933de8ce28"
+                    description: Unique identifier for the driver.
+                  tripDetails:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - carRef
+                        - tripId
+                        - _id
+                      properties:
+                        carRef:
+                          type: string
+                          example: "6717717e9407888351103900"
+                          description: Reference ID for the car used in the trip.
+                        tripId:
+                          type: string
+                          example: "671904610217f397d7e1e055"
+                          description: Unique identifier for the trip.
+                        _id:
+                          type: string
+                          example: "671a08e41d245cb05a1a5fd2"
+                          description: Unique identifier for the trip detail.
+                    description: An array of trip details associated with the driver.
+                  _id:
+                    type: string
+                    example: "671a08e41d245cb05a1a5fd1"
+                    description: Unique identifier for the driver.
+
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Remove Driver from Trips
+      description: Deletes a specified driver from the given trips within an event.
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          description: The ID of the event.
+          schema:
+            type: string
+        - name: agencyRef
+          in: query
+          required: true
+          description: Reference for the agency.
+          schema:
+            type: string
+        - name: driverId
+          in: query
+          required: true
+          description: Unique identifier for the driver.
+          schema:
+            type: string
+        - name: tripId
+          in: query
+          required: false
+          description: A single trip ID or a comma-separated list of trip IDs to remove.
+          schema:
+            type: array
+            items:
+              type: string
+
+      responses:
+        200:
+          description: Driver successfully removed from specified trips.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Driver removed from specified trips successfully."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   /function:
     post:
       summary: Create a new function for an event
@@ -6198,6 +7083,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -6205,6 +7091,55 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    IBaseAddress:
+      type: object
+      required:
+        - add1
+        - city
+        - state
+        - country
+        - pinCode
+        - coordinates
+      properties:
+        add1:
+          type: string
+          description: First line of the address
+          example: "123 Main St"
+        add2:
+          type: string
+          description: Second line of the address (optional)
+          example: "Suite 101"
+        city:
+          type: string
+          example: "New York"
+        state:
+          type: string
+          example: "NY"
+        country:
+          type: string
+          example: "USA"
+        pinCode:
+          type: number
+          example: 10001
+    IAddress:
+      allOf:
+        - $ref: '#/components/schemas/IBaseAddress'
+        - type: object
+          required:
+            - coordinates
+          properties:
+            coordinates:
+              type: object
+              required:
+                - lat
+                - lng
+              properties:
+                lat:
+                  type: number
+                  example: 40.7128
+                lng:
+                  type: number
+                  example: -74.0060
     VendorDirectoryPayload:
       oneOf:
                 - type: object
@@ -6839,33 +7774,46 @@ components:
               type: string
               format: date-time
               example: '2024-10-07T12:00:00Z'
-    Address:
+    BaseAddress:
       type: object
       properties:
-        street:
+        add1:
           type: string
-          example: '123 Main St'
+          description: First line of the address
+          example: "123 Main St"
+        add2:
+          type: string
+          description: Second line of the address (optional)
+          example: "Suite 101"
         city:
           type: string
-          example: 'San Francisco'
+          example: "New York"
         state:
           type: string
-          example: 'CA'
-        zipCode:
-          type: string
-          example: '94105'
+          example: "NY"
         country:
           type: string
-          example: 'USA'
-        coordinates:
-          type: object
+          example: "USA"
+        pinCode:
+          type: number
+          example: 10001
+    Address:
+      allOf:
+        - $ref: '#/components/schemas/BaseAddress'
+        - type: object
           properties:
-            lat:
-              type: number
-              example: 37.7749
-            lng:
-              type: number
-              example: -122.4194
+            coordinates:
+              type: object
+              required:
+                - lat
+                - lng
+              properties:
+                lat:
+                  type: number
+                  example: 40.7128
+                lng:
+                  type: number
+                  example: -74.0060
     IBaseGuestPayload:
       type: object
       properties:
@@ -7049,55 +7997,8 @@ components:
           description: The ID of the associated company
           example: "64a51e6a4f1a2d63f7d25c9b"
         address:
-          type: object
-          description: Address details of the hotel
-          required:
-            - add1
-            - city
-            - state
-            - country
-            - pinCode
-            - coordinates
-          properties:
-            add1:
-              type: string
-              description: First line of the address
-              example: "123 Main St"
-            add2:
-              type: string
-              description: Second line of the address (optional)
-              example: "Suite 101"
-            city:
-              type: string
-              description: City of the hotel
-              example: "New York"
-            state:
-              type: string
-              description: State of the hotel
-              example: "NY"
-            country:
-              type: string
-              description: Country of the hotel
-              example: "USA"
-            pinCode:
-              type: number
-              description: Postal code of the hotel
-              example: 10001
-            coordinates:
-              type: object
-              description: Coordinates of the hotel
-              required:
-                - lat
-                - lng
-              properties:
-                lat:
-                  type: number
-                  description: Latitude of the hotel
-                  example: 40.7128
-                lng:
-                  type: number
-                  description: Longitude of the hotel
-                  example: -74.0060
+          allOf:
+            - $ref: '#/components/schemas/IAddress'
         contactNumber:
           type: number
           description: Contact number of the hotel
@@ -7129,48 +8030,8 @@ components:
           description: Name of the hotel
           example: "Sunrise Hotel"
         address:
-          type: object
-          description: Address details of the hotel
-          properties:
-            add1:
-              type: string
-              description: First line of the address
-              example: "123 Main St"
-            add2:
-              type: string
-              description: Second line of the address (optional)
-              example: "Suite 101"
-            city:
-              type: string
-              description: City of the hotel
-              example: "New York"
-            state:
-              type: string
-              description: State of the hotel
-              example: "NY"
-            country:
-              type: string
-              description: Country of the hotel
-              example: "USA"
-            pinCode:
-              type: number
-              description: Postal code of the hotel
-              example: 10001
-            coordinates:
-              type: object
-              description: Coordinates of the hotel
-              required:
-                - lat
-                - lng
-              properties:
-                lat:
-                  type: number
-                  description: Latitude of the hotel
-                  example: 40.7128
-                lng:
-                  type: number
-                  description: Longitude of the hotel
-                  example: -74.0060
+          allOf:
+            - $ref: '#/components/schemas/IAddress'
         contactNumber:
           type: number
           description: Contact number of the hotel
@@ -7506,7 +8367,7 @@ components:
           example: "Book a DJ for the reception."
           description: "Detailed description of the task."
         address:
-          $ref: '#/components/schemas/IAddress'
+          $ref: '#/components/schemas/IBaseAddress'
         checkList:
           type: array
           items:
@@ -7561,36 +8422,6 @@ components:
           type: string
           example: "UTC"
           description: "Timezone for the due date."
-    IAddress:
-      type: object
-      description: "Address details associated with the task."
-      required:
-        - street
-        - city
-        - state
-        - zipCode
-        - country
-      properties:
-        street:
-          type: string
-          example: "123 Main St"
-          description: "Street address."
-        city:
-          type: string
-          example: "New York"
-          description: "City name."
-        state:
-          type: string
-          example: "NY"
-          description: "State or province."
-        zipCode:
-          type: string
-          example: "10001"
-          description: "Postal/Zip code."
-        country:
-          type: string
-          example: "USA"
-          description: "Country name."
     IUpdateCheckListStatus:
       type: object
       required:
@@ -7985,39 +8816,8 @@ components:
           example: "66e1839f04bcf8e6974a4bdf"
           description: ID of the company that owns the hotel.
         address:
-          type: object
-          properties:
-            coordinates:
-              type: object
-              properties:
-                lat:
-                  type: number
-                  example: 82.5008
-                  description: Latitude of the hotel's location.
-                lng:
-                  type: number
-                  example: 46.9297
-                  description: Longitude of the hotel's location.
-            add1:
-              type: string
-              example: "7752 Maude Junction"
-              description: Primary address line of the hotel.
-            city:
-              type: string
-              example: "Ernsermouth"
-              description: City where the hotel is located.
-            state:
-              type: string
-              example: "test"
-              description: State where the hotel is located.
-            country:
-              type: string
-              example: "Guyana"
-              description: Country where the hotel is located.
-            pinCode:
-              type: integer
-              example: 123456
-              description: Postal code of the hotel's address.
+          allOf:
+            - $ref: '#/components/schemas/Address'
         contactNumber:
           type: integer
           example: 1234567890
@@ -8806,7 +9606,6 @@ components:
             droneAvailable:
               type: boolean
               example: false
-
     IFunctionVendorDetails:
       type: object
       required:
@@ -8866,7 +9665,6 @@ components:
         accommodationRequired:
           type: boolean
           example: false
-    
     IPanditDetails:
       allOf:
         - $ref: '#/components/schemas/IFunctionVendorDetails'
@@ -8889,7 +9687,6 @@ components:
             setupDeadline:
               type: string
               example: "2024-12-08T14:31:00Z"
-
     IMehendiArtistDetails:
       allOf:
         - $ref: '#/components/schemas/IFunctionVendorDetails'
@@ -8918,6 +9715,237 @@ components:
               format: date-time
               example: "2024-10-25T15:30:00Z"
               description: The start time for the Mehendi session.
+    IAddTravelAgencyToEventPayload:
+      type: object
+      required:
+        - businessName
+        - address
+        - contactDetails
+        - pointOfContact
+      properties:
+        businessName:
+          type: string
+          description: Name of the Travel Agency.
+          example: "Best Travels"
+        address:
+          allOf:
+            - $ref: '#/components/schemas/IAddress'
+        contactDetails:
+          allOf:
+            - $ref: '#/components/schemas/IContactDetails'
+            - type: object
+              required:
+                - gender
+              properties:
+                gender:
+                  type: string
+                  enum:
+                    - Male
+                    - Female
+                  description: Gender of the primary contact.
+        pointOfContact:
+          type: string
+          format: ObjectId
+          description: The unique identifier of the point of contact (User ID).
+          example: "5f8d04a7b54764421b7156b9"
+    IBaseCarDetails:
+      type: object
+      required:
+        - agencyRef
+        - carId
+        - smokingAllowed
+      properties:
+        agencyRef:
+          type: string
+          description: The reference ID of the travel agency.
+        carId:
+          type: string
+          description: The ID of the car to be added.
+        smokingAllowed:
+          type: boolean
+          description: Indicates if smoking is allowed in the car.      
+    IAddCarDetailsPayload:
+      allOf:
+        - $ref: '#/components/schemas/IBaseCarDetails'
+        - type: object
+          required:
+            - quantity
+          properties:
+            quantity:
+              type: integer
+              description: The number of cars of this type to add to the travel agency.
+              example: 3
+    IEditCarDetailsPayload:
+      allOf:
+        - $ref: '#/components/schemas/IBaseCarDetails'
+        - type: object
+          required:
+            - carRef
+          properties:
+            carRef:
+              type: string
+              format: ObjectId
+              description: The reference of the car.
+              example: 67176cef1ab130a3ba0c9ae8
+    CarDetailsResponse:
+      type: object
+      properties:
+        car:
+          type: object
+          properties:
+            car:
+              type: string
+              description: The ID of the car.
+              example: "67176cee1ab130a3ba0c9add"
+            smokingAllowed:
+              type: boolean
+              description: Indicates if smoking is allowed in the car.
+              example: false
+            trips:
+              type: array
+              items:
+                $ref: '#/components/schemas/Trip'
+            _id:
+              type: string
+              description: The ID of the car details object.
+              example: "6717717e9407888351103900"
+    CarListResponse:
+      type: object
+      properties:
+        cars:
+          type: array
+          items:
+            type: object
+            properties:
+              car:
+                type: string
+                description: The ID of the car.
+                example: "67176cee1ab130a3ba0c9add"
+              smokingAllowed:
+                type: boolean
+                description: Indicates if smoking is allowed in the car.
+                example: false
+              trips:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trip'
+              _id:
+                type: string
+                description: The ID of the car details object.
+                example: "6717717e9407888351103900"
+    Trip:
+      type: object
+      properties:
+        childSeat:
+          type: integer
+          description: The number of child seats in the car.
+          example: 0
+        pickUp:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/TripLocation'
+              - type: object
+                properties:
+                  pickUpTime:
+                    type: string
+                    format: date-time
+                    description: The pick-up time for the trip.
+                    example: "2024-12-08T14:31:00Z"
+        dropOff:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/TripLocation'
+              - type: object
+                properties:
+                  dropOffTime:
+                    type: string
+                    format: date-time
+                    description: (Optional)
+                    example: "2024-12-08T15:31:00Z"
+        guests:
+          type: array
+          items:
+            type: string
+          description: List of guest IDs for the trip.
+          example: ["67177575028e949ccad67e7a", "67177575028e949ccad67e83"]
+        _id:
+          type: string
+          description: The ID of the trip.
+          example: "671904610217f397d7e1e055"
+        driver:
+          type: string
+          description: The ID of the driver for the trip.
+          example: "6717382531ccba933de8ce28"
+    TripLocation:
+      type: object
+      properties:
+        address:
+          allOf:
+            - $ref: '#/components/schemas/Address'
+        _id:
+          type: string
+          description: The ID of the pick-up or drop-off location.
+          example: "6717990b430b9eba4f1f6297"
+    ITrip:
+      type: object
+      required:
+        - childSeat
+        - pickUp
+        - dropOff
+        - guests
+        - driver
+      properties:
+        childSeat:
+          type: integer
+          description: Number of child seats required for the trip.
+        pickUp:
+          type: array
+          items:
+            type: object
+            properties:
+              address:
+                $ref: '#/components/schemas/IAddress'
+              pickUpTime:
+                type: string
+                format: date-time
+                description: The time for pick up.
+        dropOff:
+          type: array
+          items:
+            type: object
+            properties:
+              address:
+                $ref: '#/components/schemas/IAddress'
+              dropOffTime:
+                type: string
+                format: date-time
+                description: The time for drop off.
+        guests:
+          type: array
+          items:
+            type: string
+            format: ObjectId
+            description: List of guest IDs for the trip.
+        driver:
+          type: string
+          format: ObjectId
+          description: The ID of the driver for the trip.
+    IAddTripPayload:
+      allOf:
+        - $ref: '#/components/schemas/ITrip'
+        - type: object
+          required:
+            - agencyRef
+            - carRef
+          properties:
+            agencyRef:
+              type: string
+              description: The reference ID of the travel agency.
+            carRef:
+              type: string
+              description: The reference ID of the car.
   responses:
     '400':
       description: Bad request - invalid input or missing parameters
