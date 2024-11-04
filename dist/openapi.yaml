@@ -671,6 +671,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  
   /hotel:
     post:
       summary: Add a hotel at the company level
@@ -953,6 +954,262 @@ paths:
                         example: Hotel successfully removed from the event.
         '404':
           $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /invitation:
+    post:
+      summary: Create an invitation
+      description: Creates a new invitation linked to a specific function and attachment.
+      tags:
+        - Invitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - message
+                - attachmentId
+                - functionId
+              properties:
+                title:
+                  type: string
+                  example: "You're Invited!"
+                message:
+                  type: string
+                  example: "We would be delighted to have you at our wedding."
+                attachmentId:
+                  type: string
+                  format: objectId
+                  example: "60d5f4848f1e2c3f1e23c0b1"
+                functionId:
+                  type: string
+                  format: objectId
+                  example: "60d5f4848f1e2c3f1e23c0b2"
+      responses:
+        200:
+          description: Invitation successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invitation successfully created."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Get invitations by function ID
+      description: Retrieves a list of invitations associated with a specific function.
+      tags:
+        - Invitation
+      parameters:
+        - in: query
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the function for which to retrieve invitations.
+      responses:
+        200:
+          description: A list of invitations for the specified function.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/InvitationsResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /invitation/{invitationId}:
+    patch:
+      summary: Update an existing invitation
+      description: Updates the title and message of a specific invitation identified by its ID.
+      tags:
+        - Invitation
+      parameters:
+        - in: path
+          name: invitationId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the invitation to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: 
+                - title
+                - message
+              properties:
+                title:
+                  type: string
+                  example: "You’re Invited to a Celebration of Love!"
+                message:
+                  type: string
+                  example: "Join us in celebrating the union of [Bride’s Name] & [Groom’s Name] on [Wedding Date]. It would mean the world to us to have you there. Tap here to view the details and RSVP!"
+      responses:
+        200:
+          description: Invitation successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invitation successfully updated."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Retrieve a specific invitation
+      description: Fetches the details of a specific invitation identified by its ID, including the associated attachment.
+      tags:
+        - Invitation
+      parameters:
+        - in: path
+          name: invitationId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the invitation to retrieve.
+      responses:
+        200:
+          description: Invitation details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Invitation'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete an invitation
+      description: Deletes a specific invitation and its associated attachment using the invitation ID.
+      tags:
+        - Invitation
+      parameters:
+        - in: path
+          name: invitationId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the invitation to be deleted.
+      responses:
+        200:
+          description: Invitation deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invitation deleted successfully."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  /invitations/{invitationId}/send:
+    post:
+      summary: Send an invitation
+      description: Schedules an invitation to be sent to specified guests at a given time.
+      tags:
+        - Invitation
+      parameters:
+        - in: path
+          name: invitationId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the invitation to send.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guestIds:
+                  type: array
+                  items:
+                    type: string
+                    format: objectId
+                  description: List of guest IDs to send the invitation to.
+                scheduledTime:
+                  type: string
+                  format: date-time
+                  description: Optional time to schedule sending the invitation.
+      responses:
+        200:
+          description: Invitation scheduled for sending successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invitation scheduled for sending."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+  /invitations/{invitationId}/cancel:
+    delete:
+      summary: Cancel an invitation
+      description: Cancels a scheduled invitation before it is sent.
+      tags:
+        - Invitation
+      parameters:
+        - in: path
+          name: invitationId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the invitation to cancel.
+      responses:
+        200:
+          description: Invitation successfully canceled.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invitation successfully canceled."
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
 
@@ -5971,6 +6228,109 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'        
+  /functions/{functionId}/invite:
+    post:
+      summary: Add guests to a function
+      description: Adds one or more guests to a specified function by its ID.
+      tags:
+        - Functions
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the function to which guests will be added.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guestIds:
+                  type: array
+                  items:
+                    type: string
+                    format: objectId
+                  example: ["67177575028e949ccad67e7a", "67177575028e949ccad67e7b"]
+      responses:
+        200:
+          description: Guests successfully added to the function.
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Guests successfully added to this function."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      summary: Get invited guests for a function
+      description: Retrieves the invited guests associated with a specific function by its ID.
+      tags:
+        - Functions
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the function for which invited guests are to be retrieved.
+      responses:
+        200:
+          description: Successfully retrieved the list of invited guests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestsResponse'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Remove guests from a function
+      description: Removes specified guests from the given function.
+      tags:
+        - Functions
+      parameters:
+        - in: path
+          name: functionId
+          required: true
+          schema:
+            type: string
+            format: objectId
+          description: The ID of the function from which guests are to be removed.
+        - in: query
+          name: guestId
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              format: objectId
+          description: The ID(s) of the guest(s) to be removed from the function.
+      responses:
+        200:
+          description: Successfully removed guests from the function.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Guests removed from function."
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   /functions/caterer:
     post:
       summary: Create a new caterer
@@ -10588,6 +10948,59 @@ components:
           type: string
           format: date-time
           example: "2024-10-25T12:30:26.942Z"
+    Invitation:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: objectId
+          example: "6720e99745460e6a16a17e45"
+        title:
+          type: string
+          example: "You’re Invited to a Celebration of Love!"
+        message:
+          type: string
+          example: "Join us in celebrating the union of [Bride’s Name] & [Groom’s Name] on [Wedding Date]. It would mean the world to us to have you there. Tap here to view the details and RSVP!"
+        function:
+          type: string
+          format: objectId
+          example: "66fbd5db1d5dd5f5282a3adc"
+        attachment:
+          type: object
+          properties:
+            _id:
+              type: string
+              format: objectId
+              example: "6720e98e45460e6a16a17e3e"
+            path:
+              type: string
+              example: "src/uploads/invitation/2024-10-29T13-56-30.635Z - 1.jpg"
+            name:
+              type: string
+              example: "1.jpg"
+            referenceType:
+              type: string
+              example: "InvitationAttachment"
+            createdAt:
+              type: string
+              format: date-time
+              example: "2024-10-29T13:56:30.643Z"
+            updatedAt:
+              type: string
+              format: date-time
+              example: "2024-10-29T13:56:39.613Z"
+            invitation:
+              type: string
+              format: objectId
+              example: "6720e99745460e6a16a17e45"
+    InvitationsResponse:
+      type: object
+      properties:
+        invitations:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Invitation'
   responses:
     '400':
       description: Bad request - invalid input or missing parameters
