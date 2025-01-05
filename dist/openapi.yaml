@@ -1912,7 +1912,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
   /task-list/checkList:
-    patch:
+    put:
       summary: Update the status of a checklist item
       description: >-
         This endpoint allows users to modify the status of a specific checklist
@@ -2011,7 +2011,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-    patch:
+    put:
       summary: Edit a task by its ID
       description: >-
         This endpoint allows users to modify an existing task using its unique
@@ -2933,9 +2933,16 @@ paths:
           $ref: '#/components/responses/500'
       tags:
         - Auth
-  /auth/create-password:
+  /auth/create-password/{contactNumber}:
     post:
       summary: Create password for a user
+      parameters: 
+        - name: contactNumber
+          in: path
+          required: true
+          description: Contact number of the user whose passoword is to changed
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -2943,10 +2950,6 @@ paths:
             schema:
               type: object
               properties:
-                contactNumber:
-                  type: integer
-                  example: 1234567890
-                  description: User's contact number.
                 password:
                   type: string
                   format: password
@@ -2968,7 +2971,6 @@ paths:
                   description: Signature to verify the request authenticity.
                   example: dGVzdHNpZ25hdHVyZQ==
               required:
-                - contactNumber
                 - password
                 - confirmPassword
                 - publicKey
@@ -2984,12 +2986,6 @@ paths:
                   message:
                     type: string
                     example: Password created
-                  token:
-                    type: string
-                    description: >-
-                      JWT access token provided after successful password
-                      creation.
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '400':
           $ref: '#/components/responses/400'
         '403':
@@ -3059,7 +3055,7 @@ paths:
           $ref: '#/components/responses/404'
       tags:
         - Auth
-  /auth/verify-otp/{contactNumber}:
+  /auth/otp-verification/{contactNumber}:
     post:
       summary: Verify OTP for user
       parameters:
@@ -3070,6 +3066,12 @@ paths:
           schema:
             type: string
             example: 9825606702
+        - name: forgotPassword
+          in: query
+          required: false
+          description: True if user has selected forgot password
+          schema:
+            type: boolean
       requestBody:
         required: true
         content:
@@ -3352,6 +3354,12 @@ paths:
             example: '1234567890'
           required: true
           description: The contact number of the user to resend OTP to.
+        - name: forgotPassword
+          in: query
+          required: false
+          description: True if user has selected forgot password
+          schema:
+            type: boolean
       responses:
         '200':
           description: OTP resent successfully.
@@ -3756,8 +3764,7 @@ paths:
                         - Whatsapp
                       example: Email
                 address:
-                  type: string
-                  example: 123, Business Street, Bangalore, India
+                  $ref: '#/components/schemas/IBaseAddress'
                 website:
                   type: string
                   example: https://www.techsolutions.com
